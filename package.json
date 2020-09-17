@@ -5,18 +5,33 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "css": "tailwindcss build ./styles/tailwind.base.css -o ./styles/base.css",
+    "build:css": "tailwindcss build ./styles/tailwind.base.css -o ./styles/base.css"
   },
   "dependencies": {
-    "next": "9.5.2",
+    "@emotion/css": "^11.0.0-next.17",
+    "@emotion/react": "^11.0.0-next.17",
+    "@emotion/styled": "^11.0.0-next.17",
+    "immer": "^7.0.9",
+    "next": "latest",
     "next-iron-session": "^4.1.7",
     "react": "16.13.1",
     "react-dom": "16.13.1",
-    "theme-ui": "^0.3.1"
+    "react-query": "^2.22.0",
+    "reflexbox": "^4.0.6",
+    "zustand": "^3.1.2"
   },
   "devDependencies": {
+    "@babel/core": "^7.11.6",
+    "@emotion/babel-plugin": "^11.0.0-next.17",
+    "@emotion/server": "^11.0.0-next.17",
+    "@tailwindcss/ui": "^0.6.2",
+    "@tailwindcssinjs/macro": "^0.9.2",
     "@types/node": "^14.0.27",
     "@types/react": "^16.9.46",
+    "babel-plugin-macros": "^2.8.0",
+    "tailwindcss": "^1.8.10",
     "typescript": "^3.9.7"
   }
 }
