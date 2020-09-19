@@ -7,9 +7,24 @@ breakpoints.xxl = breakpoints[4];
 
 const theme = {
   colors: {
-    primary: "red",
+    primary: "#008060",
+    primarydark: "#004c3f",
+    primarylight: "#fbf7ed",
+    secondary: "#161038",
+    secondarydark: "#161138",
+    tertiary: "#faa317",
   },
-  variants: {},
+  variants: {
+    nav: {
+      active: {
+        color: "#fff",
+        backgroundcolor: "#362f78",
+      },
+      normal: {
+        color: "#362f78",
+      },
+    },
+  },
   breakpoints,
 };
 

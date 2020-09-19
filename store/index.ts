@@ -20,7 +20,7 @@ const useStore = create<State>(
     user: { name: "aditya" },
     isAuthenticated: false,
     setAuthenticated: (param: boolean) => set({ isAuthenticated: param }),
-    setUser: (param: User) => set({ user: param }),
+    setUser: (param: User) => set((state) => void (state.user = param)),
   })),
 );
 
