@@ -1,11 +1,13 @@
 export default {
   fonts: {
-    body: "aa,Inter var,system-ui, sans-serif",
-    heading: 'Inter var,"Avenir Next", sans-serif',
+    body:
+      "Inter var,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji",
+    heading:
+      "Inter var,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji",
     monospace: "monospace",
   },
   colors: {
-    text: "#fff",
+    text: "#000",
     background: "#fff",
     primary: "#33e",
     primary: "#008060",

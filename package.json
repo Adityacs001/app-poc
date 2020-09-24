@@ -9,6 +9,10 @@
     "css": "tailwindcss build ./styles/tailwind.css -o ./styles/base.css"
   },
   "dependencies": {
+    "@tailwindcss/ui": "^0.6.2",
+    "@tailwindui/react": "^0.1.1",
+    "classnames": "^2.2.6",
+    "framer-motion": "^2.7.1",
     "next": "9.5.2",
     "next-iron-session": "^4.1.7",
     "react": "16.13.1",

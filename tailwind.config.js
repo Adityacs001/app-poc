@@ -22,5 +22,9 @@ module.exports = {
     translate: ["responsive", "hover", "focus", "motion-safe", "motion-reduce"],
     opacity: ["responsive", "hover", "focus", "disabled"],
   },
-  plugins: [],
+  plugins: [
+    require("@tailwindcss/ui")({
+      layout: "sidebar",
+    }),
+  ],
 };
