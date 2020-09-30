@@ -2,11 +2,14 @@
 import "../styles/tailwind.css";
 import { useState } from "react";
 import theme from "../styles/theme";
-import { ThemeProvider, jsx, Styled, Button } from "theme-ui";
+import { ThemeProvider, jsx, Styled, Avatar } from "theme-ui";
 import { Transition } from "@tailwindui/react";
 import classnames from "classnames";
 import { motion } from "framer-motion";
 import Footer from "@/components/Footer";
+import MainHeader from "@/components/MainHeader";
+import SubHeader from "@/components/SubHeader";
+import PublicLayout from "@/components/Layouts/PublicLayout";
 
 function MyApp({ Component, pageProps }) {
   const containervariants = {
@@ -41,6 +44,9 @@ function MyApp({ Component, pageProps }) {
 
   const [isOpen, setIsOpen] = useState(false);
   const [isUserInfoOpen, setIsUserInfoOpen] = useState(false);
+  const getLayout =
+    Component.getLayout || ((page) => <PublicLayout children={page} />);
+
   return (
     <ThemeProvider theme={theme}>
       <Styled.root>
@@ -602,11 +608,9 @@ function MyApp({ Component, pageProps }) {
               className="flex-1 relative z-0 overflow-y-auto focus:outline-none"
               tabIndex="0"
             >
-              <div className="border-b border-gray-200 px-4 py-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8">
+              <div className=" border-b border-gray-200 px-4 py-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8">
                 <div className="flex-1 min-w-0">
-                  <h1 className="text-lg font-medium leading-6 text-gray-900 sm:truncate">
-                    Home
-                  </h1>
+                  <MainHeader title="Home" />
                 </div>
                 <div className="mt-4 flex sm:mt-0 sm:ml-4">
                   <span className="order-1 ml-3 shadow-sm rounded-md sm:order-0 sm:ml-0">
@@ -723,319 +727,6 @@ function MyApp({ Component, pageProps }) {
                 </div>
               </div>
 
-              <div className="px-4 mt-6 sm:px-6 lg:px-8">
-                <h2 className="text-gray-500 text-xs font-medium uppercase tracking-wide">
-                  Pinned Projects
-                </h2>
-                <ul className="grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 xl:grid-cols-4 mt-3">
-                  <li className="relative col-span-1 flex shadow-sm rounded-md">
-                    <div className="flex-shrink-0 flex items-center justify-center w-16 bg-pink-600 text-white text-sm leading-5 font-medium rounded-l-md">
-                      GA
-                    </div>
-                    <div className="flex-1 flex items-center justify-between border-t border-r border-b border-gray-200 bg-white rounded-r-md truncate">
-                      <div className="flex-1 px-4 py-2 text-sm leading-5 truncate">
-                        <a
-                          href="#"
-                          className="text-gray-900 font-medium hover:text-gray-600 transition ease-in-out duration-150"
-                        >
-                          GraphQL API
-                        </a>
-                        <p className="text-gray-500">12 Members</p>
-                      </div>
-                      <div className="flex-shrink-0 pr-2">
-                        <button
-                          id="pinned-project-options-menu-0"
-                          className="w-8 h-8 inline-flex items-center justify-center text-gray-400 rounded-full bg-transparent hover:text-gray-500 focus:outline-none focus:text-gray-500 focus:bg-gray-100 transition ease-in-out duration-150"
-                        >
-                          <svg
-                            className="w-5 h-5"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                          >
-                            <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
-                          </svg>
-                        </button>
-
-                        <Transition
-                          show={isOpen}
-                          enter="transition ease-out duration-100"
-                          enterFrom="transform opacity-0 scale-95"
-                          enterTo="transform opacity-100 scale-100"
-                          leave="transition ease-in duration-75"
-                          leaveFrom="transform opacity-100 scale-100"
-                          leaveTo="transform opacity-0 scale-95"
-                        >
-                          <div className="z-10 mx-3 origin-top-right absolute right-10 top-3 w-48 mt-1 rounded-md shadow-lg">
-                            <div
-                              className="rounded-md bg-white shadow-xs"
-                              role="menu"
-                              aria-orientation="vertical"
-                              aria-labelledby="pinned-project-options-menu-0"
-                            >
-                              <div className="py-1">
-                                <a
-                                  href="#"
-                                  className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
-                                  role="menuitem"
-                                >
-                                  View
-                                </a>
-                              </div>
-                              <div className="border-t border-gray-100"></div>
-                              <div className="py-1">
-                                <a
-                                  href="#"
-                                  className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
-                                  role="menuitem"
-                                >
-                                  Removed from pinned
-                                </a>
-                                <a
-                                  href="#"
-                                  className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
-                                  role="menuitem"
-                                >
-                                  Share
-                                </a>
-                              </div>
-                            </div>
-                          </div>
-                        </Transition>
-                      </div>
-                    </div>
-                  </li>
-                  <li className="relative col-span-1 flex shadow-sm rounded-md">
-                    <div className="flex-shrink-0 flex items-center justify-center w-16 bg-pink-600 text-white text-sm leading-5 font-medium rounded-l-md">
-                      GA
-                    </div>
-                    <div className="flex-1 flex items-center justify-between border-t border-r border-b border-gray-200 bg-white rounded-r-md truncate">
-                      <div className="flex-1 px-4 py-2 text-sm leading-5 truncate">
-                        <a
-                          href="#"
-                          className="text-gray-900 font-medium hover:text-gray-600 transition ease-in-out duration-150"
-                        >
-                          GraphQL API
-                        </a>
-                        <p className="text-gray-500">12 Members</p>
-                      </div>
-                      <div className="flex-shrink-0 pr-2">
-                        <button
-                          id="pinned-project-options-menu-0"
-                          className="w-8 h-8 inline-flex items-center justify-center text-gray-400 rounded-full bg-transparent hover:text-gray-500 focus:outline-none focus:text-gray-500 focus:bg-gray-100 transition ease-in-out duration-150"
-                        >
-                          <svg
-                            className="w-5 h-5"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                          >
-                            <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
-                          </svg>
-                        </button>
-
-                        <Transition
-                          show={isOpen}
-                          enter="transition ease-out duration-100"
-                          enterFrom="transform opacity-0 scale-95"
-                          enterTo="transform opacity-100 scale-100"
-                          leave="transition ease-in duration-75"
-                          leaveFrom="transform opacity-100 scale-100"
-                          leaveTo="transform opacity-0 scale-95"
-                        >
-                          <div className="z-10 mx-3 origin-top-right absolute right-10 top-3 w-48 mt-1 rounded-md shadow-lg">
-                            <div
-                              className="rounded-md bg-white shadow-xs"
-                              role="menu"
-                              aria-orientation="vertical"
-                              aria-labelledby="pinned-project-options-menu-0"
-                            >
-                              <div className="py-1">
-                                <a
-                                  href="#"
-                                  className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
-                                  role="menuitem"
-                                >
-                                  View
-                                </a>
-                              </div>
-                              <div className="border-t border-gray-100"></div>
-                              <div className="py-1">
-                                <a
-                                  href="#"
-                                  className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
-                                  role="menuitem"
-                                >
-                                  Removed from pinned
-                                </a>
-                                <a
-                                  href="#"
-                                  className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
-                                  role="menuitem"
-                                >
-                                  Share
-                                </a>
-                              </div>
-                            </div>
-                          </div>
-                        </Transition>
-                      </div>
-                    </div>
-                  </li>
-
-                  <li className="relative col-span-1 flex shadow-sm rounded-md">
-                    <div className="flex-shrink-0 flex items-center justify-center w-16 bg-pink-600 text-white text-sm leading-5 font-medium rounded-l-md">
-                      GA
-                    </div>
-                    <div className="flex-1 flex items-center justify-between border-t border-r border-b border-gray-200 bg-white rounded-r-md truncate">
-                      <div className="flex-1 px-4 py-2 text-sm leading-5 truncate">
-                        <a
-                          href="#"
-                          className="text-gray-900 font-medium hover:text-gray-600 transition ease-in-out duration-150"
-                        >
-                          GraphQL API
-                        </a>
-                        <p className="text-gray-500">12 Members</p>
-                      </div>
-                      <div className="flex-shrink-0 pr-2">
-                        <button
-                          id="pinned-project-options-menu-0"
-                          className="w-8 h-8 inline-flex items-center justify-center text-gray-400 rounded-full bg-transparent hover:text-gray-500 focus:outline-none focus:text-gray-500 focus:bg-gray-100 transition ease-in-out duration-150"
-                        >
-                          <svg
-                            className="w-5 h-5"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                          >
-                            <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
-                          </svg>
-                        </button>
-
-                        <Transition
-                          show={isOpen}
-                          enter="transition ease-out duration-100"
-                          enterFrom="transform opacity-0 scale-95"
-                          enterTo="transform opacity-100 scale-100"
-                          leave="transition ease-in duration-75"
-                          leaveFrom="transform opacity-100 scale-100"
-                          leaveTo="transform opacity-0 scale-95"
-                        >
-                          <div className="z-10 mx-3 origin-top-right absolute right-10 top-3 w-48 mt-1 rounded-md shadow-lg">
-                            <div
-                              className="rounded-md bg-white shadow-xs"
-                              role="menu"
-                              aria-orientation="vertical"
-                              aria-labelledby="pinned-project-options-menu-0"
-                            >
-                              <div className="py-1">
-                                <a
-                                  href="#"
-                                  className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
-                                  role="menuitem"
-                                >
-                                  View
-                                </a>
-                              </div>
-                              <div className="border-t border-gray-100"></div>
-                              <div className="py-1">
-                                <a
-                                  href="#"
-                                  className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
-                                  role="menuitem"
-                                >
-                                  Removed from pinned
-                                </a>
-                                <a
-                                  href="#"
-                                  className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
-                                  role="menuitem"
-                                >
-                                  Share
-                                </a>
-                              </div>
-                            </div>
-                          </div>
-                        </Transition>
-                      </div>
-                    </div>
-                  </li>
-                  <li className="relative col-span-1 flex shadow-sm rounded-md">
-                    <div className="flex-shrink-0 flex items-center justify-center w-16 bg-pink-600 text-white text-sm leading-5 font-medium rounded-l-md">
-                      GA
-                    </div>
-                    <div className="flex-1 flex items-center justify-between border-t border-r border-b border-gray-200 bg-white rounded-r-md truncate">
-                      <div className="flex-1 px-4 py-2 text-sm leading-5 truncate">
-                        <a
-                          href="#"
-                          className="text-gray-900 font-medium hover:text-gray-600 transition ease-in-out duration-150"
-                        >
-                          GraphQL API
-                        </a>
-                        <p className="text-gray-500">12 Members</p>
-                      </div>
-                      <div className="flex-shrink-0 pr-2">
-                        <button
-                          id="pinned-project-options-menu-0"
-                          className="w-8 h-8 inline-flex items-center justify-center text-gray-400 rounded-full bg-transparent hover:text-gray-500 focus:outline-none focus:text-gray-500 focus:bg-gray-100 transition ease-in-out duration-150"
-                        >
-                          <svg
-                            className="w-5 h-5"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                          >
-                            <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
-                          </svg>
-                        </button>
-
-                        <Transition
-                          show={isOpen}
-                          enter="transition ease-out duration-100"
-                          enterFrom="transform opacity-0 scale-95"
-                          enterTo="transform opacity-100 scale-100"
-                          leave="transition ease-in duration-75"
-                          leaveFrom="transform opacity-100 scale-100"
-                          leaveTo="transform opacity-0 scale-95"
-                        >
-                          <div className="z-10 mx-3 origin-top-right absolute right-10 top-3 w-48 mt-1 rounded-md shadow-lg">
-                            <div
-                              className="rounded-md bg-white shadow-xs"
-                              role="menu"
-                              aria-orientation="vertical"
-                              aria-labelledby="pinned-project-options-menu-0"
-                            >
-                              <div className="py-1">
-                                <a
-                                  href="#"
-                                  className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
-                                  role="menuitem"
-                                >
-                                  View
-                                </a>
-                              </div>
-                              <div className="border-t border-gray-100"></div>
-                              <div className="py-1">
-                                <a
-                                  href="#"
-                                  className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
-                                  role="menuitem"
-                                >
-                                  Removed from pinned
-                                </a>
-                                <a
-                                  href="#"
-                                  className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
-                                  role="menuitem"
-                                >
-                                  Share
-                                </a>
-                              </div>
-                            </div>
-                          </div>
-                        </Transition>
-                      </div>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-
               <div className="mt-10 sm:hidden">
                 <div className="px-4 sm:px-6">
                   <h2 className="text-gray-500 text-xs font-medium uppercase tracking-wide">
@@ -1077,17 +768,340 @@ function MyApp({ Component, pageProps }) {
                 variants={containervariants}
                 initial="start"
                 animate="end"
-                className="px-4 mt-6  sm:px-6 lg:px-8 bg-gray-100"
+                className="px-4 py-4 sm:px-6 lg:px-8 bg-gray-100 "
               >
-                <Component {...pageProps} />
+                {getLayout(<Component {...pageProps} />)}
               </motion.div>
+
+              <div className="px-4 my-6 sm:px-6 lg:px-8">
+                <SubHeader title=" Suggested  Jobseekers" />
+                <ul className="grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 xl:grid-cols-4 mt-3">
+                  <li className="relative col-span-1 flex shadow-sm rounded-md">
+                    <div className="flex-shrink-0 flex items-center justify-center w-16 text-white text-sm leading-5 font-medium rounded-l-md border-t border-l border-b">
+                      <Avatar src="/aditya.png" />
+                    </div>
+                    <div className="flex-1 flex items-center justify-between border-t border-r border-b border-gray-200 bg-white rounded-r-md truncate">
+                      <div className="flex-1 px-4 py-2 text-sm leading-5 truncate">
+                        <a
+                          href="#"
+                          className="text-gray-900 font-medium hover:text-gray-600 transition ease-in-out duration-150"
+                        >
+                          Aditya Kumar singh
+                        </a>
+                        <p className="text-gray-800">Experience 2 Yrs</p>
+                        <p className="text-gray-500 tuncate">
+                          Bachelor in Computer Science
+                        </p>
+                      </div>
+                      <div className="flex-shrink-0 pr-2">
+                        <button
+                          id="pinned-project-options-menu-0"
+                          className="w-8 h-8 inline-flex items-center justify-center text-gray-400 rounded-full bg-transparent hover:text-gray-500 focus:outline-none focus:text-gray-500 focus:bg-gray-100 transition ease-in-out duration-150"
+                        >
+                          <svg
+                            className="w-5 h-5"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                          </svg>
+                        </button>
+
+                        <Transition
+                          show={isOpen}
+                          enter="transition ease-out duration-100"
+                          enterFrom="transform opacity-0 scale-95"
+                          enterTo="transform opacity-100 scale-100"
+                          leave="transition ease-in duration-75"
+                          leaveFrom="transform opacity-100 scale-100"
+                          leaveTo="transform opacity-0 scale-95"
+                        >
+                          <div className="z-10 mx-3 origin-top-right absolute right-10 top-3 w-48 mt-1 rounded-md shadow-lg">
+                            <div
+                              className="rounded-md bg-white shadow-xs"
+                              role="menu"
+                              aria-orientation="vertical"
+                              aria-labelledby="pinned-project-options-menu-0"
+                            >
+                              <div className="py-1">
+                                <a
+                                  href="#"
+                                  className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                                  role="menuitem"
+                                >
+                                  View
+                                </a>
+                              </div>
+                              <div className="border-t border-gray-100"></div>
+                              <div className="py-1">
+                                <a
+                                  href="#"
+                                  className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                                  role="menuitem"
+                                >
+                                  Removed from pinned
+                                </a>
+                                <a
+                                  href="#"
+                                  className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                                  role="menuitem"
+                                >
+                                  Share
+                                </a>
+                              </div>
+                            </div>
+                          </div>
+                        </Transition>
+                      </div>
+                    </div>
+                  </li>
+                  <li className="relative col-span-1 flex shadow-sm rounded-md">
+                    <div className="flex-shrink-0 flex items-center justify-center w-16 text-white text-sm leading-5 font-medium rounded-l-md border-t border-l border-b">
+                      <Avatar src="/aditya.png" />
+                    </div>
+                    <div className="flex-1 flex items-center justify-between border-t border-r border-b border-gray-200 bg-white rounded-r-md truncate">
+                      <div className="flex-1 px-4 py-2 text-sm leading-5 truncate">
+                        <a
+                          href="#"
+                          className="text-gray-900 font-medium hover:text-gray-600 transition ease-in-out duration-150"
+                        >
+                          Aditya Kumar singh
+                        </a>
+                        <p className="text-gray-800">Experience 2 Yrs</p>
+                        <p className="text-gray-500 tuncate">
+                          Bachelor in Computer Science
+                        </p>
+                      </div>
+                      <div className="flex-shrink-0 pr-2">
+                        <button
+                          id="pinned-project-options-menu-0"
+                          className="w-8 h-8 inline-flex items-center justify-center text-gray-400 rounded-full bg-transparent hover:text-gray-500 focus:outline-none focus:text-gray-500 focus:bg-gray-100 transition ease-in-out duration-150"
+                        >
+                          <svg
+                            className="w-5 h-5"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                          </svg>
+                        </button>
+
+                        <Transition
+                          show={isOpen}
+                          enter="transition ease-out duration-100"
+                          enterFrom="transform opacity-0 scale-95"
+                          enterTo="transform opacity-100 scale-100"
+                          leave="transition ease-in duration-75"
+                          leaveFrom="transform opacity-100 scale-100"
+                          leaveTo="transform opacity-0 scale-95"
+                        >
+                          <div className="z-10 mx-3 origin-top-right absolute right-10 top-3 w-48 mt-1 rounded-md shadow-lg">
+                            <div
+                              className="rounded-md bg-white shadow-xs"
+                              role="menu"
+                              aria-orientation="vertical"
+                              aria-labelledby="pinned-project-options-menu-0"
+                            >
+                              <div className="py-1">
+                                <a
+                                  href="#"
+                                  className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                                  role="menuitem"
+                                >
+                                  View
+                                </a>
+                              </div>
+                              <div className="border-t border-gray-100"></div>
+                              <div className="py-1">
+                                <a
+                                  href="#"
+                                  className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                                  role="menuitem"
+                                >
+                                  Removed from pinned
+                                </a>
+                                <a
+                                  href="#"
+                                  className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                                  role="menuitem"
+                                >
+                                  Share
+                                </a>
+                              </div>
+                            </div>
+                          </div>
+                        </Transition>
+                      </div>
+                    </div>
+                  </li>
+                  <li className="relative col-span-1 flex shadow-sm rounded-md">
+                    <div className="flex-shrink-0 flex items-center justify-center w-16 text-white text-sm leading-5 font-medium rounded-l-md border-t border-l border-b">
+                      <Avatar src="/aditya.png" />
+                    </div>
+                    <div className="flex-1 flex items-center justify-between border-t border-r border-b border-gray-200 bg-white rounded-r-md truncate">
+                      <div className="flex-1 px-4 py-2 text-sm leading-5 truncate">
+                        <a
+                          href="#"
+                          className="text-gray-900 font-medium hover:text-gray-600 transition ease-in-out duration-150"
+                        >
+                          Aditya Kumar singh
+                        </a>
+                        <p className="text-gray-800">Experience 2 Yrs</p>
+                        <p className="text-gray-500 tuncate">
+                          Bachelor in Computer Science
+                        </p>
+                      </div>
+                      <div className="flex-shrink-0 pr-2">
+                        <button
+                          id="pinned-project-options-menu-0"
+                          className="w-8 h-8 inline-flex items-center justify-center text-gray-400 rounded-full bg-transparent hover:text-gray-500 focus:outline-none focus:text-gray-500 focus:bg-gray-100 transition ease-in-out duration-150"
+                        >
+                          <svg
+                            className="w-5 h-5"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                          </svg>
+                        </button>
+
+                        <Transition
+                          show={isOpen}
+                          enter="transition ease-out duration-100"
+                          enterFrom="transform opacity-0 scale-95"
+                          enterTo="transform opacity-100 scale-100"
+                          leave="transition ease-in duration-75"
+                          leaveFrom="transform opacity-100 scale-100"
+                          leaveTo="transform opacity-0 scale-95"
+                        >
+                          <div className="z-10 mx-3 origin-top-right absolute right-10 top-3 w-48 mt-1 rounded-md shadow-lg">
+                            <div
+                              className="rounded-md bg-white shadow-xs"
+                              role="menu"
+                              aria-orientation="vertical"
+                              aria-labelledby="pinned-project-options-menu-0"
+                            >
+                              <div className="py-1">
+                                <a
+                                  href="#"
+                                  className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                                  role="menuitem"
+                                >
+                                  View
+                                </a>
+                              </div>
+                              <div className="border-t border-gray-100"></div>
+                              <div className="py-1">
+                                <a
+                                  href="#"
+                                  className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                                  role="menuitem"
+                                >
+                                  Removed from pinned
+                                </a>
+                                <a
+                                  href="#"
+                                  className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                                  role="menuitem"
+                                >
+                                  Share
+                                </a>
+                              </div>
+                            </div>
+                          </div>
+                        </Transition>
+                      </div>
+                    </div>
+                  </li>
+                  <li className="relative col-span-1 flex shadow-sm rounded-md">
+                    <div className="flex-shrink-0 flex items-center justify-center w-16 text-white text-sm leading-5 font-medium rounded-l-md border-t border-l border-b">
+                      <Avatar src="/aditya.png" />
+                    </div>
+                    <div className="flex-1 flex items-center justify-between border-t border-r border-b border-gray-200 bg-white rounded-r-md truncate">
+                      <div className="flex-1 px-4 py-2 text-sm leading-5 truncate">
+                        <a
+                          href="#"
+                          className="text-gray-900 font-medium hover:text-gray-600 transition ease-in-out duration-150"
+                        >
+                          Aditya Kumar singh
+                        </a>
+                        <p className="text-gray-800">Experience 2 Yrs</p>
+                        <p className="text-gray-500 tuncate">
+                          Bachelor in Computer Science
+                        </p>
+                      </div>
+                      <div className="flex-shrink-0 pr-2">
+                        <button
+                          id="pinned-project-options-menu-0"
+                          className="w-8 h-8 inline-flex items-center justify-center text-gray-400 rounded-full bg-transparent hover:text-gray-500 focus:outline-none focus:text-gray-500 focus:bg-gray-100 transition ease-in-out duration-150"
+                        >
+                          <svg
+                            className="w-5 h-5"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                          </svg>
+                        </button>
+
+                        <Transition
+                          show={isOpen}
+                          enter="transition ease-out duration-100"
+                          enterFrom="transform opacity-0 scale-95"
+                          enterTo="transform opacity-100 scale-100"
+                          leave="transition ease-in duration-75"
+                          leaveFrom="transform opacity-100 scale-100"
+                          leaveTo="transform opacity-0 scale-95"
+                        >
+                          <div className="z-10 mx-3 origin-top-right absolute right-10 top-3 w-48 mt-1 rounded-md shadow-lg">
+                            <div
+                              className="rounded-md bg-white shadow-xs"
+                              role="menu"
+                              aria-orientation="vertical"
+                              aria-labelledby="pinned-project-options-menu-0"
+                            >
+                              <div className="py-1">
+                                <a
+                                  href="#"
+                                  className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                                  role="menuitem"
+                                >
+                                  View
+                                </a>
+                              </div>
+                              <div className="border-t border-gray-100"></div>
+                              <div className="py-1">
+                                <a
+                                  href="#"
+                                  className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                                  role="menuitem"
+                                >
+                                  Removed from pinned
+                                </a>
+                                <a
+                                  href="#"
+                                  className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                                  role="menuitem"
+                                >
+                                  Share
+                                </a>
+                              </div>
+                            </div>
+                          </div>
+                        </Transition>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+
               <div className="hidden sm:block">
                 <div className="align-middle inline-block min-w-full border-b border-gray-200">
                   <table className="min-w-full">
                     <thead>
                       <tr className="border-t border-gray-200">
                         <th className="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
-                          <span className="lg:pl-2">Project</span>
+                          <span className="lg:pl-2">Recent Postings</span>
                         </th>
                         <th className="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                           Members

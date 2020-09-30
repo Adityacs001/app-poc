@@ -1,9 +1,10 @@
 import Head from "next/head";
 import classNames from "classnames";
 import { motion } from "framer-motion";
-import { readBuilderProgram } from "typescript";
+import MainHeader from "@/components/MainHeader";
+import { getLayout } from "@/components/Layouts/PrivateLayout";
 
-export default function Home() {
+const Index = () => {
   const cardvariants = {
     hidden: {
       opacity: 0,
@@ -24,12 +25,10 @@ export default function Home() {
   return (
     <>
       <div className="py-2">
-        <h2 className="text-lg leading-6 font-semibold text-cool-gray-900">
-          Overview
-        </h2>
-        <h3 className="text-gray-400 text-sm leading-6  font-medium  tracking-wide ">
-          Some additional details goes here which looks good
-        </h3>
+        <MainHeader
+          title="Overview"
+          subtitle="Some additional details goes here which looks good"
+        ></MainHeader>
       </div>
 
       <motion.div
@@ -50,7 +49,7 @@ export default function Home() {
         >
           <div className="p-5">
             <div className="flex items-center">
-              <div className="flex-shrink-0 bg-indigo-500 rounded-md p-3">
+              <div className="flex-shrink-0 bg-yellow-500 rounded-md p-3">
                 <svg
                   className="h-6 w-6 text-cool-gray-100"
                   fill="none"
@@ -68,11 +67,11 @@ export default function Home() {
               <div className="ml-5 w-0 flex-1">
                 <dl>
                   <dt className="text-sm leading-5 font-medium text-cool-gray-500 truncate">
-                    Account balance
+                    Total Postings
                   </dt>
                   <dd>
                     <div className="text-lg leading-7 font-medium text-cool-gray-900">
-                      $30,659.45
+                      2,000
                     </div>
                   </dd>
                 </dl>
@@ -117,11 +116,11 @@ export default function Home() {
               <div className="ml-5 w-0 flex-1">
                 <dl>
                   <dt className="text-sm leading-5 font-medium text-cool-gray-500 truncate">
-                    Account balance
+                    Total Active openings
                   </dt>
                   <dd>
                     <div className="text-lg leading-7 font-medium text-cool-gray-900">
-                      $30,659.45
+                      500
                     </div>
                   </dd>
                 </dl>
@@ -151,7 +150,7 @@ export default function Home() {
         >
           <div className="p-5">
             <div className="flex items-center">
-              <div className="flex-shrink-0  bg-indigo-500 rounded-md p-3">
+              <div className="flex-shrink-0  bg-green-500 rounded-md p-3">
                 <svg
                   className="h-6 w-6 text-cool-gray-100"
                   fill="none"
@@ -169,11 +168,11 @@ export default function Home() {
               <div className="ml-5 w-0 flex-1">
                 <dl>
                   <dt className="text-sm leading-5 font-medium text-cool-gray-500 truncate">
-                    Account balance
+                    Total Hiring (U.A.E Nationals / Expats)
                   </dt>
                   <dd>
                     <div className="text-lg leading-7 font-medium text-cool-gray-900">
-                      $30,659.45
+                      100/20
                     </div>
                   </dd>
                 </dl>
@@ -194,4 +193,8 @@ export default function Home() {
       </motion.div>
     </>
   );
-}
+};
+
+Index.getLayout = getLayout;
+
+export default Index;

@@ -1,5 +1,6 @@
 import React, { useRef } from "react";
 import { useRouter } from "next/router";
+import { getLayout } from "@/components/Layouts/PublicLayout";
 
 const SignInPage = () => {
   const router = useRouter();
@@ -41,5 +42,7 @@ const SignInPage = () => {
     </form>
   );
 };
+
+SignInPage.getLayout = getLayout;
 
 export default SignInPage;
