@@ -1,4 +1,4 @@
-const Footer = () => (
+export const Footer = () => (
   <div className="bg-cool-gray-700">
     <div className="max-w-screen-xl mx-auto  px-4 overflow-hidden sm:px-6 lg:px-8">
       <div className="py-2">

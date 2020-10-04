@@ -1,7 +1,7 @@
 import { withIronSession } from "next-iron-session";
 
-const VALID_EMAIL = "aditya";
-const VALID_PASSWORD = "aditya";
+const VALID_EMAIL = "aditya.singh@hra.gov.ae";
+const VALID_PASSWORD = "123";
 
 export default withIronSession(
   async (req, res) => {

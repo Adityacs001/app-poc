@@ -16,7 +16,15 @@ module.exports = {
   variants: {
     fontFamily: ["responsive", "hover", "focus"],
     fontSize: ["responsive", "hover", "focus"],
-    backgroundColor: ["responsive", "odd", "even", "hover", "focus", "active"],
+    backgroundColor: [
+      "responsive",
+      "odd",
+      "even",
+      "hover",
+      "focus",
+      "group-hover",
+      "active",
+    ],
     textColor: ["responsive", "hover", "focus", "group-hover"],
     borderColor: ["responsive", "hover", "focus", "focus-within"],
     translate: ["responsive", "hover", "focus", "motion-safe", "motion-reduce"],

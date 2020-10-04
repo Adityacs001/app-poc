@@ -1,8 +1,21 @@
-const SubHeader = ({ title }) => (
+import classnames from "classnames";
+
+const SubHeader = ({ title, subtitle, isbordered }) => (
   <>
-    <h2 className="text-gray-500 text-xs font-medium uppercase tracking-wide">
-      {title}
-    </h2>
+    <div
+      className={classnames("pb-3 ", {
+        "border-b border-gray-200": isbordered,
+      })}
+    >
+      <div className="-ml-2 -mt-2 flex flex-wrap items-baseline">
+        <h3 className="ml-2 mt-2 text-lg leading-6 font-medium text-gray-900">
+          {title}
+        </h3>
+        <p className="ml-2 mt-1 text-sm leading-5 text-gray-500 truncate">
+          {subtitle}
+        </p>
+      </div>
+    </div>
   </>
 );
 
