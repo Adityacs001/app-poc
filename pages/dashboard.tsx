@@ -1,6 +1,7 @@
 import React from "react";
 import { useRouter } from "next/router";
-import { withIronSession } from "next-iron-session";
+import withSession from "lib/session";
+
 const DashboardPage = (props) => {
   const { user } = props;
 
@@ -26,26 +27,28 @@ const DashboardPage = (props) => {
   );
 };
 
-export const getServerSideProps = withIronSession(
-  async ({ req, res }) => {
-    const user = req.session.get("user");
-    if (!user) {
-      res.statusCode = 401;
-      res.writeHead(302, { Location: "/SignInPage" });
-      res.end();
-      return { props: {} };
-    }
-    return {
-      props: { user },
-    };
-  },
-  {
-    cookieName: process.env.APPLICATION_COOKIE_NAME,
-    cookieOptions: {
-      secure: process.env.NODE_ENV === "production" ? true : false,
-    },
-    password: process.env.APPLICATION_SECRET,
-  },
-);
+// export const getServerSideProps = withIronSession(
+//   async ({ req, res }) => {
+//     const user = await req.session.get("user");
+//     if (!user) {
+//       res.statusCode = 401;
+//       res.writeHead(302, { Location: "/SignInPage" });
+//       res.end();
+//       return { props: {} };
+//     }
+//     return {
+//       props: { user },
+//     };
+//   },
+//   {
+//     cookieName: process.env.APPLICATION_COOKIE_NAME,
+//     cookieOptions: {
+//       secure: process.env.NODE_ENV === "production" ? true : false,
+//     },
+//     password: process.env.APPLICATION_SECRET,
+//   },
+// );
+
+export const getServerSideProps = withSession;
 
 export default DashboardPage;

@@ -20,8 +20,8 @@ const Registration = () => {
                 <div className="flex items-center">
                   <div className="flex-shrink-0">
                     <img
-                      className="h-auto w-auto"
-                      src="/images/logo.png"
+                      className="h-12 md:h-16 w-32  md:w-56"
+                      src="/images/logowhite.png"
                       alt="HRA logo"
                     />
                   </div>

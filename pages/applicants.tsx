@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { useState } from "react";
 import Head from "next/head";
-import classNames from "classNames";
+import classnames from "classnames";
 import { jsx } from "theme-ui";
 import { motion } from "framer-motion";
 import { getLayout } from "@/components/Layouts/PrivateLayout";
@@ -160,7 +160,7 @@ const OfferManager = () => {
             <nav className="-mb-px flex space-x-8">
               <a
                 onClick={(e) => setSelectedtab(1)}
-                className={classNames(
+                className={classnames(
                   "whitespace-no-wrap pb-1 px-1 border-b-2  font-medium text-base leading-5",
                   {
                     "border-b-2  border-indigo-500 text-indigo-600 focus:text-indigo-800 focus:border-indigo-700":
@@ -177,7 +177,7 @@ const OfferManager = () => {
 
               <a
                 onClick={(e) => setSelectedtab(2)}
-                className={classNames(
+                className={classnames(
                   "whitespace-no-wrap pb-1 px-1  font-medium text-base leading-5",
                   {
                     "border-b-2 border-indigo-500 text-indigo-600 focus:text-indigo-800 focus:border-indigo-700":
@@ -195,7 +195,7 @@ const OfferManager = () => {
 
               <a
                 onClick={(e) => setSelectedtab(3)}
-                className={classNames(
+                className={classnames(
                   "whitespace-no-wrap pb-1 px-1  font-medium text-base leading-5",
                   {
                     "border-b-2 border-indigo-500 text-indigo-600 focus:text-indigo-800 focus:border-indigo-700":
@@ -212,7 +212,7 @@ const OfferManager = () => {
 
               <a
                 onClick={(e) => setSelectedtab(4)}
-                className={classNames(
+                className={classnames(
                   "whitespace-no-wrap pb-1 px-1  font-medium text-base leading-5",
                   {
                     "border-b-2 border-indigo-500 text-indigo-600 focus:text-indigo-800 focus:border-indigo-700":
@@ -228,7 +228,7 @@ const OfferManager = () => {
               </a>
               <a
                 onClick={(e) => setSelectedtab(5)}
-                className={classNames(
+                className={classnames(
                   "whitespace-no-wrap pb-1 px-1  font-medium text-base leading-5",
                   {
                     "border-b-2 border-indigo-500 text-indigo-600 focus:text-indigo-800 focus:border-indigo-700":
@@ -310,6 +310,8 @@ const OfferManager = () => {
                                 ? "Offer"
                                 : selectedtab === 4
                                 ? "Hired"
+                                : selectedtab === 5
+                                ? "Rejected"
                                 : "NA"}
                             </div>
                           </div>

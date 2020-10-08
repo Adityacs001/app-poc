@@ -8,6 +8,7 @@ import { getLayout } from "@/components/Layouts/PrivateLayout";
 import { Transition } from "@tailwindui/react";
 import MainHeader from "@/components/MainHeader";
 import SubHeader from "@/components/SubHeader";
+import withSession from "lib/session";
 
 const Index = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -1879,5 +1880,6 @@ const Index = () => {
 };
 
 Index.getLayout = getLayout;
+export const getServerSideProps = withSession;
 
 export default Index;
