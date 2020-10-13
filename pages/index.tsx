@@ -9,8 +9,9 @@ import { Transition } from "@tailwindui/react";
 import MainHeader from "@/components/MainHeader";
 import SubHeader from "@/components/SubHeader";
 import withSession from "lib/session";
+import { withTranslation } from "../i18n";
 
-const Index = () => {
+const Index = ({ t }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const cardvariants = {
@@ -34,7 +35,7 @@ const Index = () => {
     <>
       <div className=" border-b border-gray-200 px-4 py-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8 sm:flex-wrap">
         <div className="flex-1 min-w-0">
-          <MainHeader title="Home" subtitle="" isbordered={false} />
+          <MainHeader title={t("Dashboard")} subtitle="" isbordered={false} />
         </div>
         <div className="mt-4 flex sm:mt-0 sm:ml-4">
           <span className="inline-block relative order-1 ml-3 rounded-full sm:order-0 sm:ml-0 bg-gray-50">
@@ -1882,4 +1883,4 @@ const Index = () => {
 Index.getLayout = getLayout;
 export const getServerSideProps = withSession;
 
-export default Index;
+export default withTranslation("common")(Index);
