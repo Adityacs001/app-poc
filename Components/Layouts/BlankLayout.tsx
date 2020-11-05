@@ -1,5 +1,4 @@
-/** @jsx jsx */
-import { jsx, Styled } from "theme-ui";
+import * as React from "react";
 const DefaultLayout = ({ children }) => {
   return <> {children}</>;
 };

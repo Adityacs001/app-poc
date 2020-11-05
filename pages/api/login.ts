@@ -1,31 +1,41 @@
 import { withIronSession } from "next-iron-session";
-
-const VALID_EMAIL = "aditya.singh@hra.gov.ae";
-const VALID_PASSWORD = "123";
-
+import { Pushdetail } from "../../lib/fetcher";
+import { LOGIN } from "../../lib/apiendpointconstants";
 export default withIronSession(
   async (req, res) => {
     if (req.method === "POST") {
-      const { email, password } = req.body;
-      if (email === VALID_EMAIL && password === VALID_PASSWORD) {
-        req.session.set("user", { email });
-        await req.session.save();
-        return res.status(201).send({
-          status: true,
-          msg: "loggedin",
-          data: { email },
+      const { username, password } = req.body;
+      if (username != "" && password != "") {
+        const { status, message, data } = await Pushdetail(LOGIN, {
+          username,
+          password,
         });
+        if (status === 200) {
+          req.session.set("user", { username });
+          await req.session.save();
+          return res.status(201).send({
+            status: true,
+            message: "loggedin",
+            data,
+          });
+        } else {
+          return res.status(403).send({
+            status: false,
+            message: "invalidcredentials",
+            data: null,
+          });
+        }
       }
       return res.status(403).send({
         status: false,
-        msg: "invalidcredentials",
+        message: "invalidcredentials",
         data: null,
       });
     }
 
     return res.status(404).send({
       status: false,
-      msg: "unsupportedmethod",
+      message: "unsupportedmethod",
       data: null,
     });
   },

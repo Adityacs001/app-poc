@@ -1,12 +1,11 @@
-/** @jsx jsx */
 import { useState } from "react";
 import Head from "next/head";
 import classnames from "classnames";
 import { jsx } from "theme-ui";
 import { motion } from "framer-motion";
-import { getLayout } from "@/components/Layouts/PrivateLayout";
+import { getLayout } from "@components/Layouts/PrivateLayout";
 import { Transition } from "@tailwindui/react";
-import MainHeader from "@/components/MainHeader";
+import MainHeader from "@components/MainHeader";
 import { useRouter } from "next/router";
 
 const OfferManager = () => {

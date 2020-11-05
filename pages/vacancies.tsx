@@ -1,13 +1,12 @@
-/** @jsx jsx */
 import { useState } from "react";
 import Head from "next/head";
 import classNames from "classNames";
-import { jsx, Avatar, sx, Box, Flex, Donut } from "theme-ui";
+import { Avatar, sx, Box, Flex, Donut } from "theme-ui";
 import { motion } from "framer-motion";
-import { getLayout } from "@/components/Layouts/PrivateLayout";
+import { getLayout } from "@components/Layouts/PrivateLayout";
 import { Transition } from "@tailwindui/react";
-import MainHeader from "@/components/MainHeader";
-import SubHeader from "@/components/SubHeader";
+import MainHeader from "@components/MainHeader";
+import SubHeader from "@components/SubHeader";
 import { useRouter } from "next/router";
 
 const Vacancies = () => {

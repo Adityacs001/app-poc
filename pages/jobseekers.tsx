@@ -1,13 +1,12 @@
-/** @jsx jsx */
 import { useState } from "react";
 import Head from "next/head";
 import classNames from "classNames";
-import { jsx, Avatar, sx, Box, Flex, Donut } from "theme-ui";
+import { Avatar, sx, Box, Flex, Donut } from "theme-ui";
 import { motion } from "framer-motion";
-import { getLayout } from "@/components/Layouts/PrivateLayout";
+import { getLayout } from "@components/Layouts/PrivateLayout";
 import { Transition } from "@tailwindui/react";
-import MainHeader from "@/components/MainHeader";
-import SubHeader from "@/components/SubHeader";
+import MainHeader from "@components/MainHeader";
+import SubHeader from "@components/SubHeader";
 import { useRouter } from "next/router";
 
 const CVManager = () => {
@@ -144,11 +143,11 @@ const CVManager = () => {
                       </span>
                     </div>
                     <p className="mt-1 text-gray-500 text-sm leading-5 truncate">
-                      Looking for some job opportunity to do dance, sing and
-                      cook.
+                      Looking for some job opportunity to do Code, sing and
+                      code.
                     </p>
                     <p className="mt-1 text-gray-500 text-sm leading-5 truncate">
-                      Can you offer me job, i can clean , sweep also.
+                      Can you offer me job, i can clean , deploy also.
                     </p>
                     <p className="mt-3 flex justify-between">
                       <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium leading-4 bg-indigo-100 text-indigo-800">

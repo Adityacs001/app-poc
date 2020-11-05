@@ -1,12 +1,11 @@
-/** @jsx jsx */
 import { useState } from "react";
-import { jsx } from "theme-ui";
+
 import { Transition } from "@tailwindui/react";
 import classnames from "classnames";
 import { motion } from "framer-motion";
-import Footer from "@/components/Footer";
+import Footer from "@components/Footer";
 import Link from "next/link";
-import ActiveLink from "@/components/ActiveLink";
+import ActiveLink from "@components/ActiveLink";
 
 const DefaultLayout = ({ children }) => {
   const containervariants = {
@@ -261,11 +260,8 @@ const DefaultLayout = ({ children }) => {
                   </div>
                 </nav>
                 <div className="px-3 py-2 border-t border-gray-200">
-                  <Link href="/signinpage">
-                    <a
-                      href="#"
-                      className="group flex items-center px-2 py-2 text-sm leading-5 font-medium rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition ease-in-out duration-150"
-                    >
+                  <Link href="/SignIn">
+                    <a className="group flex items-center px-2 py-2 text-sm leading-5 font-medium rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition ease-in-out duration-150">
                       <svg
                         className="mr-3 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-600 transition ease-in-out duration-150"
                         fill="none"
@@ -402,13 +398,14 @@ const DefaultLayout = ({ children }) => {
                   </div>
                   <div className="border-t border-gray-100"></div>
                   <div className="py-1">
-                    <a
-                      href="#"
-                      className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
-                      role="menuitem"
-                    >
-                      Logout
-                    </a>
+                    <Link href="/SignIn">
+                      <a
+                        className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                        role="menuitem"
+                      >
+                        Logout
+                      </a>
+                    </Link>
                   </div>
                 </div>
               </Transition>
@@ -587,11 +584,8 @@ const DefaultLayout = ({ children }) => {
                 </div>
               </nav>
               <div className="px-3 py-2 border-t border-gray-200">
-                <Link href="/SignInPage">
-                  <a
-                    href="#"
-                    className="group flex items-center px-2 py-2 text-sm leading-5 font-medium rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition ease-in-out duration-150"
-                  >
+                <Link href="/SignIn">
+                  <a className="group flex items-center px-2 py-2 text-sm leading-5 font-medium rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition ease-in-out duration-150">
                     <svg
                       className="mr-3 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-600 transition ease-in-out duration-150"
                       fill="none"

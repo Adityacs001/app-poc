@@ -1,9 +1,6 @@
-/** @jsx jsx */
-
-import { jsx } from "theme-ui";
 import { motion } from "framer-motion";
-import { getLayout } from "@/components/Layouts/PrivateLayout";
-import MainHeader from "@/components/MainHeader";
+import { getLayout } from "@components/Layouts/PrivateLayout";
+import MainHeader from "@components/MainHeader";
 import { useRouter } from "next/router";
 
 const PositionProfile = () => {
@@ -147,10 +144,8 @@ const PositionProfile = () => {
                       id="country"
                       className="mt-1 block form-select w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
                     >
-                      <option>Banking</option>
-                      <option>Semi-Government</option>
-                      <option>Federal Goverment</option>
-                      <option>Private</option>
+                      <option>Leadership</option>
+                      <option>Support-Service</option>
                     </select>
                   </div>
                   <div className="col-span-6 sm:col-span-3">
@@ -219,6 +214,148 @@ const PositionProfile = () => {
                       <option>10,001-15,000 AED</option>
                     </select>
                   </div>
+                  <div className="col-span-6 sm:col-span-3">
+                    <label
+                      htmlFor="country"
+                      className="block text-sm font-medium leading-5 text-gray-700"
+                    >
+                      Gender
+                    </label>
+                    <select
+                      id="country"
+                      className="mt-1 block form-select w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                    >
+                      <option>Male</option>
+                      <option>Female</option>
+                    </select>
+                  </div>
+                  <div className="col-span-6 sm:col-span-3">
+                    <label
+                      htmlFor="country"
+                      className="block text-sm font-medium leading-5 text-gray-700"
+                    >
+                      Employement Type
+                    </label>
+                    <select
+                      id="country"
+                      className="mt-1 block form-select w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                    >
+                      <option>Permanent</option>
+                      <option>Temporary</option>
+                    </select>
+                  </div>
+                  <div className="col-span-6 sm:col-span-3">
+                    <label
+                      htmlFor="country"
+                      className="block text-sm font-medium leading-5 text-gray-700"
+                    >
+                      Career Level
+                    </label>
+                    <select
+                      id="country"
+                      className="mt-1 block form-select w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                    >
+                      <option>Entry level</option>
+                      <option>Executive</option>
+                    </select>
+                  </div>
+                  <div className="col-span-6 sm:col-span-3">
+                    <label
+                      htmlFor="country"
+                      className="block text-sm font-medium leading-5 text-gray-700"
+                    >
+                      Work Type
+                    </label>
+                    <select
+                      id="country"
+                      className="mt-1 block form-select w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                    >
+                      <option>Full Time</option>
+                      <option>Shifts</option>
+                    </select>
+                  </div>
+                  <div className="col-span-6 sm:col-span-3">
+                    <label
+                      htmlFor="country"
+                      className="block text-sm font-medium leading-5 text-gray-700"
+                    >
+                      Work Timings
+                    </label>
+                    <select
+                      id="country"
+                      className="mt-1 block form-select w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                    >
+                      <option>07:00 AM - 03:00 PM</option>
+                      <option>08:30 AM - 05:30 PM</option>
+                    </select>
+                  </div>
+                  <div className="col-span-6 sm:col-span-3">
+                    <label
+                      htmlFor="country"
+                      className="block text-sm font-medium leading-5 text-gray-700"
+                    >
+                      Is reserved for U.A.E nationals only ?
+                    </label>
+                    <select
+                      id="country"
+                      className="mt-1 block form-select w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                    >
+                      <option>Yes</option>
+                      <option>No</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="mt-6">
+                  <label
+                    htmlFor="about"
+                    className="block text-sm leading-5 font-medium text-gray-700"
+                  >
+                    Required Education
+                  </label>
+                  <div className="rounded-md shadow-sm">
+                    <textarea
+                      id="about"
+                      rows="3"
+                      className="form-textarea mt-1 block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                      placeholder="Required Educations"
+                    ></textarea>
+                  </div>
+                  <p className="mt-2 text-sm text-gray-500"></p>
+                </div>
+                <div className="mt-6">
+                  <label
+                    htmlFor="about"
+                    className="block text-sm leading-5 font-medium text-gray-700"
+                  >
+                    Required skills
+                  </label>
+                  <div className="rounded-md shadow-sm">
+                    <textarea
+                      id="about"
+                      rows="3"
+                      className="form-textarea mt-1 block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                      placeholder="Required Skills for vacancies"
+                    ></textarea>
+                  </div>
+                  <p className="mt-2 text-sm text-gray-500"></p>
+                </div>
+
+                <div className="mt-6">
+                  <label
+                    htmlFor="about"
+                    className="block text-sm leading-5 font-medium text-gray-700"
+                  >
+                    Roles and Responsbilities
+                  </label>
+                  <div className="rounded-md shadow-sm">
+                    <textarea
+                      id="about"
+                      rows="3"
+                      className="form-textarea mt-1 block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                      placeholder="Bullet points with all roles"
+                    ></textarea>
+                  </div>
+                  <p className="mt-2 text-sm text-gray-500"></p>
                 </div>
 
                 <div className="mt-6">
@@ -233,11 +370,11 @@ const PositionProfile = () => {
                       id="about"
                       rows="5"
                       className="form-textarea mt-1 block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5"
-                      placeholder="you@example.com"
+                      placeholder="job description"
                     ></textarea>
                   </div>
                   <p className="mt-2 text-sm text-gray-500">
-                    Brief description for your profile. URLs are hyperlinked.
+                    Brief description for your profile.
                   </p>
                 </div>
               </div>

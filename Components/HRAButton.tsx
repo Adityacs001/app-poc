@@ -1,12 +1,11 @@
-/** @jsx jsx */
-import { jsx, Button, sx } from "theme-ui";
+import { Button } from "theme-ui";
 
 export default function HRAButton() {
   return (
     <>
       <main
         sx={{
-          background: "red",
+          background: "green",
           color: "#fff",
         }}
         className="mt-10 mx-auto max-w-screen-xl px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 xl:mt-28"

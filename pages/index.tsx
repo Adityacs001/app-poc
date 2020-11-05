@@ -1,18 +1,28 @@
-/** @jsx jsx */
-import { useState } from "react";
+import PropTypes from "prop-types";
+import { useState, useCallback } from "react";
 import Head from "next/head";
 import classNames from "classnames";
-import { jsx, Avatar, sx, Box, Flex, Donut } from "theme-ui";
+import { Avatar, sx, Box, Flex, Donut } from "theme-ui";
 import { motion } from "framer-motion";
-import { getLayout } from "@/components/Layouts/PrivateLayout";
+import { getLayout } from "@components/Layouts/PrivateLayout";
 import { Transition } from "@tailwindui/react";
-import MainHeader from "@/components/MainHeader";
-import SubHeader from "@/components/SubHeader";
+import MainHeader from "@components/MainHeader";
+import SubHeader from "@components/SubHeader";
 import withSession from "lib/session";
 import { withTranslation } from "../i18n";
+import useStore, { languageSelector } from "../store/index";
+import NotificationNav from "@components/NotificationNav";
+import { useQuery } from "react-query";
+import { fetchdetail } from "lib/fetcher";
 
-const Index = ({ t }) => {
+const Index = ({ t, user }) => {
+  const { isLoading, isError, data, error } = useQuery("users", fetchdetail);
+
   const [isOpen, setIsOpen] = useState(false);
+
+  const locales = useStore(languageSelector);
+  const sampleCounter = useStore((state) => state.sampleCounter);
+  const memoizedCallback = useStore(useCallback(languageSelector, []));
 
   const cardvariants = {
     hidden: {
@@ -38,44 +48,8 @@ const Index = ({ t }) => {
           <MainHeader title={t("Dashboard")} subtitle="" isbordered={false} />
         </div>
         <div className="mt-4 flex sm:mt-0 sm:ml-4">
-          <span className="inline-block relative order-1 ml-3 rounded-full sm:order-0 sm:ml-0 bg-gray-50">
-            <motion.button
-              whileHover={{
-                scale: 1.4,
-                transition: {
-                  yoyo: Infinity,
-                },
-              }}
-              className="p-1 border-2 border-transparent text-gray-400 rounded-full hover:text-gray-500 focus:outline-none focus:text-gray-500 focus:bg-gray-100 transition duration-150 ease-in-out"
-              aria-label="Notifications"
-            >
-              <svg
-                className="h-6 w-6"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-                />
-              </svg>
-            </motion.button>
-            <span
-              className="absolute right-0 h-2 w-2  text-white "
-              sx={{ top: "-10px", maxwidth: "0.5rem" }}
-            >
-              <span
-                sx={{ padding: "2px" }}
-                className="text-xs  bg-green-500 rounded-full truncate"
-              >
-                100
-              </span>
-            </span>
-          </span>
+          <NotificationNav />
+          <button onClick={sampleCounter}>click</button>
         </div>
       </div>
       <div className="px-4 py-4 sm:px-6 lg:px-8 bg-gray-100 ">
@@ -1881,6 +1855,7 @@ const Index = ({ t }) => {
 };
 
 Index.getLayout = getLayout;
+
 export const getServerSideProps = withSession;
 
 export default withTranslation("common")(Index);

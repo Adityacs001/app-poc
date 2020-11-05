@@ -1,11 +1,10 @@
-/** @jsx jsx */
 import React, { useRef } from "react";
 import { useRouter } from "next/router";
-import { getLayout } from "@/components/Layouts/BlankLayout";
-import { jsx, Box } from "theme-ui";
+import { getLayout } from "@components/Layouts/BlankLayout";
+import { Box } from "theme-ui";
 import Link from "next/link";
 
-const SignInPage = () => {
+const loginPage = () => {
   const router = useRouter();
   const emailInput = useRef();
   const passwordInput = useRef();
@@ -167,6 +166,6 @@ const SignInPage = () => {
   );
 };
 
-SignInPage.getLayout = getLayout;
+loginPage.getLayout = getLayout;
 
-export default SignInPage;
+export default loginPage;

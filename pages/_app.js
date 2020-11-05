@@ -1,11 +1,10 @@
-/** @jsx jsx */
-
+import * as React from "react";
 import "../styles/tailwind.css";
 import theme from "../styles/theme";
 import { ThemeProvider, jsx, Styled } from "theme-ui";
 import { appWithTranslation } from "../i18n";
 
-import PublicLayout from "@/components/Layouts/PublicLayout";
+import PublicLayout from "@components/Layouts/PublicLayout";
 
 const MyApp = ({ Component, pageProps }) => {
   const getLayout =
