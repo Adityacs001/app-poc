@@ -1,18 +1,29 @@
-import React, { useState } from "react";
+import * as React from "react";
 import { useRouter } from "next/router";
 import { getLayout } from "@components/Layouts/BlankLayout";
 import { Box } from "theme-ui";
+import Head from "next/head";
 import Link from "next/link";
 import Footer from "@components/Footer";
 import classnames from "classnames";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import cogoToast from "cogo-toast";
 import Message from "@components/Message";
 import FormInput from "@components/FormInput";
 import FormCustom from "@components/FormCustom";
-import HRAButton from "@components/HRAButton";
+import Select from "react-select";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import produce from "immer";
+import dynamic from "next/dynamic";
+import { isEmpty, size, toLength } from "lodash";
+
+const QuillNoSSRWrapper = dynamic(import("react-quill"), {
+  ssr: false,
+  loading: () => <p>Loading ...</p>,
+});
 
 type RegistrationDTO = {
   nameen: string;
@@ -41,11 +52,15 @@ type RegistrationDTO = {
 const entities = [
   {
     id: 1,
+    value: 1,
+    label: "some title",
     titleen: "Mother 1",
     titleae: "Mother 1",
   },
   {
     id: 2,
+    value: 2,
+    label: "some title 2",
     titleen: "Mother 2",
     titleae: "Mother 2",
   },
@@ -54,26 +69,59 @@ const entities = [
 const schema = yup.object().shape({
   nameen: yup.string().required("company name in english is mandatory"),
   nameae: yup.string().required("company name in arabic is mandatory"),
+  mothercompanynameid: yup
+    .number()
+    .positive()
+    .integer()
+    .required("mother company is mandatory"),
+  about: yup
+    .string()
+    .min(17, "minimum 500 characters")
+    .max(5000, "maximum 5000 character")
+    .required("About is mandatory"),
+  tradelicense: yup
+    .object()
+    .shape({
+      label: yup.string().required(),
+      value: yup.string().required(),
+    })
+    .required("trade license is mandatory"),
 });
 
 const Registration = () => {
   const router = useRouter();
-  const [currentstep, setCurrentstep] = useState(1);
+  const [currentstep, setCurrentstep] = React.useState(1);
+  const [richabout, setRichabout] = React.useState("");
 
-  const { register, handleSubmit, formState, errors } = useForm<
-    RegistrationDTO
-  >({
+  const {
+    register,
+    handleSubmit,
+    formState,
+    errors,
+    setValue,
+    setError,
+    clearErrors,
+    control,
+    getValues,
+    trigger,
+  } = useForm<RegistrationDTO>({
     mode: "onChange",
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = async ({ nameen, nameae }) => {
-    console.log(nameae, nameen);
+  const onSubmit = async ({
+    nameen,
+    nameae,
+    mothercompanynameid,
+    about,
+    tradelicense,
+  }) => {
+    console.log(nameae, nameen, mothercompanynameid, about, tradelicense);
 
     const response = await fetch("/api/registration", {
       method: "POST",
       headers: { "Content-Type": "application/json " },
-      body: JSON.stringify({ nameen, nameae }),
+      body: JSON.stringify({ nameen, nameae, mothercompanynameid, about }),
     });
 
     if (response.ok) {
@@ -90,6 +138,11 @@ const Registration = () => {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
+      <Head>
+        <title>HRA Registration</title>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+      </Head>
       <div className="bg-gray-800 pb-32">
         <nav className="bg-gray-800 pt-3">
           <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -410,12 +463,41 @@ const Registration = () => {
                             </label>
                             <div className="mt-1 flex rounded-md shadow-sm">
                               <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm"></span>
-                              <input
-                                id="entityname_en"
-                                className="form-input flex-1 block w-full rounded-none rounded-r-md transition duration-150 ease-in-out sm:text-sm sm:leading-5"
-                                placeholder="Human Resources Authority Arabic"
+                              <Select
+                                className=" w-full "
+                                isClearable="true"
+                                isRtl={false}
+                                isSearchable="true"
+                                name="mothercompanynameid"
+                                id="mothercompanynameid"
+                                inputId="mothercompanynameid"
+                                instanceId="mothercompanynameid"
+                                options={entities}
+                                ref={() =>
+                                  register(
+                                    { name: "mothercompanynameid" },
+                                    { required: true },
+                                  )
+                                }
+                                onChange={(e) => {
+                                  clearErrors("mothercompanynameid");
+
+                                  if (e != null && e != undefined)
+                                    setValue("mothercompanynameid", e.value);
+                                  else {
+                                    setValue("mothercompanynameid", null);
+                                    setError("mothercompanynameid", {
+                                      type: "manual",
+                                      message:
+                                        "mothercompany name is mandatory",
+                                    });
+                                  }
+                                }}
                               />
                             </div>
+                            <p className="text-red-500">
+                              {errors.mothercompanynameid?.message}
+                            </p>
                             <p className="mt-2 text-sm text-indigo-500 flex items-end">
                               <svg
                                 className="w-6 h-6"
@@ -462,9 +544,9 @@ const Registration = () => {
                             <div className="mt-1 flex rounded-md shadow-sm">
                               <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm"></span>
                               <input
-                                id="entityname_en"
+                                id="tradelicensnumber"
                                 className="form-input flex-1 block w-full rounded-none rounded-r-md transition duration-150 ease-in-out sm:text-sm sm:leading-5"
-                                placeholder="C1n83840"
+                                placeholder="Enter license number"
                               />
                             </div>
                           </div>
@@ -475,31 +557,59 @@ const Registration = () => {
                             >
                               Tade License Issuing Authority
                             </label>
-                            <select
-                              id="country"
-                              className="mt-1 block form-select w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
-                            >
-                              <option>DED</option>
-                              <option>Dewa</option>
-                              <option>From Sharjha</option>
-                            </select>
+
+                            <div className="mt-1 flex rounded-md shadow-sm">
+                              <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm"></span>
+
+                              <Controller
+                                className=" w-full"
+                                isClearable="true"
+                                isRtl={false}
+                                isSearchable="true"
+                                name="tradelicense"
+                                id="tradelicense"
+                                inputId="tradelicense"
+                                instanceId="tradelicense"
+                                as={Select}
+                                options={[
+                                  { value: 1, label: "Chocolate" },
+                                  { value: 2, label: "Strawberry" },
+                                  { value: 3, label: "Vanilla" },
+                                ]}
+                                control={control}
+                                rules={{ required: true }}
+                                defaultValue="0"
+                                onChange={(e) => console.log(e)}
+                              />
+                            </div>
+                            <p className="text-red-500">
+                              {errors.tradelicense?.message}
+                            </p>
                           </div>
                           <div className="col-span-6 sm:col-span-3">
                             <label
-                              htmlFor="country"
+                              htmlFor="sector"
                               className="block text-sm font-medium leading-5 text-gray-700"
                             >
                               Sector
                             </label>
-                            <select
-                              id="country"
-                              className="mt-1 block form-select w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
-                            >
-                              <option>Local Government</option>
-                              <option>Semi-Government</option>
-                              <option>Federal Goverment</option>
-                              <option>Private</option>
-                            </select>
+
+                            <div className="mt-1 flex rounded-md shadow-sm">
+                              <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm"></span>
+
+                              <Select
+                                className=" w-full "
+                                classNamePrefix="select"
+                                isClearable="true"
+                                isRtl={false}
+                                isSearchable="true"
+                                name="sectorid"
+                                id="sectorid"
+                                inputId="sectorid"
+                                instanceId="sectorid"
+                                options={entities}
+                              />
+                            </div>
                           </div>
                           <div className="col-span-6 sm:col-span-3">
                             <label
@@ -508,15 +618,22 @@ const Registration = () => {
                             >
                               Industry
                             </label>
-                            <select
-                              id="country"
-                              className="mt-1 block form-select w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
-                            >
-                              <option>Agriculture</option>
-                              <option>Adminstration</option>
-                              <option>Tade</option>
-                              <option>Business</option>
-                            </select>
+                            <div className="mt-1 flex rounded-md shadow-sm">
+                              <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm"></span>
+
+                              <Select
+                                className=" w-full "
+                                classNamePrefix="select"
+                                isClearable="true"
+                                isRtl={false}
+                                isSearchable="true"
+                                name="industryid"
+                                id="industryid"
+                                inputId="industryid"
+                                instanceId="industryid"
+                                options={entities}
+                              />
+                            </div>
                           </div>
                           <div className="col-span-6 sm:col-span-3">
                             <label
@@ -525,15 +642,22 @@ const Registration = () => {
                             >
                               City
                             </label>
-                            <select
-                              id="country"
-                              className="mt-1 block form-select w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
-                            >
-                              <option>Abu Dhabi</option>
-                              <option>Al Ain</option>
-                              <option>Dubai</option>
-                              <option>Sharjah</option>
-                            </select>
+                            <div className="mt-1 flex rounded-md shadow-sm">
+                              <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm"></span>
+
+                              <Select
+                                className=" w-full "
+                                classNamePrefix="select"
+                                isClearable="true"
+                                isRtl={false}
+                                isSearchable="true"
+                                name="locationid"
+                                id="locationid"
+                                inputId="locationid"
+                                instanceId="locationid"
+                                options={entities}
+                              />
+                            </div>
                           </div>
 
                           <div className="col-span-6 sm:col-span-3 ">
@@ -562,20 +686,46 @@ const Registration = () => {
                             About / Commercial Activities
                           </label>
                           <div className="rounded-md shadow-sm">
-                            <textarea
-                              id="about"
-                              rows="5"
-                              className="form-textarea mt-1 block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5"
-                              placeholder="you@example.com"
-                            ></textarea>
+                            <Controller
+                              control={control}
+                              name="about"
+                              rules={{
+                                validate: (value) =>
+                                  toLength(value) >= 10 ||
+                                  "Enter at least 10 words in the description",
+                              }}
+                              defaultValue=""
+                              render={({ onChange, value }) => (
+                                <QuillNoSSRWrapper
+                                  theme="snow"
+                                  onChange={(
+                                    description,
+                                    delta,
+                                    source,
+                                    editor,
+                                  ) => {
+                                    onChange(description);
+                                    setValue("about", description, {
+                                      shouldValidate: true,
+                                    });
+                                  }}
+                                  value={value || ""}
+                                />
+                              )}
+                            />
                           </div>
+                          <p className="text-red-500">
+                            {errors.about?.message}
+                          </p>
+
                           <p className="mt-2 text-sm text-gray-500">
                             Brief description for your profile. URLs are
                             hyperlinked.
                           </p>
+                          <p>{JSON.stringify(formState, null, 2)}</p>
                         </div>
                       </div>
-                      <p>{JSON.stringify(formState, null, 2)}</p>
+
                       <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
                         <span className="inline-flex rounded-md shadow-sm">
                           <button

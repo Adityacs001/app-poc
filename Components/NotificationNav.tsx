@@ -1,7 +1,7 @@
-/** @jsx jsx */
+/**  @jsxImportSource @emotion/core */
+import { sx } from "theme-ui";
 import { useCallback } from "react";
 import { motion } from "framer-motion";
-import { sx, jsx } from "theme-ui";
 import useStore, { languageSelector } from "../store/index";
 
 const NotificationNav = () => {
