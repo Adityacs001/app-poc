@@ -1,5 +1,4 @@
-import PropTypes from "prop-types";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import Head from "next/head";
 import classNames from "classnames";
 import { Avatar, sx, Box, Flex, Donut } from "theme-ui";
@@ -9,13 +8,19 @@ import { Transition } from "@tailwindui/react";
 import MainHeader from "@components/MainHeader";
 import SubHeader from "@components/SubHeader";
 import withSession from "lib/session";
-import { withTranslation } from "../i18n";
 import useStore, { languageSelector } from "../store/index";
 import NotificationNav from "@components/NotificationNav";
 import { useQuery } from "react-query";
 import { fetchdetail } from "lib/fetcher";
 
-const Index = ({ t, user }) => {
+import { useI18n } from "next-localization";
+import { useRouter } from "next/router";
+import useLocales from "../hooks/useLocales";
+
+const Index = ({ user }) => {
+  const router = useRouter();
+  const { translations } = useLocales();
+
   const { isLoading, isError, data, error } = useQuery("users", fetchdetail);
 
   const [isOpen, setIsOpen] = useState(false);
@@ -45,7 +50,11 @@ const Index = ({ t, user }) => {
     <>
       <div className=" border-b border-gray-200 px-4 py-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8 sm:flex-wrap">
         <div className="flex-1 min-w-0">
-          <MainHeader title={t("Dashboard")} subtitle="" isbordered={false} />
+          <MainHeader
+            title={translations.t("Dashboard")}
+            subtitle=""
+            isbordered={false}
+          />
         </div>
         <div className="mt-4 flex sm:mt-0 sm:ml-4">
           <NotificationNav />
@@ -1858,4 +1867,5 @@ Index.getLayout = getLayout;
 
 export const getServerSideProps = withSession;
 
-export default withTranslation("common")(Index);
+//export default withTranslation("common")(Index);
+export default Index;
