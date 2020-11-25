@@ -1,7 +1,9 @@
-import { useState, useCallback, useEffect } from "react";
+/** @jsxRuntime classic */
+/** @jsx jsx */
+import * as React from "react";
 import Head from "next/head";
 import classNames from "classnames";
-import { Avatar, sx, Box, Flex, Donut } from "theme-ui";
+import { Avatar, jsx, sx, Box, Flex, Donut } from "theme-ui";
 import { motion } from "framer-motion";
 import { getLayout } from "@components/Layouts/PrivateLayout";
 import { Transition } from "@tailwindui/react";
@@ -23,11 +25,11 @@ const Index = ({ user }) => {
 
   const { isLoading, isError, data, error } = useQuery("users", fetchdetail);
 
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = React.useState(false);
 
   const locales = useStore(languageSelector);
   const sampleCounter = useStore((state) => state.sampleCounter);
-  const memoizedCallback = useStore(useCallback(languageSelector, []));
+  const memoizedCallback = useStore(React.useCallback(languageSelector, []));
 
   const cardvariants = {
     hidden: {
@@ -47,7 +49,7 @@ const Index = ({ user }) => {
     },
   };
   return (
-    <>
+    <React.Fragment>
       <div className=" border-b border-gray-200 px-4 py-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8 sm:flex-wrap">
         <div className="flex-1 min-w-0">
           <MainHeader
@@ -90,7 +92,7 @@ const Index = ({ user }) => {
               <div className="flex items-center">
                 <div className="flex-shrink-0 bg-yellow-500 rounded-md p-3">
                   <svg
-                    className="h-6 w-6 text-cool-gray-100"
+                    className="h-6 w-6 text-gray-100"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -105,11 +107,11 @@ const Index = ({ user }) => {
                 </div>
                 <div className="ml-5 w-0 flex-1">
                   <dl>
-                    <dt className="text-sm leading-5 font-medium text-cool-gray-500 truncate">
+                    <dt className="text-sm leading-5 font-medium text-gray-500 truncate">
                       Total Postings
                     </dt>
                     <dd>
-                      <div className="text-lg leading-7 font-medium text-cool-gray-900">
+                      <div className="text-lg leading-7 font-medium text-gray-900">
                         2,000
                       </div>
                     </dd>
@@ -117,7 +119,7 @@ const Index = ({ user }) => {
                 </div>
               </div>
             </div>
-            <div className="bg-cool-gray-50 px-5 py-3">
+            <div className="bg-gray-50 px-5 py-3">
               <div className="text-sm leading-5">
                 <a
                   href="#"
@@ -139,7 +141,7 @@ const Index = ({ user }) => {
               <div className="flex items-center">
                 <div className="flex-shrink-0  bg-indigo-500 rounded-md p-3">
                   <svg
-                    className="h-6 w-6 text-cool-gray-100"
+                    className="h-6 w-6 text-gray-100"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -154,11 +156,11 @@ const Index = ({ user }) => {
                 </div>
                 <div className="ml-5 w-0 flex-1">
                   <dl>
-                    <dt className="text-sm leading-5 font-medium text-cool-gray-500 truncate">
+                    <dt className="text-sm leading-5 font-medium text-gray-500 truncate">
                       Total Active openings
                     </dt>
                     <dd>
-                      <div className="text-lg leading-7 font-medium text-cool-gray-900">
+                      <div className="text-lg leading-7 font-medium text-gray-900">
                         500
                       </div>
                     </dd>
@@ -166,7 +168,7 @@ const Index = ({ user }) => {
                 </div>
               </div>
             </div>
-            <div className="bg-cool-gray-50 px-5 py-3">
+            <div className="bg-gray-50 px-5 py-3">
               <div className="text-sm leading-5">
                 <a
                   href="#"
@@ -191,7 +193,7 @@ const Index = ({ user }) => {
               <div className="flex items-center">
                 <div className="flex-shrink-0  bg-green-500 rounded-md p-3">
                   <svg
-                    className="h-6 w-6 text-cool-gray-100"
+                    className="h-6 w-6 text-gray-100"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -206,11 +208,11 @@ const Index = ({ user }) => {
                 </div>
                 <div className="ml-5 w-0 flex-1">
                   <dl>
-                    <dt className="text-sm leading-5 font-medium text-cool-gray-500 truncate">
+                    <dt className="text-sm leading-5 font-medium text-gray-500 truncate">
                       Total Hiring (U.A.E Nationals / Expats)
                     </dt>
                     <dd>
-                      <div className="text-lg leading-7 font-medium text-cool-gray-900">
+                      <div className="text-lg leading-7 font-medium text-gray-900">
                         100/20
                       </div>
                     </dd>
@@ -218,7 +220,7 @@ const Index = ({ user }) => {
                 </div>
               </div>
             </div>
-            <div className="bg-cool-gray-50 px-5 py-3">
+            <div className="bg-gray-50 px-5 py-3">
               <div className="text-sm leading-5">
                 <a
                   href="#"
@@ -1819,7 +1821,7 @@ const Index = ({ user }) => {
                               role="menuitem"
                             >
                               <svg
-                                class="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500"
+                                className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500"
                                 viewBox="0 0 20 20"
                                 fill="currentColor"
                               >
@@ -1859,7 +1861,7 @@ const Index = ({ user }) => {
           </table>
         </div>
       </div>
-    </>
+    </React.Fragment>
   );
 };
 

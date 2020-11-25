@@ -1,7 +1,9 @@
-import { useState } from "react";
+/** @jsxRuntime classic */
+/** @jsx jsx */
+import * as React from "react";
 import Head from "next/head";
-import classNames from "classNames";
-import { Avatar, sx, Box, Flex, Donut } from "theme-ui";
+import classnames from "classnames";
+import { Avatar, jsx, sx, Box, Flex, Donut } from "theme-ui";
 import { motion } from "framer-motion";
 import { getLayout } from "@components/Layouts/PrivateLayout";
 import { Transition } from "@tailwindui/react";
@@ -11,10 +13,10 @@ import { useRouter } from "next/router";
 
 const Vacancies = () => {
   const router = useRouter();
-  const [selectedrow, setSelectedrow] = useState(0);
-  const [showdetail, setShowdetail] = useState(false);
+  const [selectedrow, setSelectedrow] = React.useState(0);
+  const [showdetail, setShowdetail] = React.useState(false);
   return (
-    <>
+    <React.Fragment>
       <div className=" border-b border-gray-200 px-4 py-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8 sm:flex-wrap">
         <div className="flex-1 min-w-0">
           <MainHeader title="Vacancies" subtitle="" isbordered={false} />
@@ -583,7 +585,7 @@ const Vacancies = () => {
           </div>
         </div>
       )}
-    </>
+    </React.Fragment>
   );
 };
 

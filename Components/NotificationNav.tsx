@@ -1,14 +1,16 @@
-/**  @jsxImportSource @emotion/core */
-import { sx } from "theme-ui";
-import { useCallback } from "react";
+/** @jsxRuntime classic */
+/** @jsx jsx */
+
+import * as React from "react";
+import { jsx } from "theme-ui";
 import { motion } from "framer-motion";
 import useStore, { languageSelector } from "../store/index";
 
 const NotificationNav = () => {
-  const memoizedcounter = useStore(useCallback(languageSelector, []));
+  const memoizedcounter = useStore(React.useCallback(languageSelector, []));
 
   return (
-    <>
+    <React.Fragment>
       <span className="inline-block relative order-1 ml-3 rounded-full sm:order-0 sm:ml-0 bg-gray-50">
         <motion.button
           whileHover={{
@@ -47,7 +49,7 @@ const NotificationNav = () => {
           </span>
         </span>
       </span>
-    </>
+    </React.Fragment>
   );
 };
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import * as React from "react";
 import Head from "next/head";
 import classnames from "classnames";
 import { jsx } from "theme-ui";
@@ -10,11 +10,11 @@ import { useRouter } from "next/router";
 
 const OfferManager = () => {
   const router = useRouter();
-  const [selectedtab, setSelectedtab] = useState(1);
-  const [selectedrow, setSelectedrow] = useState(0);
-  const [showdetail, setShowdetail] = useState(false);
+  const [selectedtab, setSelectedtab] = React.useState(1);
+  const [selectedrow, setSelectedrow] = React.useState(0);
+  const [showdetail, setShowdetail] = React.useState(false);
   return (
-    <>
+    <React.Fragment>
       <div className=" border-b border-gray-200 px-4 py-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8 sm:flex-wrap">
         <div className="flex-1 min-w-0">
           <MainHeader title="Applications" subtitle="" isbordered={false} />
@@ -597,7 +597,7 @@ const OfferManager = () => {
           </div>
         </div>
       )}
-    </>
+    </React.Fragment>
   );
 };
 

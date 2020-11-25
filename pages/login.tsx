@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import * as React from "react";
 import { useRouter } from "next/router";
 import { getLayout } from "@components/Layouts/BlankLayout";
 import { Box } from "theme-ui";
@@ -6,8 +6,8 @@ import Link from "next/link";
 
 const loginPage = () => {
   const router = useRouter();
-  const emailInput = useRef();
-  const passwordInput = useRef();
+  const emailInput = React.useRef();
+  const passwordInput = React.useRef();
 
   const handleSubmit = async (e) => {
     e.preventDefault();

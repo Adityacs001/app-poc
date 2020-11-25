@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import * as React from "react";
 import { useRouter } from "next/router";
 import { getLayout } from "@components/Layouts/BlankLayout";
 import { Styled } from "theme-ui";
@@ -21,9 +21,12 @@ type PasswordResetDTO = {
 const PasswordReset = () => {
   const router = useRouter();
 
-  const { register, handleSubmit, formState, errors } = useForm<
-    PasswordResetDTO
-  >({
+  const {
+    register,
+    handleSubmit,
+    formState,
+    errors,
+  } = useForm<PasswordResetDTO>({
     mode: "onChange",
     resolver: yupResolver(schema),
   });

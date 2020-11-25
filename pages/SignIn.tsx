@@ -1,6 +1,8 @@
-/**  @jsxImportSource  @emotion/core */
-import { sx } from "theme-ui";
-import React, { useRef } from "react";
+/** @jsxRuntime classic */
+/** @jsx jsx */
+
+import { sx, jsx } from "theme-ui";
+import * as React from "react";
 import { useRouter } from "next/router";
 import { getLayout } from "@components/Layouts/BlankLayout";
 import Link from "next/link";

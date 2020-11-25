@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import * as React from "react";
 import { useRouter } from "next/router";
 import { getLayout } from "@components/Layouts/BlankLayout";
 import { Styled } from "theme-ui";
@@ -19,9 +19,12 @@ type ForgotPasswordDTO = {
 const ForgotPassword = () => {
   const router = useRouter();
 
-  const { register, handleSubmit, formState, errors } = useForm<
-    ForgotPasswordDTO
-  >({
+  const {
+    register,
+    handleSubmit,
+    formState,
+    errors,
+  } = useForm<ForgotPasswordDTO>({
     mode: "onChange",
     resolver: yupResolver(schema),
   });

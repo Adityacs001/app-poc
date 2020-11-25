@@ -25,6 +25,17 @@ import "react-quill/dist/quill.snow.css";
 import produce from "immer";
 import dynamic from "next/dynamic";
 import { isEmpty, size, toLength } from "lodash";
+import {
+  Editor,
+  EditorState,
+  convertFromRaw,
+  RichUtils,
+  getDefaultKeyBinding,
+} from "draft-js";
+import "draft-js/dist/Draft.css";
+
+import SunEditor from "suneditor-react";
+import "suneditor/dist/css/suneditor.min.css";
 
 const selectStyles = {
   control: (styles) => ({ ...styles, borderRadius: "0" }),
@@ -182,6 +193,34 @@ const WrapperController = (props: ContactProps) => {
 };
 
 const Registration = () => {
+  const emptyContentState = convertFromRaw({
+    entityMap: {},
+    blocks: [
+      {
+        text: "",
+        key: "foo",
+        type: "unstyled",
+        entityRanges: [],
+      },
+    ],
+  });
+
+  const [editorState, setEditorState] = React.useState(() =>
+    EditorState.createWithContent(emptyContentState),
+  );
+  // const [editorState, setEditorState] = React.useState(() =>
+  //   EditorState.createEmpty(),
+  // );
+
+  const handleKeyCommand = (command, editorState) => {
+    const newState = RichUtils.handleKeyCommand(editorState, command);
+    if (newState) {
+      setEditorState(newState);
+      return true;
+    }
+    return false;
+  };
+
   const contactmethods = useForm<Contactvalues>();
   const { handleSubmit: contacthandleSubmit } = contactmethods;
   const onContacthandleSubmit = (contactdata: Contactvalues) =>
@@ -810,6 +849,21 @@ const Registration = () => {
                                   value={value || ""}
                                 />
                               )}
+                            />
+
+                            <Editor
+                              editorKey="foobaz"
+                              editorState={editorState}
+                              handleKeyCommand={handleKeyCommand}
+                              onChange={setEditorState}
+                            />
+
+                            <Controller
+                              className="form-input "
+                              name="about"
+                              as={<SunEditor />}
+                              control={control}
+                              rules={{ required: true }}
                             />
                           </div>
                           <p className="text-red-500">

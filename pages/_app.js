@@ -1,16 +1,18 @@
+/** @jsxRuntime classic */
+/** @jsx jsx */
+
 import * as React from "react";
 import "../styles/tailwind.css";
 import theme from "../styles/theme";
-import { ThemeProvider, jsx, Styled } from "theme-ui";
-// import { appWithTranslation } from "../i18n";
+import { ThemeProvider, Styled, jsx } from "theme-ui";
 import { I18nProvider } from "next-localization";
 import { useRouter } from "next/router";
 
-import PublicLayout from "@components/Layouts/PublicLayout";
+import DefaultLayout from "@components/Layouts/BlankLayout";
 
 const MyApp = ({ Component, pageProps }) => {
   const getLayout =
-    Component.getLayout || ((page) => <PublicLayout children={page} />);
+    Component.getLayout || ((page) => <DefaultLayout children={page} />);
 
   const router = useRouter();
   const { lngDict, ...rest } = pageProps;
@@ -24,5 +26,4 @@ const MyApp = ({ Component, pageProps }) => {
   );
 };
 
-//export default appWithTranslation(MyApp);
 export default MyApp;
