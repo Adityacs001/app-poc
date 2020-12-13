@@ -168,12 +168,16 @@ const SignIn = () => {
             <h2 className="text-6xl leading-normal font-bold text-gray-900 sm:text-4xl">
               Some good message for employers.
             </h2>
-            <p className="mt-1 text-xl leading-7 text-gray-500 ">
+            <p className="mt-1 text-lg leading-7 text-gray-500 ">
+              Lorem ipsum dolor, sit amet consectetur adipisicing elit.
+              Repellendus repellat laudantium.
+            </p>
+            <p className="mt-1 text-sm leading-7 text-gray-500 ">
               Lorem ipsum dolor, sit amet consectetur adipisicing elit.
               Repellendus repellat laudantium.
             </p>
             <div className="ml-3 mt-3 inline-flex">
-              <Link href="/registration">
+              <Link href="/addemployer">
                 <a className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:shadow-outline transition duration-150 ease-in-out">
                   Register
                 </a>

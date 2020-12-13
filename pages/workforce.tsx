@@ -3,7 +3,7 @@ import Head from "next/head";
 import classnames from "classnames";
 import { motion } from "framer-motion";
 import { getLayout } from "@components/Layouts/PrivateLayout";
-import { Transition } from "@tailwindui/react";
+import { Transition } from "@headlessui/react";
 import MainHeader from "@components/MainHeader";
 import SubHeader from "@components/SubHeader";
 import { useRouter } from "next/router";
@@ -11,6 +11,7 @@ import { useSelectStyles } from "../hooks/useHelper";
 import SunEditor, { buttonList } from "suneditor-react";
 import "suneditor/dist/css/suneditor.min.css";
 import Select from "react-select";
+import withSession from "lib/session";
 
 const Workforce = () => {
   const samplelookup = [
@@ -576,5 +577,7 @@ const Workforce = () => {
 };
 
 Workforce.getLayout = getLayout;
+
+export const getServerSideProps = withSession;
 
 export default Workforce;

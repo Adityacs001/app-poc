@@ -2,7 +2,7 @@
 /** @jsx jsx */
 
 import * as React from "react";
-import "../styles/tailwind.css";
+import "../styles/global.css";
 import theme from "../styles/theme";
 import { ThemeProvider, Styled, jsx } from "theme-ui";
 import { I18nProvider } from "next-localization";

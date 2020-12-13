@@ -11,17 +11,16 @@ export default withIronSession(
           password,
         });
         if (status === 200) {
-          req.session.set("user", { username });
+          req.session.set("user", data);
           await req.session.save();
           return res.status(201).send({
             status: true,
-            message: "loggedin",
-            data,
+            message: message,
           });
         } else {
           return res.status(403).send({
             status: false,
-            message: "invalidcredentials",
+            message: message,
             data: null,
           });
         }

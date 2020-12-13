@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { Transition } from "@tailwindui/react";
+import { Transition } from "@headlessui/react";
 import classnames from "classnames";
 import { motion } from "framer-motion";
 import Footer from "@components/Footer";
@@ -226,7 +226,7 @@ const DefaultLayout = ({ children }) => {
                     >
                       <Link href="/vacancytemplate">
                         <a className="group flex items-center px-3 py-2 text-sm leading-5 font-medium text-gray-700 rounded-md hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition ease-in-out duration-150">
-                          <span className="w-2.5 h-2.5 mr-4 bg-yellow-400 rounded-full"></span>
+                          <span className="w-2.5 h-2.5 mr-4 bg-yellow-500 rounded-full"></span>
                           <span className="truncate">
                             Create Vacancy Template
                           </span>
@@ -238,21 +238,12 @@ const DefaultLayout = ({ children }) => {
                           <span className="truncate"> Post Vacancy </span>
                         </a>
                       </Link>
-                      <Link href="/postvacancy">
+                      <Link href="/jobopportunity">
                         <a className="group flex items-center px-3 py-2 text-sm leading-5 font-medium text-gray-700 rounded-md hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition ease-in-out duration-150">
-                          <span className="w-2.5 h-2.5 mr-4 bg-teal-400 rounded-full"></span>
-                          <span className="truncate">
-                            Post Training Program
-                          </span>
+                          <span className="w-2.5 h-2.5 mr-4 bg-green-500 rounded-full"></span>
+                          <span className="truncate">Post Scholarhips</span>
                         </a>
                       </Link>
-                      <a
-                        href="#"
-                        className="group flex items-center px-3 py-2 text-sm leading-5 font-medium text-gray-700 rounded-md hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition ease-in-out duration-150"
-                      >
-                        <span className="w-2.5 h-2.5 mr-4 bg-orange-500 rounded-full"></span>
-                        <span className="truncate"> Post Scholarhips </span>
-                      </a>
                       <a
                         href="#"
                         className="group flex items-center px-3 py-2 text-sm leading-5 font-medium text-gray-700 rounded-md hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition ease-in-out duration-150"
@@ -264,7 +255,7 @@ const DefaultLayout = ({ children }) => {
                         href="#"
                         className="group flex items-center px-3 py-2 text-sm leading-5 font-medium text-gray-700 rounded-md hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition ease-in-out duration-150"
                       >
-                        <span className="w-2.5 h-2.5 mr-4 bg-green-500 rounded-full"></span>
+                        <span className="w-2.5 h-2.5 mr-4 bg-pink-700 rounded-full"></span>
                         <span className="truncate"> User Manual </span>
                       </a>
                     </div>
@@ -426,11 +417,17 @@ const DefaultLayout = ({ children }) => {
                 Search
               </label>
               <div className="mt-1 relative rounded-md shadow-sm">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <div
+                  className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+                  aria-hidden="true"
+                >
                   <svg
                     className="mr-3 h-4 w-4 text-gray-400"
+                    x-description="Heroicon name: search"
+                    xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 20 20"
                     fill="currentColor"
+                    aria-hidden="true"
                   >
                     <path
                       fillRule="evenodd"
@@ -440,8 +437,10 @@ const DefaultLayout = ({ children }) => {
                   </svg>
                 </div>
                 <input
+                  type="text"
+                  name="search"
                   id="search"
-                  className="form-input block w-full pl-9 sm:text-sm sm:leading-5"
+                  className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-9 sm:text-sm border-gray-300 rounded-md"
                   placeholder="Search"
                 />
               </div>
@@ -579,20 +578,19 @@ const DefaultLayout = ({ children }) => {
                     aria-labelledby="teams-headline"
                   >
                     <ActiveLink href="/vacancytemplate">
-                      <span className="w-2.5 h-2.5 mr-4 bg-yellow-400 rounded-full"></span>
+                      <span className="w-2.5 h-2.5 mr-4 bg-green-500 rounded-full"></span>
                       <span className="truncate">Create Vacancy Template</span>
                     </ActiveLink>
                     <ActiveLink href="/postvacancy">
-                      <span className="w-2.5 h-2.5 mr-4 bg-indigo-500 rounded-full"></span>
+                      <span className="w-2.5 h-2.5 mr-4 bg-blue-500 rounded-full"></span>
                       <span className="truncate"> Post Vacancy </span>
                     </ActiveLink>
-                    <a
-                      href="#"
-                      className="group flex items-center px-3 py-2 text-sm leading-5 font-medium text-gray-700 rounded-md hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition ease-in-out duration-150"
-                    >
-                      <span className="w-2.5 h-2.5 mr-4 bg-orange-500 rounded-full"></span>
-                      <span className="truncate"> Post Scholarhips </span>
-                    </a>
+                    <Link href="/jobopportunity">
+                      <a className="group flex items-center px-3 py-2 text-sm leading-5 font-medium text-gray-700 rounded-md hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition ease-in-out duration-150">
+                        <span className="w-2.5 h-2.5 mr-4 bg-green-500 rounded-full"></span>
+                        <span className="truncate">Post Scholarhips</span>
+                      </a>
+                    </Link>
                     <a
                       href="#"
                       className="group flex items-center px-3 py-2 text-sm leading-5 font-medium text-gray-700 rounded-md hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition ease-in-out duration-150"
@@ -604,7 +602,7 @@ const DefaultLayout = ({ children }) => {
                       href="#"
                       className="group flex items-center px-3 py-2 text-sm leading-5 font-medium text-gray-700 rounded-md hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition ease-in-out duration-150"
                     >
-                      <span className="w-2.5 h-2.5 mr-4 bg-green-500 rounded-full"></span>
+                      <span className="w-2.5 h-2.5 mr-4 bg-pink-700 rounded-full"></span>
                       <span className="truncate"> User Manual </span>
                     </a>
                   </div>
@@ -676,7 +674,7 @@ const DefaultLayout = ({ children }) => {
                   </div>
                   <input
                     id="search_field"
-                    className="block w-full h-full pl-8 pr-3 py-2 rounded-md text-gray-900 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 sm:text-sm"
+                    className="block w-full h-full pl-8 pr-3 py-2 border-transparent text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-0 focus:border-transparent focus:placeholder-gray-400 sm:text-sm"
                     placeholder="Search"
                     type="search"
                   />
@@ -782,6 +780,7 @@ const DefaultLayout = ({ children }) => {
             variants={containervariants}
             initial="start"
             animate="end"
+            className="min-h-screen"
           >
             {children}
           </motion.div>

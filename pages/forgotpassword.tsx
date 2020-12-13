@@ -37,10 +37,24 @@ const ForgotPassword = () => {
     });
 
     if (response.ok) {
-      return router.push("/");
+      cogoToast.error(
+        <Message
+          title="Password reset"
+          text="Email is sent to your registered account"
+          type="success"
+        />,
+        {
+          position: "bottom-center",
+        },
+      );
+      return router.push("/SignIn");
     } else {
       return cogoToast.error(
-        <Message title="login" text="invalid credentials" type="error" />,
+        <Message
+          title="Password reset"
+          text="invalid credentials"
+          type="error"
+        />,
         {
           position: "bottom-center",
         },

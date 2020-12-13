@@ -6,7 +6,7 @@ import classNames from "classnames";
 import { Avatar, jsx, sx, Box, Flex, Donut } from "theme-ui";
 import { motion } from "framer-motion";
 import { getLayout } from "@components/Layouts/PrivateLayout";
-import { Transition } from "@tailwindui/react";
+import { Transition } from "@headlessui/react";
 import MainHeader from "@components/MainHeader";
 import SubHeader from "@components/SubHeader";
 import withSession from "lib/session";
@@ -15,7 +15,6 @@ import NotificationNav from "@components/NotificationNav";
 import { useQuery } from "react-query";
 import { fetchdetail } from "lib/fetcher";
 
-import { useI18n } from "next-localization";
 import { useRouter } from "next/router";
 import useLocales from "../hooks/useLocales";
 
@@ -23,7 +22,7 @@ const Index = ({ user }) => {
   const router = useRouter();
   const { translations } = useLocales();
 
-  const { isLoading, isError, data, error } = useQuery("users", fetchdetail);
+  //const { isLoading, isError, data, error } = useQuery("users", fetchdetail);
 
   const [isOpen, setIsOpen] = React.useState(false);
 
@@ -60,7 +59,8 @@ const Index = ({ user }) => {
         </div>
         <div className="mt-4 flex sm:mt-0 sm:ml-4">
           <NotificationNav />
-          <button onClick={sampleCounter}>click</button>
+          <button onClick={() => translations.locale("ae")}>ae</button>
+          <button onClick={() => translations.locale("en")}>en</button>
         </div>
       </div>
       <div className="px-4 py-4 sm:px-6 lg:px-8 bg-gray-100 ">
@@ -1869,5 +1869,4 @@ Index.getLayout = getLayout;
 
 export const getServerSideProps = withSession;
 
-//export default withTranslation("common")(Index);
 export default Index;

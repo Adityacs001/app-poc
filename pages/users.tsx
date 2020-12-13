@@ -7,10 +7,11 @@ import classNames from "classnames";
 import { Avatar, jsx, sx, Box, Flex, Donut } from "theme-ui";
 import { motion } from "framer-motion";
 import { getLayout } from "@components/Layouts/PrivateLayout";
-import { Transition } from "@tailwindui/react";
+import { Transition } from "@headlessui/react";
 import MainHeader from "@components/MainHeader";
 import SubHeader from "@components/SubHeader";
 import { useRouter } from "next/router";
+import withSession from "lib/session";
 
 const UserList = () => {
   const router = useRouter();
@@ -431,5 +432,7 @@ const UserList = () => {
 };
 
 UserList.getLayout = getLayout;
+
+export const getServerSideProps = withSession;
 
 export default UserList;

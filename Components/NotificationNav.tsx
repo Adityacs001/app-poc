@@ -37,6 +37,7 @@ const NotificationNav = () => {
             />
           </svg>
         </motion.button>
+
         <span
           className="absolute right-0 h-2 w-2  text-white "
           sx={{ top: "-10px", maxwidth: "0.5rem" }}
@@ -45,7 +46,7 @@ const NotificationNav = () => {
             sx={{ padding: "2px" }}
             className="text-xs  bg-green-500 rounded-full truncate"
           >
-            {memoizedcounter}
+            100
           </span>
         </span>
       </span>

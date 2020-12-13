@@ -19,6 +19,11 @@ import Message from "@components/Message";
 import Spinner from "@components/Spinner";
 import isEmpty from "lodash/isEmpty";
 import isUndefined from "lodash/isUndefined";
+import mothercompanies from "../data/mothercompanies";
+import tradelicenseauthority from "../data/tradelicenseauthority";
+import sectors from "../data/sectors";
+import industry from "../data/industry";
+import cities from "../data/cities";
 
 type OptionsDTO = {
   id: number;
@@ -188,6 +193,18 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
     mode: "onChange",
     resolver: yupResolver(step1schema),
   });
+
+  const escapeHtml = (input) => {
+    var tagsToReplace = {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+    };
+    return input.replace(/[&<>]/g, function (tag) {
+      return tagsToReplace[tag] || tag;
+    });
+  };
+
   const {
     register: step1register,
     handleSubmit: step1handleSubmit,
@@ -214,7 +231,6 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
     website,
     about,
   }) => {
-    const { encodedStr } = useEncodehtml(about);
     setRegistrationdetails(
       produce(registrationdetails, (draftState) => {
         draftState.main = {
@@ -230,7 +246,7 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
             industry,
             city,
             website,
-            about: encodedStr,
+            about: escapeHtml(about),
           },
         };
       }),
@@ -405,29 +421,39 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
       sectorid: payload.main.sector?.value,
       industryid: payload.main.industry?.value,
       cityid: payload.main.city?.value,
-      website: payload.main.nameae,
-      about: payload.main.nameae,
-      fullname: payload.main.nameae,
-      emailaddress: payload.main.nameae,
-      mobilenumber: payload.main.nameae,
-      phonenumber: payload.main.nameae,
-      username: payload.main.nameae,
-      password: payload.main.nameae,
+      website: payload.main.website,
+      about: payload.main.about,
+      fullname: payload.contact.fullname,
+      emailaddress: payload.contact.emailaddress,
+      mobilenumber: payload.contact.mobilenumber,
+      phonenumber: payload.contact.phonenumber,
+      username: payload.contact.username,
+      password: payload.contact.password,
       tradelicensefile: tradelicenseconverted as string,
       companylogo: componeylogoconverted as string,
     };
 
-    const response = await fetch("/api/registration", {
+    const response = await fetch("/api/saveregistration", {
       method: "POST",
       headers: { "Content-Type": "application/json " },
       body: JSON.stringify(registrationsave),
     });
 
     if (response.ok) {
-      return router.push("/");
+      cogoToast.error(
+        <Message
+          title="Registration"
+          text="Account registered successfully"
+          type="success"
+        />,
+        {
+          position: "bottom-center",
+        },
+      );
+      return router.push("/SignIn");
     } else {
       return cogoToast.error(
-        <Message title="login" text="invalid input" type="error" />,
+        <Message title="Registration" text="invalid input" type="error" />,
         {
           position: "bottom-center",
         },
@@ -757,8 +783,8 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                                       name="nameen"
                                       id="nameen"
                                       ref={step1register}
-                                      className="form-input flex-1 block w-full rounded-none rounded-r-md transition duration-150 ease-in-out sm:text-sm sm:leading-5"
-                                      placeholder="Human Resources Authority"
+                                      className="inline-flex w-full border border-gray-300 rounded-r-md py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                      placeholder="Enter english title of company"
                                     />
                                   </div>
                                   <p className="text-red-500">
@@ -779,8 +805,8 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                                       name="nameae"
                                       id="nameae"
                                       ref={step1register}
-                                      className="form-input flex-1 block w-full rounded-none rounded-r-md transition duration-150 ease-in-out sm:text-sm sm:leading-5"
-                                      placeholder="Human Resources Authority"
+                                      className="inline-flex w-full border border-gray-300 rounded-r-md py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                      placeholder="Enter arabic title of company"
                                     />
                                   </div>
                                   <p className="text-red-500">
@@ -823,8 +849,8 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                                             instanceId,
                                           }}
                                           isClearable="true"
-                                          className="w-full rounded-none "
-                                          options={entities}
+                                          className="w-full rounded-none shadow-none "
+                                          options={mothercompanies}
                                           styles={selectStyles}
                                         />
                                       )}
@@ -849,7 +875,7 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                                       id="companysize"
                                       name="companysize"
                                       ref={step1register}
-                                      className="form-input flex-1 block w-full rounded-none rounded-r-md transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                                      className="inline-flex w-full border border-gray-300 rounded-r-md py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                       placeholder="Enter total company size"
                                     />
                                   </div>
@@ -871,8 +897,8 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                                       id="tradelicense"
                                       name="tradelicense"
                                       ref={step1register}
-                                      className="form-input flex-1 block w-full rounded-none rounded-r-md transition duration-150 ease-in-out sm:text-sm sm:leading-5"
-                                      placeholder="Enter total license number"
+                                      className="inline-flex w-full border border-gray-300 rounded-r-md py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                      placeholder="Enter trade license number"
                                     />
                                   </div>
                                   <p className="text-red-500">
@@ -916,7 +942,7 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                                           }}
                                           isClearable="true"
                                           className="w-full rounded-none "
-                                          options={entities}
+                                          options={tradelicenseauthority}
                                           styles={selectStyles}
                                         />
                                       )}
@@ -964,7 +990,7 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                                           }}
                                           isClearable="true"
                                           className="w-full rounded-none "
-                                          options={entities}
+                                          options={sectors}
                                           styles={selectStyles}
                                         />
                                       )}
@@ -1012,7 +1038,7 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                                           }}
                                           isClearable="true"
                                           className="w-full rounded-none "
-                                          options={entities}
+                                          options={industry}
                                           styles={selectStyles}
                                         />
                                       )}
@@ -1060,7 +1086,7 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                                           }}
                                           isClearable="true"
                                           className="w-full rounded-none "
-                                          options={entities}
+                                          options={cities}
                                           styles={selectStyles}
                                         />
                                       )}
@@ -1085,7 +1111,7 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                                       id="website"
                                       name="website"
                                       ref={step1register}
-                                      className="form-input flex-1 block w-full rounded-none rounded-r-md transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                                      className="inline-flex w-full border border-gray-300 rounded-r-md py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                       placeholder="Enter website address"
                                     />
                                   </div>
@@ -1195,8 +1221,8 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                                       name="fullname"
                                       id="fullname"
                                       ref={step2register}
-                                      className="form-input flex-1 block w-full rounded-none rounded-r-md transition duration-150 ease-in-out sm:text-sm sm:leading-5"
-                                      placeholder="Enter your name"
+                                      className="inline-flex w-full border border-gray-300 rounded-r-md py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                      placeholder="Enter primary contact full name"
                                     />
                                   </div>
                                   <p className="text-red-500">
@@ -1216,7 +1242,7 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                                       name="emailaddress"
                                       id="emailaddress"
                                       ref={step2register}
-                                      className="form-input flex-1 block w-full rounded-none rounded-r-md transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                                      className="inline-flex w-full border border-gray-300 rounded-r-md py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                       placeholder="Enter email address"
                                     />
                                   </div>
@@ -1238,7 +1264,7 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                                       name="mobilenumber"
                                       id="mobilenumber"
                                       ref={step2register}
-                                      className="form-input flex-1 block w-full rounded-none rounded-r-md transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                                      className="inline-flex w-full border border-gray-300 rounded-r-md py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                       placeholder="Enter mobile number"
                                     />
                                   </div>
@@ -1260,7 +1286,7 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                                       name="phonenumber"
                                       id="phonenumber"
                                       ref={step2register}
-                                      className="form-input flex-1 block w-full rounded-none rounded-r-md transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                                      className="inline-flex w-full border border-gray-300 rounded-r-md py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                       placeholder="Enter Phone number"
                                     />
                                   </div>
@@ -1282,7 +1308,7 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                                       name="username"
                                       id="username"
                                       ref={step2register}
-                                      className="form-input flex-1 block w-full rounded-none rounded-r-md transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                                      className="inline-flex w-full border border-gray-300 rounded-r-md py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                       placeholder="Enter Username"
                                     />
                                   </div>

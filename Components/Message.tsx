@@ -1,11 +1,34 @@
+import classname from "classnames";
+
 const Message = ({ title, text, type }) => (
   <>
     <div className="fixed inset-x-0 bottom-0">
-      <div className="bg-indigo-600">
+      <div
+        className={classname(
+          { "bg-green-400": type === "success" },
+          { "bg-red-400": type === "error" },
+          {
+            "bg-indigo-700": type === "default" || type === "",
+          },
+        )}
+      >
         <div className="max-w-screen-xl mx-auto py-4 px-3 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between flex-wrap">
             <div className="w-0 flex-1 flex items-center">
-              <span className="flex p-2 rounded-lg bg-indigo-800">
+              <span
+                className={classname(
+                  "flex p-2 rounded-lg ",
+                  {
+                    "bg-green-700": type === "success",
+                  },
+                  {
+                    "bg-red-700": type === "error",
+                  },
+                  {
+                    "bg-indigo-700": type === "default" || type === "",
+                  },
+                )}
+              >
                 <svg
                   className="h-6 w-6 text-white"
                   xmlns="http://www.w3.org/2000/svg"
