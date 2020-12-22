@@ -10,8 +10,9 @@ import { useQuery } from "react-query";
 import withSession from "lib/session";
 import unescape from "lodash/unescape";
 import parse from "html-react-parser";
+import PageTitle from "@components/PageTitle";
 
-const getvacancytemplatelist = async (key: string) => {
+const getvacancytemplatelist = async ({ queryKey }) => {
   const response = await fetch(`/api/getvacancytemplatelist`, {
     method: "GET",
     headers: { "Content-Type": "application/json " },
@@ -21,7 +22,8 @@ const getvacancytemplatelist = async (key: string) => {
   return result;
 };
 
-const getvacancytemplatedetails = async (key: string, rid: string) => {
+const getvacancytemplatedetails = async ({ queryKey }) => {
+  const [_key, { rid }] = queryKey;
   const response = await fetch(`/api/getvacancytemplatedetails?rid=${rid}`, {
     method: "GET",
     headers: { "Content-Type": "application/json " },
@@ -135,7 +137,7 @@ const PositionProfile = ({ user }) => {
     data: templatedata,
     error: templateerror,
   } = useQuery(
-    ["getvacancytemplatedetails", detailrid],
+    ["getvacancytemplatedetails", { rid: detailrid }],
     getvacancytemplatedetails,
     {
       enabled: !!user && detailrid != undefined && detailrid != "",
@@ -236,21 +238,16 @@ const PositionProfile = ({ user }) => {
                   >
                     <svg
                       className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500"
-                      viewBox="0 0 20 20"
                       fill="currentColor"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
                     >
+                      <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
                       <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                      ></path>
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                      ></path>
+                        fillRule="evenodd"
+                        d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
+                        clipRule="evenodd"
+                      />
                     </svg>
                     View
                   </a>
@@ -275,35 +272,6 @@ const PositionProfile = ({ user }) => {
                     </svg>
                     Edit
                   </a>
-                  <a
-                    href="#"
-                    className="group flex items-center px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
-                    role="menuitem"
-                  >
-                    <svg
-                      className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path d="M7 9a2 2 0 012-2h6a2 2 0 012 2v6a2 2 0 01-2 2H9a2 2 0 01-2-2V9z" />
-                      <path d="M5 3a2 2 0 00-2 2v6a2 2 0 002 2V5h8a2 2 0 00-2-2H5z" />
-                    </svg>
-                    Applicants
-                  </a>
-                  <a
-                    href="#"
-                    className="group flex items-center px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
-                    role="menuitem"
-                  >
-                    <svg
-                      className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z" />
-                    </svg>
-                    Expats
-                  </a>
                 </div>
                 <div className="border-t border-gray-100"></div>
                 <div className="py-1">
@@ -323,7 +291,7 @@ const PositionProfile = ({ user }) => {
                         clipRule="evenodd"
                       />
                     </svg>
-                    Close
+                    In Activate
                   </a>
                 </div>
               </div>
@@ -360,7 +328,7 @@ const PositionProfile = ({ user }) => {
       </div>
       <div className="bg-gray-100 flex justify-between items-center">
         <div className="px-6 py-3  sm:flex sm:items-center sm:justify-between sm:space-x-4 sm:space-y-0">
-          <MainHeader
+          <PageTitle
             title="List of all Vacancy templates"
             subtitle="Template available and active will be available in posting form"
             isbordered={false}

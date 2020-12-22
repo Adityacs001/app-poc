@@ -5,21 +5,22 @@ import * as React from "react";
 import { jsx } from "theme-ui";
 import { motion } from "framer-motion";
 import useStore, { languageSelector } from "../store/index";
+import classnames from "classnames";
 
 const NotificationNav = () => {
-  const memoizedcounter = useStore(React.useCallback(languageSelector, []));
+  const memoizedlocalestate = useStore(React.useCallback(languageSelector, []));
 
   return (
     <React.Fragment>
-      <span className="inline-block relative order-1 ml-3 rounded-full sm:order-0 sm:ml-0 bg-gray-50">
+      <span className="inline-block relative order-1 ml-3 rounded-full sm:order-0 sm:ml-0 bg-gray-100">
         <motion.button
           whileHover={{
-            scale: 1.4,
+            scale: 1.3,
             transition: {
               yoyo: Infinity,
             },
           }}
-          className="p-1 border-2 border-transparent text-gray-400 rounded-full hover:text-gray-500 focus:outline-none focus:text-gray-500 focus:bg-gray-100 transition duration-150 ease-in-out"
+          className="p-1 border-2 border-transparent text-gray-600 text-base rounded-full hover:text-white hover:bg-indigo-600 focus:outline-none focus:text-gray-500 focus:bg-gray-100 transition duration-150 ease-in-out"
           aria-label="Notifications"
         >
           <svg
@@ -39,14 +40,31 @@ const NotificationNav = () => {
         </motion.button>
 
         <span
-          className="absolute right-0 h-2 w-2  text-white "
-          sx={{ top: "-10px", maxwidth: "0.5rem" }}
+          className={classnames(
+            "absolute h-2 w-2  text-white -top-3",
+            {
+              " right-0": memoizedlocalestate === "en",
+            },
+            {
+              " left-0": memoizedlocalestate === "ae",
+            },
+          )}
         >
-          <span
-            sx={{ padding: "2px" }}
-            className="text-xs  bg-green-500 rounded-full truncate"
-          >
-            100
+          <span className="inline-flex items-center justify-center text-center  w-5 h-5 text-xs  bg-red-500 rounded-full truncate">
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
           </span>
         </span>
       </span>

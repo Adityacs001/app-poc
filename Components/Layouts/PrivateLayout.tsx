@@ -1,13 +1,16 @@
-import { useState } from "react";
-
+import React from "react";
 import { Transition } from "@headlessui/react";
 import classnames from "classnames";
 import { motion } from "framer-motion";
 import Footer from "@components/Footer";
 import Link from "next/link";
 import ActiveLink from "@components/ActiveLink";
+import useLocales from "../../hooks/useLocales";
+import useStore, { languageSelector } from "../../store/index";
 
-const DefaultLayout = ({ children }) => {
+import { useRouter } from "next/router";
+
+const DefaultLayout = ({ children, user }) => {
   const containervariants = {
     start: {
       opacity: 0,
@@ -17,8 +20,10 @@ const DefaultLayout = ({ children }) => {
       opacity: 1,
       x: 0,
       transition: {
-        type: "spring",
-        delay: 0.5,
+        type: "Tween",
+        delay: 0.4,
+        duration: 1,
+        ease: "easeInOut",
       },
     },
   };
@@ -38,10 +43,25 @@ const DefaultLayout = ({ children }) => {
     },
   };
 
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = React.useState(false);
+  const router = useRouter();
+  const { translations } = useLocales();
+  const memoizedlocalestate = useStore(React.useCallback(languageSelector, []));
 
-  const [isTopUserInfoOpen, setIsTopUserInfoOpen] = useState(false);
-  const [isUserInfoOpen, setIsUserInfoOpen] = useState(false);
+  const [isTopUserInfoOpen, setIsTopUserInfoOpen] = React.useState(false);
+  const [isUserInfoOpen, setIsUserInfoOpen] = React.useState(false);
+
+  const handleLogout = async (e) => {
+    e.preventDefault();
+    const response = await fetch("/api/logout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    if (response.ok) {
+      return router.push("/logout");
+    }
+  };
 
   return (
     <div className="h-screen flex overflow-hidden bg-white">
@@ -118,11 +138,11 @@ const DefaultLayout = ({ children }) => {
                           d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
                         />
                       </svg>
-                      Home
+                      {translations.t("home")}
                     </ActiveLink>
                     <ActiveLink href="/vacancies">
                       <svg
-                        className="mr-3 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-600 transition ease-in-out duration-150"
+                        className="mx-2 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-600 transition ease-in-out duration-150"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
@@ -134,11 +154,11 @@ const DefaultLayout = ({ children }) => {
                           d="M4 6h16M4 10h16M4 14h16M4 18h16"
                         />
                       </svg>
-                      Vacancies
+                      {translations.t("vacancies")}
                     </ActiveLink>
                     <ActiveLink href="/jobseekers">
                       <svg
-                        className="mr-3 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-600 transition ease-in-out duration-150"
+                        className="mx-2 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-600 transition ease-in-out duration-150"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
@@ -150,11 +170,11 @@ const DefaultLayout = ({ children }) => {
                           d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"
                         ></path>
                       </svg>
-                      Jobseekers
+                      {translations.t("jobseekers")}
                     </ActiveLink>
                     <ActiveLink href="/applicants">
                       <svg
-                        className="mr-3 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-600 transition ease-in-out duration-150"
+                        className="mx-2 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-600 transition ease-in-out duration-150"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
@@ -166,11 +186,11 @@ const DefaultLayout = ({ children }) => {
                           d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
                         ></path>
                       </svg>
-                      Applicants
+                      {translations.t("applications")}
                     </ActiveLink>
                     <ActiveLink href="/expats">
                       <svg
-                        className="mr-3 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-600 transition ease-in-out duration-150"
+                        className="mx-2 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-600 transition ease-in-out duration-150"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
@@ -182,11 +202,11 @@ const DefaultLayout = ({ children }) => {
                           d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
                         ></path>
                       </svg>
-                      Expats
+                      {translations.t("expats")}
                     </ActiveLink>
                     <ActiveLink href="/users">
                       <svg
-                        className="mr-3 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-600 transition ease-in-out duration-150"
+                        className="mx-2 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-600 transition ease-in-out duration-150"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
@@ -198,18 +218,19 @@ const DefaultLayout = ({ children }) => {
                           d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                         ></path>
                       </svg>
-                      Orgnization chart
+
+                      {translations.t("orgnizationchart")}
                     </ActiveLink>
-                    <ActiveLink href="/workforce">
+                    <ActiveLink href="/workforce" className="hidden">
                       <svg
-                        className="mr-3 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-600 transition ease-in-out duration-150"
+                        className="mx-2 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-600 transition ease-in-out duration-150"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
                       >
                         <path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zm-2 4a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z" />
                       </svg>
-                      Workforce Planning
+                      {translations.t("workforceplanning")}
                     </ActiveLink>
                   </div>
                   <div className="mt-8">
@@ -217,7 +238,7 @@ const DefaultLayout = ({ children }) => {
                       className="px-3 text-xs leading-4 font-semibold text-gray-500 uppercase tracking-wider"
                       id="teams-headline"
                     >
-                      Quick Links
+                      {translations.t("quicklinks")}
                     </h3>
                     <div
                       className="mt-1 space-y-1"
@@ -226,60 +247,70 @@ const DefaultLayout = ({ children }) => {
                     >
                       <Link href="/vacancytemplate">
                         <a className="group flex items-center px-3 py-2 text-sm leading-5 font-medium text-gray-700 rounded-md hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition ease-in-out duration-150">
-                          <span className="w-2.5 h-2.5 mr-4 bg-yellow-500 rounded-full"></span>
+                          <span className="w-2.5 h-2.5 mx-2 bg-yellow-500 rounded-full"></span>
                           <span className="truncate">
-                            Create Vacancy Template
+                            {translations.t("createvacancytemplate")}
                           </span>
                         </a>
                       </Link>
-                      <Link href="/postvacancy">
+                      <Link
+                        href={`/vacancies/${process.env.NEXT_PUBLIC_RID_NEW}`}
+                      >
                         <a className="group flex items-center px-3 py-2 text-sm leading-5 font-medium text-gray-700 rounded-md hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition ease-in-out duration-150">
-                          <span className="w-2.5 h-2.5 mr-4 bg-indigo-500 rounded-full"></span>
-                          <span className="truncate"> Post Vacancy </span>
+                          <span className="w-2.5 h-2.5 mx-2 bg-indigo-500 rounded-full"></span>
+                          <span className="truncate">
+                            {translations.t("postavacancy")}
+                          </span>
                         </a>
                       </Link>
-                      <Link href="/jobopportunity">
+                      <Link
+                        href={`/jobopportunity/${process.env.NEXT_PUBLIC_RID_NEW}`}
+                      >
                         <a className="group flex items-center px-3 py-2 text-sm leading-5 font-medium text-gray-700 rounded-md hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition ease-in-out duration-150">
-                          <span className="w-2.5 h-2.5 mr-4 bg-green-500 rounded-full"></span>
-                          <span className="truncate">Post Scholarhips</span>
+                          <span className="w-2.5 h-2.5 mx-2 bg-green-500 rounded-full"></span>
+                          <span className="truncate">
+                            {" "}
+                            {translations.t("postscholarship")}
+                          </span>
                         </a>
                       </Link>
-                      <a
-                        href="#"
-                        className="group flex items-center px-3 py-2 text-sm leading-5 font-medium text-gray-700 rounded-md hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition ease-in-out duration-150"
-                      >
-                        <span className="w-2.5 h-2.5 mr-4 bg-purple-500 rounded-full"></span>
-                        <span className="truncate"> Add Expat </span>
-                      </a>
-                      <a
-                        href="#"
-                        className="group flex items-center px-3 py-2 text-sm leading-5 font-medium text-gray-700 rounded-md hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition ease-in-out duration-150"
-                      >
-                        <span className="w-2.5 h-2.5 mr-4 bg-pink-700 rounded-full"></span>
-                        <span className="truncate"> User Manual </span>
-                      </a>
+                      <Link href={`/expats/${process.env.NEXT_PUBLIC_RID_NEW}`}>
+                        <span className="w-2.5 h-2.5 mx-2 bg-purple-500 rounded-full"></span>
+                        <span className="truncate">
+                          {" "}
+                          {translations.t("addexpat")}{" "}
+                        </span>
+                      </Link>
+                      <Link href={`/expats/${process.env.NEXT_PUBLIC_RID_NEW}`}>
+                        <span className="w-2.5 h-2.5 mx-2 bg-pink-700 rounded-full"></span>
+                        <span className="truncate">
+                          {" "}
+                          {translations.t("usermanual")}
+                        </span>
+                      </Link>
                     </div>
                   </div>
                 </nav>
                 <div className="px-3 py-2 border-t border-gray-200">
-                  <Link href="/SignIn">
-                    <a className="group flex items-center px-2 py-2 text-sm leading-5 font-medium rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition ease-in-out duration-150">
-                      <svg
-                        className="mr-3 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-600 transition ease-in-out duration-150"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                        ></path>
-                      </svg>
-                      Logout
-                    </a>
-                  </Link>
+                  <button
+                    onClick={(e) => handleLogout(e)}
+                    className="group flex items-center px-2 py-2 text-sm leading-5 font-medium rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition ease-in-out duration-150"
+                  >
+                    <svg
+                      className="mx-2 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-600 transition ease-in-out duration-150"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                      ></path>
+                    </svg>
+                    {translations.t("logout")}
+                  </button>
                 </div>
               </div>
             </div>
@@ -293,7 +324,7 @@ const DefaultLayout = ({ children }) => {
             <img className="h-auto w-auto" src="/logo.png" alt="Workflow" />
           </div>
           <div className="h-0 flex-1 flex flex-col overflow-y-auto">
-            <div className="px-3  relative inline-block text-left">
+            <div className="px-3  relative inline-block">
               <div>
                 <button
                   onClick={(e) => setIsUserInfoOpen(!isUserInfoOpen)}
@@ -316,12 +347,32 @@ const DefaultLayout = ({ children }) => {
                         src="/aditya.png"
                         alt=""
                       />
-                      <div className="flex-1">
-                        <h2 className="text-gray-900 text-sm leading-5 font-medium">
-                          Mohamed.H
+                      <div className="flex-1 flex flex-col items-start px-1">
+                        <h2
+                          className={classnames(
+                            "text-gray-900  leading-5 truncate font-medium ",
+                            {
+                              "text-sm ": memoizedlocalestate === "en",
+                            },
+                            {
+                              "text-base ": memoizedlocalestate === "ae",
+                            },
+                          )}
+                        >
+                          {user?.displayname || "Aditya Kumar"}
                         </h2>
-                        <p className="text-gray-500 text-sm leading-5 truncate">
-                          @liveuser
+                        <p
+                          className={classnames(
+                            "text-gray-900  leading-5 truncate font-medium  ",
+                            {
+                              "text-sm ": memoizedlocalestate === "en",
+                            },
+                            {
+                              "text-base ": memoizedlocalestate === "ae",
+                            },
+                          )}
+                        >
+                          {user?.employershortname || "@hra"}
                         </p>
                       </div>
                     </div>
@@ -359,62 +410,66 @@ const DefaultLayout = ({ children }) => {
                   aria-labelledby="options-menu"
                 >
                   <div className="py-1">
-                    <a
-                      href="#"
-                      className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
-                      role="menuitem"
-                    >
-                      View profile
-                    </a>
-                    <a
-                      href="#"
-                      className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
-                      role="menuitem"
-                    >
-                      Settings
-                    </a>
-                    <a
-                      href="#"
-                      className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
-                      role="menuitem"
-                    >
-                      Notifications
-                    </a>
-                  </div>
-                  <div className="border-t border-gray-100"></div>
-                  <div className="py-1">
-                    <a
-                      href="#"
-                      className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
-                      role="menuitem"
-                    >
-                      User Manual
-                    </a>
-                    <a
-                      href="#"
-                      className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
-                      role="menuitem"
-                    >
-                      Support
-                    </a>
-                  </div>
-                  <div className="border-t border-gray-100"></div>
-                  <div className="py-1">
-                    <Link href="/SignIn">
+                    <Link href="/changepassword">
                       <a
                         className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
                         role="menuitem"
                       >
-                        Logout
+                        {translations.t("changepassword")}
                       </a>
                     </Link>
+                    <Link href="#">
+                      <a
+                        className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                        role="menuitem"
+                      >
+                        {translations.t("settings")}
+                      </a>
+                    </Link>
+                    <Link href="#">
+                      <a
+                        className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                        role="menuitem"
+                      >
+                        {translations.t("notifications")}
+                      </a>
+                    </Link>
+                  </div>
+                  <div className="border-t border-gray-100"></div>
+                  <div className="py-1">
+                    <Link href="#">
+                      <a
+                        className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                        role="menuitem"
+                      >
+                        {translations.t("usermanual")}
+                      </a>
+                    </Link>
+                    <Link href="#">
+                      <a
+                        className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                        role="menuitem"
+                      >
+                        {translations.t("support")}
+                      </a>
+                    </Link>
+                  </div>
+                  <div className="border-t border-gray-100"></div>
+                  <div className="py-1">
+                    <button
+                      onClick={(e) => handleLogout(e)}
+                      className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                      role="menuitem"
+                    >
+                      {translations.t("logout")}
+                    </button>
                   </div>
                 </div>
               </Transition>
             </div>
             <div className="px-3 mt-5">
               <label htmlFor="search" className="sr-only">
-                Search
+                {translations.t("home")}
               </label>
               <div className="mt-1 relative rounded-md shadow-sm">
                 <div
@@ -441,7 +496,7 @@ const DefaultLayout = ({ children }) => {
                   name="search"
                   id="search"
                   className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-9 sm:text-sm border-gray-300 rounded-md"
-                  placeholder="Search"
+                  placeholder={translations.t("search")}
                 />
               </div>
             </div>
@@ -451,7 +506,7 @@ const DefaultLayout = ({ children }) => {
                 <div className="space-y-1">
                   <ActiveLink href="/">
                     <svg
-                      className="mr-3 h-6 w-6 text-gray-500 group-hover:text-gray-500 group-focus:text-gray-600 transition ease-in-out duration-150"
+                      className="mx-2 h-6 w-6 text-gray-500 group-hover:text-gray-500 group-focus:text-gray-600 transition ease-in-out duration-150"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -466,11 +521,11 @@ const DefaultLayout = ({ children }) => {
                         d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
                       />
                     </svg>
-                    Home
+                    {translations.t("home")}
                   </ActiveLink>
                   <ActiveLink href="/vacancies">
                     <svg
-                      className="mr-3 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-600 transition ease-in-out duration-150"
+                      className="mx-2 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-600 transition ease-in-out duration-150"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -482,11 +537,12 @@ const DefaultLayout = ({ children }) => {
                         d="M4 6h16M4 10h16M4 14h16M4 18h16"
                       />
                     </svg>
-                    Vacancies
+
+                    {translations.t("vacancies")}
                   </ActiveLink>
                   <ActiveLink href="/jobseekers">
                     <svg
-                      className="mr-3 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-600 transition ease-in-out duration-150"
+                      className="mx-2 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-600 transition ease-in-out duration-150"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -498,11 +554,12 @@ const DefaultLayout = ({ children }) => {
                         d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"
                       ></path>
                     </svg>
-                    Jobseekers
+
+                    {translations.t("jobseekers")}
                   </ActiveLink>
                   <ActiveLink href="/applicants">
                     <svg
-                      className="mr-3 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-600 transition ease-in-out duration-150"
+                      className="mx-2 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-600 transition ease-in-out duration-150"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -514,11 +571,11 @@ const DefaultLayout = ({ children }) => {
                         d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
                       ></path>
                     </svg>
-                    Applicants
+                    {translations.t("applications")}
                   </ActiveLink>
                   <ActiveLink href="/expats">
                     <svg
-                      className="mr-3 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-600 transition ease-in-out duration-150"
+                      className="mx-2 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-600 transition ease-in-out duration-150"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -530,11 +587,11 @@ const DefaultLayout = ({ children }) => {
                         d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
                       ></path>
                     </svg>
-                    Expats
+                    {translations.t("expats")}
                   </ActiveLink>
                   <ActiveLink href="/users">
                     <svg
-                      className="mr-3 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-600 transition ease-in-out duration-150"
+                      className="mx-2 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-600 transition ease-in-out duration-150"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -546,11 +603,11 @@ const DefaultLayout = ({ children }) => {
                         d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                       ></path>
                     </svg>
-                    Orgnization chart
+                    {translations.t("orgnizationchart")}
                   </ActiveLink>
-                  <ActiveLink href="/workforce">
+                  <ActiveLink href="/workforce" className="hidden">
                     <svg
-                      className="mr-3 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-600 transition ease-in-out duration-150"
+                      className="mx-2 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-600 transition ease-in-out duration-150"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -562,7 +619,8 @@ const DefaultLayout = ({ children }) => {
                         d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zm-2 4a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z"
                       />
                     </svg>
-                    Workforce Planning
+
+                    {translations.t("workforceplanning")}
                   </ActiveLink>
                 </div>
                 <div className="mt-8">
@@ -570,7 +628,7 @@ const DefaultLayout = ({ children }) => {
                     className="px-3 text-xs leading-4 font-semibold text-gray-500 uppercase tracking-wider"
                     id="teams-headline"
                   >
-                    Quick Links
+                    {translations.t("quicklinks")}
                   </h3>
                   <div
                     className="mt-1 space-y-1"
@@ -578,55 +636,65 @@ const DefaultLayout = ({ children }) => {
                     aria-labelledby="teams-headline"
                   >
                     <ActiveLink href="/vacancytemplate">
-                      <span className="w-2.5 h-2.5 mr-4 bg-green-500 rounded-full"></span>
-                      <span className="truncate">Create Vacancy Template</span>
+                      <span className="w-2.5 h-2.5 mx-2 bg-green-500 rounded-full"></span>
+                      <span className="truncate">
+                        {translations.t("createvacancytemplate")}
+                      </span>
                     </ActiveLink>
-                    <ActiveLink href="/postvacancy">
-                      <span className="w-2.5 h-2.5 mr-4 bg-blue-500 rounded-full"></span>
-                      <span className="truncate"> Post Vacancy </span>
+                    <ActiveLink
+                      href={`/vacancies/${process.env.NEXT_PUBLIC_RID_NEW}`}
+                    >
+                      <span className="w-2.5 h-2.5 mx-2 bg-blue-500 rounded-full"></span>
+                      <span className="truncate">
+                        {" "}
+                        {translations.t("postavacancy")}
+                      </span>
                     </ActiveLink>
-                    <Link href="/jobopportunity">
-                      <a className="group flex items-center px-3 py-2 text-sm leading-5 font-medium text-gray-700 rounded-md hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition ease-in-out duration-150">
-                        <span className="w-2.5 h-2.5 mr-4 bg-green-500 rounded-full"></span>
-                        <span className="truncate">Post Scholarhips</span>
-                      </a>
-                    </Link>
-                    <a
-                      href="#"
-                      className="group flex items-center px-3 py-2 text-sm leading-5 font-medium text-gray-700 rounded-md hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition ease-in-out duration-150"
+                    <ActiveLink
+                      href={`/jobopportunity/${process.env.NEXT_PUBLIC_RID_NEW}`}
                     >
-                      <span className="w-2.5 h-2.5 mr-4 bg-purple-500 rounded-full"></span>
-                      <span className="truncate"> Add Expat </span>
-                    </a>
-                    <a
-                      href="#"
-                      className="group flex items-center px-3 py-2 text-sm leading-5 font-medium text-gray-700 rounded-md hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition ease-in-out duration-150"
+                      <span className="w-2.5 h-2.5 mx-2 bg-green-500 rounded-full"></span>
+                      <span className="truncate">
+                        {translations.t("postscholarship")}
+                      </span>
+                    </ActiveLink>
+                    <ActiveLink
+                      href={`/expats/${process.env.NEXT_PUBLIC_RID_NEW}`}
                     >
-                      <span className="w-2.5 h-2.5 mr-4 bg-pink-700 rounded-full"></span>
-                      <span className="truncate"> User Manual </span>
-                    </a>
+                      <span className="w-2.5 h-2.5 mx-2 bg-purple-500 rounded-full"></span>
+                      <span className="truncate">
+                        {translations.t("addexpat")}
+                      </span>
+                    </ActiveLink>
+                    <ActiveLink href="/manuals">
+                      <span className="w-2.5 h-2.5 mx-2 bg-pink-700 rounded-full"></span>
+                      <span className="truncate">
+                        {translations.t("usermanual")}
+                      </span>
+                    </ActiveLink>
                   </div>
                 </div>
               </nav>
               <div className="px-3 py-2 border-t border-gray-200">
-                <Link href="/SignIn">
-                  <a className="group flex items-center px-2 py-2 text-sm leading-5 font-medium rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition ease-in-out duration-150">
-                    <svg
-                      className="mr-3 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-600 transition ease-in-out duration-150"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                      ></path>
-                    </svg>
-                    Logout
-                  </a>
-                </Link>
+                <button
+                  onClick={(e) => handleLogout(e)}
+                  className="group flex items-center px-2 py-2 text-sm leading-5 font-medium rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition ease-in-out duration-150"
+                >
+                  <svg
+                    className="mx-2 h-6 w-6 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-600 transition ease-in-out duration-150"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                    ></path>
+                  </svg>
+                  {translations.t("logout")}
+                </button>
               </div>
             </div>
           </div>
@@ -655,8 +723,8 @@ const DefaultLayout = ({ children }) => {
           <div className="flex-1 flex justify-between px-4 sm:px-6 lg:px-8">
             <div className="flex-1 flex">
               <form className="w-full flex md:ml-0" action="#" method="GET">
-                <label htmlFor="search_field" className="sr-only">
-                  Search
+                <label htmlFor="quicksearch" className="sr-only">
+                  {translations.t("search")}
                 </label>
                 <div className="relative w-full text-gray-400 focus-within:text-gray-600">
                   <div className="absolute inset-y-0 left-0 flex items-center pointer-events-none">
@@ -673,10 +741,10 @@ const DefaultLayout = ({ children }) => {
                     </svg>
                   </div>
                   <input
-                    id="search_field"
+                    id="quicksearch"
                     className="block w-full h-full pl-8 pr-3 py-2 border-transparent text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-0 focus:border-transparent focus:placeholder-gray-400 sm:text-sm"
-                    placeholder="Search"
-                    type="search"
+                    placeholder={translations.t("search")}
+                    type="text"
                   />
                 </div>
               </form>
@@ -716,54 +784,60 @@ const DefaultLayout = ({ children }) => {
                       aria-labelledby="user-menu"
                     >
                       <div className="py-1">
-                        <a
-                          href="#"
-                          className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
-                          role="menuitem"
-                        >
-                          View profile Mobile
-                        </a>
-                        <a
-                          href="#"
-                          className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
-                          role="menuitem"
-                        >
-                          Settings
-                        </a>
-                        <a
-                          href="#"
-                          className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
-                          role="menuitem"
-                        >
-                          Notifications
-                        </a>
+                        <Link href="/changepassword">
+                          <a
+                            className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                            role="menuitem"
+                          >
+                            {translations.t("changepassword")}
+                          </a>
+                        </Link>
+                        <Link href="#">
+                          <a
+                            className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                            role="menuitem"
+                          >
+                            {translations.t("settings")}
+                          </a>
+                        </Link>
+
+                        <Link href="#">
+                          <a
+                            className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                            role="menuitem"
+                          >
+                            {translations.t("notifications")}
+                          </a>
+                        </Link>
                       </div>
                       <div className="border-t border-gray-100"></div>
                       <div className="py-1">
-                        <a
-                          href="#"
-                          className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
-                          role="menuitem"
-                        >
-                          User Manual
-                        </a>
-                        <a
-                          href="#"
-                          className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
-                          role="menuitem"
-                        >
-                          Support
-                        </a>
+                        <Link href="#">
+                          <a
+                            className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                            role="menuitem"
+                          >
+                            {translations.t("usermanual")}
+                          </a>
+                        </Link>
+                        <Link href="#">
+                          <a
+                            className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                            role="menuitem"
+                          >
+                            {translations.t("support")}
+                          </a>
+                        </Link>
                       </div>
                       <div className="border-t border-gray-100"></div>
                       <div className="py-1">
-                        <a
-                          href="#"
+                        <button
+                          onClick={(e) => handleLogout(e)}
                           className="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
                           role="menuitem"
                         >
-                          Logout
-                        </a>
+                          {translations.t("logout")}
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -773,7 +847,7 @@ const DefaultLayout = ({ children }) => {
           </div>
         </div>
         <main
-          className="flex-1 relative z-0 overflow-y-auto focus:outline-none flex flex-col justify-between"
+          className="z-10 flex-1 relative overflow-y-auto focus:outline-none flex flex-col justify-between"
           tabIndex={0}
         >
           <motion.div
@@ -784,8 +858,8 @@ const DefaultLayout = ({ children }) => {
           >
             {children}
           </motion.div>
-          <Footer />
         </main>
+        {/* <Footer /> */}
       </div>
     </div>
   );

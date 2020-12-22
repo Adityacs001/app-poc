@@ -36,11 +36,26 @@
   #tadelicenseauthority,
   #sector,
   #industry,
-  #city {
+  #city,
+  #vacancy,
+  #country,
+  #education {
     box-shadow: none !important;
   }
 
   .react-datepicker-wrapper {
     width: 100%;
+  }
+
+  @font-face {
+    font-family: "ge_ss_text_Regular";
+    src: url("../public/fonts/ge_ss_text_Regular.eot?#iefix")
+        format("embedded-opentype"),
+      url("../public/fonts/ge_ss_text_Regular.woff") format("woff"),
+      url("../public/fonts/ge_ss_text_Regular.ttf") format("truetype");
+  }
+
+  .rtl > * {
+    font-family: "ge_ss_text_Regular";
   }
 }

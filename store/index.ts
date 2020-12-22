@@ -7,11 +7,11 @@ const immer = (config) => (set, get, api) =>
 const useStore = create(
   immer((set) => ({
     locale: 0,
-    sampleCounter: () => set((state) => ({ locale: state.locale + 1 })),
+    changelocale: (newlocale) => set((state) => ({ locale: newlocale })),
   })),
 );
 
-const languageSelector = (state) => state.locale;
+const languageSelector = (state) => (state.locale === 0 ? "en" : "ae");
 
 export default useStore;
 export { languageSelector };

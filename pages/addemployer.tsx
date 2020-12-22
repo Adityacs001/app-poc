@@ -24,6 +24,9 @@ import tradelicenseauthority from "../data/tradelicenseauthority";
 import sectors from "../data/sectors";
 import industry from "../data/industry";
 import cities from "../data/cities";
+import useLocales from "../hooks/useLocales";
+import useStore, { languageSelector } from "../store/index";
+import FieldStarter from "@components/FieldStarter";
 
 type OptionsDTO = {
   id: number;
@@ -117,6 +120,8 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
   const router = useRouter();
   const logoinputcontrol = React.useRef(null);
   const tradelicenseinputcontrol = React.useRef(null);
+  const { translations } = useLocales();
+  const memoizedlocalestate = useStore(React.useCallback(languageSelector, []));
 
   const [currentstep, setCurrentstep] = React.useState(1);
   const [
@@ -514,9 +519,37 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                       </div>
                     </div>
                     <div className="flex items-center">
+                      <ul className="flex ">
+                        <li>
+                          <Link
+                            href={{
+                              pathname: router.pathname,
+                              query: { ...router.query },
+                            }}
+                            locale={memoizedlocalestate === "en" ? "ae" : "en"}
+                          >
+                            <a
+                              className={classnames(
+                                "uppercase  rounded-full font-semibold  text-white bg-indigo-600 hover:bg-indigo-500 mx-2",
+                                {
+                                  "p-2.5  text-sm ":
+                                    memoizedlocalestate === "en",
+                                },
+                                {
+                                  "px-2 py-1 text-base ":
+                                    memoizedlocalestate === "ae",
+                                },
+                              )}
+                            >
+                              {memoizedlocalestate === "en" ? "ae" : "en"}
+                            </a>
+                          </Link>
+                        </li>
+                      </ul>
+
                       <Link href="/SignIn">
-                        <a className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:shadow-outline transition duration-150 ease-in-out">
-                          Sign in
+                        <a className="inline-flex items-center justify-center px-2 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:shadow-outline transition duration-150 ease-in-out">
+                          {translations.t("signin")}
                         </a>
                       </Link>
                     </div>
@@ -527,7 +560,7 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
             <header className="py-10">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <h1 className="text-3xl leading-9 font-bold text-white">
-                  Employer Registration
+                  {translations.t("employeregistration")}
                 </h1>
               </div>
             </header>
@@ -540,7 +573,7 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                     <li className="relative overflow-hidden lg:flex-1">
                       <div className="border border-gray-200 overflow-hidden border-b-0 rounded-t-md lg:border-0">
                         <a
-                          className="group text-left"
+                          className="group cursor-pointer"
                           onClick={(e) => setCurrentstep(1)}
                         >
                           <div
@@ -583,12 +616,30 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                                 </svg>
                               </div>
                             </div>
-                            <div className="mt-0.5 min-w-0">
-                              <h3 className="text-xs leading-4 font-semibold uppercase tracking-wide">
-                                Entity Details
+                            <div
+                              className={classnames(
+                                {
+                                  "px-2": memoizedlocalestate === "ae",
+                                },
+                                "m-0.5  min-w-0",
+                              )}
+                            >
+                              <h3
+                                className={classnames(
+                                  {
+                                    "text-xs": memoizedlocalestate === "en",
+                                  },
+
+                                  {
+                                    "text-sm": memoizedlocalestate === "ae",
+                                  },
+                                  " leading-4 font-semibold uppercase tracking-wide",
+                                )}
+                              >
+                                {translations.t("entitydetails")}
                               </h3>
                               <p className="text-sm leading-5 font-normal text-gray-500">
-                                Basic entity details
+                                {translations.t("entitydetailssub")}
                               </p>
                             </div>
                           </div>
@@ -599,7 +650,7 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                     <li className="relative overflow-hidden lg:flex-1">
                       <div className="border border-gray-200 overflow-hidden border-b-0 rounded-t-md lg:border-0">
                         <a
-                          className="group text-left"
+                          className="group cursor-pointer"
                           onClick={(e) => setCurrentstep(2)}
                         >
                           <div
@@ -610,7 +661,7 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                               },
                             )}
                           ></div>
-                          <div className="px-6 py-5 flex items-start text-sm leading-5 font-medium space-x-4 lg:pl-9">
+                          <div className="px-6 py-5 flex items-start text-sm leading-5 font-medium space-x-4">
                             <div className="flex-shrink-0">
                               <div
                                 className={classnames(
@@ -642,12 +693,30 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                                 </svg>
                               </div>
                             </div>
-                            <div className="mt-0.5 min-w-0">
-                              <h3 className="text-xs leading-4 font-semibold text-indigo-600 uppercase tracking-wide">
-                                Primary Contact Details
+                            <div
+                              className={classnames(
+                                {
+                                  "px-2": memoizedlocalestate === "ae",
+                                },
+                                "m-0.5  min-w-0",
+                              )}
+                            >
+                              <h3
+                                className={classnames(
+                                  {
+                                    "text-xs": memoizedlocalestate === "en",
+                                  },
+
+                                  {
+                                    "text-sm": memoizedlocalestate === "ae",
+                                  },
+                                  " leading-4 font-semibold uppercase tracking-wide",
+                                )}
+                              >
+                                {translations.t("primarycontactdetails")}
                               </h3>
                               <p className="text-sm leading-5 font-normal text-gray-500">
-                                Provide HR Manager Details
+                                {translations.t("primarycontactdetailssub")}
                               </p>
                             </div>
                           </div>
@@ -673,7 +742,7 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                     <li className="relative overflow-hidden lg:flex-1">
                       <div className="border border-gray-200 overflow-hidden border-t-0 rounded-b-md lg:border-0">
                         <a
-                          className="group text-left"
+                          className="group cursor-pointer"
                           onClick={(e) => setCurrentstep(3)}
                         >
                           <div
@@ -684,7 +753,7 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                               },
                             )}
                           ></div>
-                          <div className="px-6 py-5 flex items-start text-sm leading-5 font-medium space-x-4 lg:pl-9">
+                          <div className="px-6 py-5 flex items-start text-sm leading-5 font-medium space-x-4">
                             <div className="flex-shrink-0">
                               <div
                                 className={classnames(
@@ -718,12 +787,30 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                                 </svg>
                               </div>
                             </div>
-                            <div className="mt-0.5 min-w-0">
-                              <h3 className="text-xs leading-4 font-semibold text-gray-500 uppercase tracking-wide">
-                                Attachments
+                            <div
+                              className={classnames(
+                                {
+                                  "px-2": memoizedlocalestate === "ae",
+                                },
+                                "m-0.5  min-w-0",
+                              )}
+                            >
+                              <h3
+                                className={classnames(
+                                  {
+                                    "text-xs": memoizedlocalestate === "en",
+                                  },
+
+                                  {
+                                    "text-sm": memoizedlocalestate === "ae",
+                                  },
+                                  " leading-4 font-semibold uppercase tracking-wide",
+                                )}
+                              >
+                                {translations.t("attachementdetails")}
                               </h3>
                               <p className="text-sm leading-5 font-normal text-gray-500">
-                                Provide needed documents for approval
+                                {translations.t("attachementdetailssub")}
                               </p>
                             </div>
                           </div>
@@ -756,11 +843,10 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                     <div className="col-span-1 px-6 pt-6">
                       <div className="px-4 sm:px-0">
                         <h3 className="text-lg font-medium leading-6 text-gray-900">
-                          Employer profile
+                          {translations.t("employerprofile")}
                         </h3>
                         <p className="mt-1 text-sm leading-5 text-gray-600">
-                          This information will be displayed publicly so be
-                          careful what you share.
+                          {translations.t("employerprofilesub")}
                         </p>
                       </div>
                     </div>
@@ -775,16 +861,30 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                                     htmlFor="nameen"
                                     className="block text-sm font-medium leading-5 text-gray-700"
                                   >
-                                    Company Name(In English)
+                                    {translations.t("companynameen")}
                                   </label>
                                   <div className="mt-1 flex rounded-md shadow-sm">
-                                    <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm"></span>
+                                    <FieldStarter
+                                      locale={memoizedlocalestate}
+                                    />
                                     <input
                                       name="nameen"
                                       id="nameen"
                                       ref={step1register}
-                                      className="inline-flex w-full border border-gray-300 rounded-r-md py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                      placeholder="Enter english title of company"
+                                      className={classnames(
+                                        {
+                                          "rounded-r-md sm:text-sm":
+                                            memoizedlocalestate === "en",
+                                        },
+                                        {
+                                          "rounded-l-md sm:text-base":
+                                            memoizedlocalestate === "ae",
+                                        },
+                                        "inline-flex w-full border border-gray-300  py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 ",
+                                      )}
+                                      placeholder={translations.t(
+                                        "enterdetails",
+                                      )}
                                     />
                                   </div>
                                   <p className="text-red-500">
@@ -797,16 +897,30 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                                     htmlFor="nameae"
                                     className="block text-sm font-medium leading-5 text-gray-700"
                                   >
-                                    Company Name(In Arabic)
+                                    {translations.t("companynameae")}
                                   </label>
                                   <div className="mt-1 flex rounded-md shadow-sm">
-                                    <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm"></span>
+                                    <FieldStarter
+                                      locale={memoizedlocalestate}
+                                    />
                                     <input
                                       name="nameae"
                                       id="nameae"
                                       ref={step1register}
-                                      className="inline-flex w-full border border-gray-300 rounded-r-md py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                      placeholder="Enter arabic title of company"
+                                      className={classnames(
+                                        {
+                                          "rounded-r-md sm:text-sm":
+                                            memoizedlocalestate === "en",
+                                        },
+                                        {
+                                          "rounded-l-md sm:text-base":
+                                            memoizedlocalestate === "ae",
+                                        },
+                                        "inline-flex w-full border border-gray-300  py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 ",
+                                      )}
+                                      placeholder={translations.t(
+                                        "enterdetails",
+                                      )}
                                     />
                                   </div>
                                   <p className="text-red-500">
@@ -819,10 +933,12 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                                     htmlFor="mothercompany"
                                     className="block text-sm font-medium leading-5 text-gray-700"
                                   >
-                                    Mother company
+                                    {translations.t("mothercompany")}
                                   </label>
                                   <div className="mt-1 flex rounded-md shadow-sm">
-                                    <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm"></span>
+                                    <FieldStarter
+                                      locale={memoizedlocalestate}
+                                    />
                                     <WrapperSelectController
                                       className=""
                                       defaultValue="0"
@@ -867,15 +983,27 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                                     htmlFor="companysize"
                                     className="block text-sm font-medium leading-5 text-gray-700"
                                   >
-                                    Company Size
+                                    {translations.t("companysize")}
                                   </label>
                                   <div className="mt-1 flex rounded-md shadow-sm">
-                                    <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm"></span>
+                                    <FieldStarter
+                                      locale={memoizedlocalestate}
+                                    />
                                     <input
                                       id="companysize"
                                       name="companysize"
                                       ref={step1register}
-                                      className="inline-flex w-full border border-gray-300 rounded-r-md py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                      className={classnames(
+                                        {
+                                          "rounded-r-md sm:text-sm":
+                                            memoizedlocalestate === "en",
+                                        },
+                                        {
+                                          "rounded-l-md sm:text-base":
+                                            memoizedlocalestate === "ae",
+                                        },
+                                        "inline-flex w-full border border-gray-300  py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 ",
+                                      )}
                                       placeholder="Enter total company size"
                                     />
                                   </div>
@@ -889,15 +1017,27 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                                     htmlFor="tradelicense"
                                     className="block text-sm font-medium leading-5 text-gray-700"
                                   >
-                                    Trade License Number
+                                    {translations.t("tradelicensenumber")}
                                   </label>
                                   <div className="mt-1 flex rounded-md shadow-sm">
-                                    <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm"></span>
+                                    <FieldStarter
+                                      locale={memoizedlocalestate}
+                                    />{" "}
                                     <input
                                       id="tradelicense"
                                       name="tradelicense"
                                       ref={step1register}
-                                      className="inline-flex w-full border border-gray-300 rounded-r-md py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                      className={classnames(
+                                        {
+                                          "rounded-r-md sm:text-sm":
+                                            memoizedlocalestate === "en",
+                                        },
+                                        {
+                                          "rounded-l-md sm:text-base":
+                                            memoizedlocalestate === "ae",
+                                        },
+                                        "inline-flex w-full border border-gray-300  py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 ",
+                                      )}
                                       placeholder="Enter trade license number"
                                     />
                                   </div>
@@ -911,10 +1051,12 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                                     htmlFor="tadelicenseauthority"
                                     className="block text-sm font-medium leading-5 text-gray-700"
                                   >
-                                    Tade License Issuing Authority
+                                    {translations.t("tradelicenseauthority")}
                                   </label>
                                   <div className="mt-1 flex rounded-md shadow-sm">
-                                    <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm"></span>
+                                    <FieldStarter
+                                      locale={memoizedlocalestate}
+                                    />
                                     <WrapperSelectController
                                       className=""
                                       defaultValue="0"
@@ -959,10 +1101,12 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                                     htmlFor="sector"
                                     className="block text-sm font-medium leading-5 text-gray-700"
                                   >
-                                    Sector
+                                    {translations.t("sector")}
                                   </label>
                                   <div className="mt-1 flex rounded-md shadow-sm">
-                                    <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm"></span>
+                                    <FieldStarter
+                                      locale={memoizedlocalestate}
+                                    />{" "}
                                     <WrapperSelectController
                                       className=""
                                       defaultValue="0"
@@ -1007,10 +1151,12 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                                     htmlFor="industry"
                                     className="block text-sm font-medium leading-5 text-gray-700"
                                   >
-                                    Industry
+                                    {translations.t("industry")}
                                   </label>
                                   <div className="mt-1 flex rounded-md shadow-sm">
-                                    <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm"></span>
+                                    <FieldStarter
+                                      locale={memoizedlocalestate}
+                                    />
                                     <WrapperSelectController
                                       className=""
                                       defaultValue="0"
@@ -1055,10 +1201,12 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                                     htmlFor="city"
                                     className="block text-sm font-medium leading-5 text-gray-700"
                                   >
-                                    City
+                                    {translations.t("city")}
                                   </label>
                                   <div className="mt-1 flex rounded-md shadow-sm">
-                                    <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm"></span>
+                                    <FieldStarter
+                                      locale={memoizedlocalestate}
+                                    />{" "}
                                     <WrapperSelectController
                                       className=""
                                       defaultValue="0"
@@ -1103,16 +1251,30 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                                     htmlFor="website"
                                     className="block text-sm font-medium leading-5 text-gray-700"
                                   >
-                                    Website
+                                    {translations.t("website")}
                                   </label>
                                   <div className="mt-1 flex rounded-md shadow-sm">
-                                    <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm"></span>
+                                    <FieldStarter
+                                      locale={memoizedlocalestate}
+                                    />
                                     <input
                                       id="website"
                                       name="website"
                                       ref={step1register}
-                                      className="inline-flex w-full border border-gray-300 rounded-r-md py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                      placeholder="Enter website address"
+                                      className={classnames(
+                                        {
+                                          "rounded-r-md sm:text-sm":
+                                            memoizedlocalestate === "en",
+                                        },
+                                        {
+                                          "rounded-l-md sm:text-base":
+                                            memoizedlocalestate === "ae",
+                                        },
+                                        "inline-flex w-full border border-gray-300  py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 ",
+                                      )}
+                                      placeholder={translations.t(
+                                        "enterdetails",
+                                      )}
                                     />
                                   </div>
                                   <p className="text-red-500">
@@ -1125,7 +1287,7 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                                     htmlFor="about"
                                     className="block text-sm leading-5 font-medium text-gray-700"
                                   >
-                                    About / Commercial Activities
+                                    {translations.t("aboutactivities")}
                                   </label>
                                   <div className="rounded-md shadow-sm">
                                     <Controller
@@ -1175,7 +1337,7 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                                   type="submit"
                                   className="inline-flex justify-center py-2 px-4 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out"
                                 >
-                                  Next
+                                  {translations.t("next")}
                                 </button>
                               </span>
                             </div>
@@ -1194,11 +1356,10 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                     <div className="col-span-1 px-6 pt-6">
                       <div className="px-4 sm:px-0">
                         <h3 className="text-lg font-medium leading-6 text-gray-900">
-                          Account Details
+                          {translations.t("accountdetails")}
                         </h3>
                         <p className="mt-1 text-sm leading-5 text-gray-600">
-                          HR Manager account details who shall be point of
-                          contact with HRA
+                          {translations.t("accountdetailssub")}
                         </p>
                       </div>
                     </div>
@@ -1213,15 +1374,27 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                                     htmlFor="fullname"
                                     className="block text-sm font-medium leading-5 text-gray-700"
                                   >
-                                    Full Name
+                                    {translations.t("fullname")}
                                   </label>
                                   <div className="mt-1 flex rounded-md shadow-sm">
-                                    <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm"></span>
+                                    <FieldStarter
+                                      locale={memoizedlocalestate}
+                                    />
                                     <input
                                       name="fullname"
                                       id="fullname"
                                       ref={step2register}
-                                      className="inline-flex w-full border border-gray-300 rounded-r-md py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                      className={classnames(
+                                        {
+                                          "rounded-r-md sm:text-sm":
+                                            memoizedlocalestate === "en",
+                                        },
+                                        {
+                                          "rounded-l-md sm:text-base":
+                                            memoizedlocalestate === "ae",
+                                        },
+                                        "inline-flex w-full border border-gray-300  py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 ",
+                                      )}
                                       placeholder="Enter primary contact full name"
                                     />
                                   </div>
@@ -1234,15 +1407,27 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                                     htmlFor="emailaddress"
                                     className="block text-sm font-medium leading-5 text-gray-700"
                                   >
-                                    Email Address
+                                    {translations.t("emailaddress")}
                                   </label>
                                   <div className="mt-1 flex rounded-md shadow-sm">
-                                    <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm"></span>
+                                    <FieldStarter
+                                      locale={memoizedlocalestate}
+                                    />
                                     <input
                                       name="emailaddress"
                                       id="emailaddress"
                                       ref={step2register}
-                                      className="inline-flex w-full border border-gray-300 rounded-r-md py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                      className={classnames(
+                                        {
+                                          "rounded-r-md sm:text-sm":
+                                            memoizedlocalestate === "en",
+                                        },
+                                        {
+                                          "rounded-l-md sm:text-base":
+                                            memoizedlocalestate === "ae",
+                                        },
+                                        "inline-flex w-full border border-gray-300  py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 ",
+                                      )}
                                       placeholder="Enter email address"
                                     />
                                   </div>
@@ -1256,15 +1441,27 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                                     htmlFor="mobilenumber"
                                     className="block text-sm font-medium leading-5 text-gray-700"
                                   >
-                                    Mobile Number
+                                    {translations.t("mobilenumber")}
                                   </label>
                                   <div className="mt-1 flex rounded-md shadow-sm">
-                                    <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm"></span>
+                                    <FieldStarter
+                                      locale={memoizedlocalestate}
+                                    />{" "}
                                     <input
                                       name="mobilenumber"
                                       id="mobilenumber"
                                       ref={step2register}
-                                      className="inline-flex w-full border border-gray-300 rounded-r-md py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                      className={classnames(
+                                        {
+                                          "rounded-r-md sm:text-sm":
+                                            memoizedlocalestate === "en",
+                                        },
+                                        {
+                                          "rounded-l-md sm:text-base":
+                                            memoizedlocalestate === "ae",
+                                        },
+                                        "inline-flex w-full border border-gray-300  py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 ",
+                                      )}
                                       placeholder="Enter mobile number"
                                     />
                                   </div>
@@ -1278,15 +1475,27 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                                     htmlFor="phonenumber"
                                     className="block text-sm font-medium leading-5 text-gray-700"
                                   >
-                                    Phone Number
+                                    {translations.t("phonenumber")}
                                   </label>
                                   <div className="mt-1 flex rounded-md shadow-sm">
-                                    <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm"></span>
+                                    <FieldStarter
+                                      locale={memoizedlocalestate}
+                                    />
                                     <input
                                       name="phonenumber"
                                       id="phonenumber"
                                       ref={step2register}
-                                      className="inline-flex w-full border border-gray-300 rounded-r-md py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                      className={classnames(
+                                        {
+                                          "rounded-r-md sm:text-sm":
+                                            memoizedlocalestate === "en",
+                                        },
+                                        {
+                                          "rounded-l-md sm:text-base":
+                                            memoizedlocalestate === "ae",
+                                        },
+                                        "inline-flex w-full border border-gray-300  py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 ",
+                                      )}
                                       placeholder="Enter Phone number"
                                     />
                                   </div>
@@ -1300,15 +1509,27 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                                     htmlFor="username"
                                     className="block text-sm font-medium leading-5 text-gray-700"
                                   >
-                                    User Name
+                                    {translations.t("username")}
                                   </label>
                                   <div className="mt-1 flex rounded-md shadow-sm">
-                                    <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm"></span>
+                                    <FieldStarter
+                                      locale={memoizedlocalestate}
+                                    />
                                     <input
                                       name="username"
                                       id="username"
                                       ref={step2register}
-                                      className="inline-flex w-full border border-gray-300 rounded-r-md py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                      className={classnames(
+                                        {
+                                          "rounded-r-md sm:text-sm":
+                                            memoizedlocalestate === "en",
+                                        },
+                                        {
+                                          "rounded-l-md sm:text-base":
+                                            memoizedlocalestate === "ae",
+                                        },
+                                        "inline-flex w-full border border-gray-300  py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 ",
+                                      )}
                                       placeholder="Enter Username"
                                     />
                                   </div>
@@ -1322,16 +1543,28 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                                     htmlFor="password"
                                     className="block text-sm font-medium leading-5 text-gray-700"
                                   >
-                                    Password
+                                    {translations.t("password")}
                                   </label>
                                   <div className="mt-1 flex rounded-md shadow-sm">
-                                    <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm"></span>
+                                    <FieldStarter
+                                      locale={memoizedlocalestate}
+                                    />{" "}
                                     <input
                                       name="password"
                                       type="password"
                                       id="password"
                                       ref={step2register}
-                                      className="form-input flex-1 block w-full rounded-none rounded-r-md transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                                      className={classnames(
+                                        {
+                                          "rounded-r-md sm:text-sm":
+                                            memoizedlocalestate === "en",
+                                        },
+                                        {
+                                          "rounded-l-md sm:text-base":
+                                            memoizedlocalestate === "ae",
+                                        },
+                                        "inline-flex w-full border border-gray-300  py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 ",
+                                      )}
                                       placeholder="Enter Password"
                                     />
                                   </div>
@@ -1347,7 +1580,7 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                                   type="submit"
                                   className="inline-flex justify-center py-2 px-4 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out"
                                 >
-                                  Next
+                                  {translations.t("next")}
                                 </button>
                               </span>
                             </div>
@@ -1367,11 +1600,10 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                     <div className="col-span-1 px-6 pt-6">
                       <div className="px-4 sm:px-0">
                         <h3 className="text-lg font-medium leading-6 text-gray-900">
-                          Attachment details
+                          {translations.t("attachementdetails")}
                         </h3>
                         <p className="mt-1 text-sm leading-5 text-gray-600">
-                          This information will be displayed publicly so be
-                          careful what you share.
+                          {translations.t("attachementdetailssub")}
                         </p>
                       </div>
                     </div>
@@ -1382,7 +1614,7 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                             <div className="px-4 py-5 bg-white sm:p-6">
                               <div className="">
                                 <label className="block text-sm leading-5 font-medium text-gray-700">
-                                  Trade License
+                                  {translations.t("tradelicense")}
                                 </label>
                                 {!isUndefined(watchtradelicensefile) &&
                                   !isEmpty(watchtradelicensefile) && (
@@ -1447,7 +1679,7 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                                       />
                                     </p>
                                     <p className="mt-1 text-xs text-gray-500">
-                                      PNG , JPG, JPEG up to 3MB
+                                      {translations.t("alloweddoctypes")}
                                     </p>
                                   </div>
                                 </div>
@@ -1457,7 +1689,7 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                               </div>
                               <div className="mt-3">
                                 <label className="block text-sm leading-5 font-medium text-gray-700">
-                                  Company Logo
+                                  {translations.t("companylogo")}
                                 </label>
                                 {!isUndefined(watchcompanylogo) &&
                                   !isEmpty(watchcompanylogo) && (
@@ -1521,7 +1753,7 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                                       />
                                     </p>
                                     <p className="mt-1 text-xs text-gray-500">
-                                      PNG , JPG, JPEG up to 1MB
+                                      {translations.t("imageuploadsub")}
                                     </p>
                                   </div>
                                 </div>
@@ -1540,12 +1772,7 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                                   />
                                 </label>
                                 <p className="mx-2">
-                                  Lorem ipsum dolor sit amet consectetur
-                                  adipisicing elit. Quibusdam cumque magni
-                                  quaerat architecto corrupti possimus aperiam
-                                  vitae temporibus neque numquam maiores, eius
-                                  vero in ullam sed reprehenderit odio?
-                                  Voluptatum, perferendis.
+                                  {translations.t("employerdisclaimer")}
                                 </p>
                               </div>
                             </div>
@@ -1577,7 +1804,7 @@ const AddEmployer: NextPage<Props> = ({ userAgent }) => {
                                     },
                                   )}
                                 >
-                                  Save
+                                  {translations.t("save")}
                                 </button>
                               </span>
                             </div>

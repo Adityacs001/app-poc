@@ -8,6 +8,9 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import cogoToast from "cogo-toast";
 import Message from "@components/Message";
+import useLocales from "../hooks/useLocales";
+import useStore, { languageSelector } from "../store/index";
+import classnames from "classnames";
 
 const schema = yup.object().shape({
   emailaddress: yup.string().required("email is mandatory"),
@@ -18,6 +21,8 @@ type ForgotPasswordDTO = {
 };
 const ForgotPassword = () => {
   const router = useRouter();
+  const { translations } = useLocales();
+  const memoizedlocalestate = useStore(React.useCallback(languageSelector, []));
 
   const {
     register,
@@ -39,8 +44,8 @@ const ForgotPassword = () => {
     if (response.ok) {
       cogoToast.error(
         <Message
-          title="Password reset"
-          text="Email is sent to your registered account"
+          title={translations.t("passwordreset")}
+          text={translations.t("passwordresetsuccess")}
           type="success"
         />,
         {
@@ -51,9 +56,9 @@ const ForgotPassword = () => {
     } else {
       return cogoToast.error(
         <Message
-          title="Password reset"
-          text="invalid credentials"
-          type="error"
+          title={translations.t("passwordreset")}
+          text={translations.t("passwordresetsuccess")}
+          type="success"
         />,
         {
           position: "bottom-center",
@@ -64,16 +69,41 @@ const ForgotPassword = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 flex">
-      <div className="mx-auto bg-white flex-1 flex flex-col justify-center px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
-        <div className="mx-auto w-full max-w-sm">
-          <div>
+      <ul className="flex justify-end px-4 py-4">
+        <li>
+          <Link
+            href={{
+              pathname: router.pathname,
+              query: { ...router.query },
+            }}
+            locale={memoizedlocalestate === "en" ? "ae" : "en"}
+          >
+            <a
+              className={classnames(
+                "uppercase  rounded-full font-semibold  text-white bg-indigo-600 hover:bg-indigo-500 mx-2",
+                {
+                  "p-2.5  text-sm ": memoizedlocalestate === "en",
+                },
+                {
+                  "px-2 py-1 text-base ": memoizedlocalestate === "ae",
+                },
+              )}
+            >
+              {memoizedlocalestate === "en" ? "ae" : "en"}
+            </a>
+          </Link>
+        </li>
+      </ul>
+      <div className="min-w-lg  max-h-sm mx-auto  flex-1 flex flex-col items-center justify-center px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
+        <div className="mx-auto w-full bg-white px-6 py-4">
+          <div className=" ">
             <img className="h-auto w-auto" src="/logo.png" alt="Workflow" />
             <h2 className="mt-2 text-3xl leading-9 font-extrabold text-gray-900">
-              Forgot Password
+              {translations.t("forgotpassword")}
             </h2>
             <p className="mt-2 text-sm leading-5 text-gray-600 max-w">
               <span className="px-1">
-                Provide your registered email for password reset help
+                {translations.t("forgotpasswordsub")}
               </span>
             </p>
           </div>
@@ -85,7 +115,7 @@ const ForgotPassword = () => {
                   htmlFor="emailaddress"
                   className="block text-sm font-medium leading-5 text-gray-700"
                 >
-                  Email Address
+                  {translations.t("emailaddress")}
                 </label>
                 <div className="mt-1 rounded-md shadow-sm">
                   <input
@@ -106,14 +136,14 @@ const ForgotPassword = () => {
                     type="submit"
                     className="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out"
                   >
-                    Submit
+                    {translations.t("submit")}
                   </button>
                 </span>
                 <p className="mt-2 text-sm leading-5 text-gray-600 max-w">
-                  <span className="px-2">Or </span>
+                  <span className="px-2"> {translations.t("or")} </span>
                   <Link href="/SignIn">
                     <a className="font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:underline hover:underline transition ease-in-out duration-150">
-                      Return to Login
+                      {translations.t("returntologin")}
                     </a>
                   </Link>
                 </p>

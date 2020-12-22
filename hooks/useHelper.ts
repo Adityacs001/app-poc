@@ -10,6 +10,11 @@ const useSelectStyles = {
     ...styles,
     zIndex: 2,
   }),
+  input: (styles, { data }) => ({
+    ...styles,
+    zIndex: 2,
+    boxShadow: "none !important",
+  }),
 };
 
 export { useSelectStyles };

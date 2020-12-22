@@ -1,7 +1,9 @@
+/** @jsxRuntime classic */
+/** @jsx jsx */
 import * as React from "react";
 import Head from "next/head";
 import classnames from "classnames";
-import { jsx } from "theme-ui";
+import { sx, jsx } from "theme-ui";
 import { motion } from "framer-motion";
 import { getLayout } from "@components/Layouts/PrivateLayout";
 import { Transition } from "@headlessui/react";
@@ -18,6 +20,10 @@ import filter from "lodash/filter";
 import cogoToast from "cogo-toast";
 import Message from "@components/Message";
 import state from "../data/states";
+import InterviewForm from "@components/InterviewForm";
+import OfferForm from "@components/OfferForm";
+import RejectionForm from "@components/RejectionForm";
+import PageTitle from "@components/PageTitle";
 
 const VacancyTabItem = ({
   setSelectedtab,
@@ -48,12 +54,42 @@ const VacancyTabItem = ({
         viewBox="0 0 24 24"
         xmlns="http://www.w3.org/2000/svg"
       >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-        />
+        {taborder === 1 ? (
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        ) : taborder === 2 ? (
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+          />
+        ) : taborder === 3 ? (
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"
+          />
+        ) : taborder === 4 ? (
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+          />
+        ) : (
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        )}
       </svg>
 
       <span className="inline-block px-1">{label}</span>
@@ -74,21 +110,20 @@ const VacancyTabItem = ({
   );
 };
 
-const getactivevacancyformatching = async (key: string) => {
+const getactivevacancyformatching = async ({ queryKey }) => {
+  const [_key] = queryKey;
   const response = await fetch(`/api/getactivevacancyformatching`, {
     method: "GET",
     headers: { "Content-Type": "application/json " },
   });
 
   const result = await response.json();
+
   return result;
 };
 
-const getallmatchingforvacancy = async (
-  key: string,
-  rid: string,
-  selectedtab: number,
-) => {
+const getallmatchingforvacancy = async ({ queryKey }) => {
+  const [_key, { rid, selectedtab }] = queryKey;
   const response = await fetch(
     `/api/getallmatchingforvacancy?rid=${rid}&stageid=${selectedtab}`,
     {
@@ -101,7 +136,9 @@ const getallmatchingforvacancy = async (
   return result;
 };
 
-const getjobseekerdetails = async (key: string, rid: string) => {
+const getjobseekerdetails = async ({ queryKey }) => {
+  const [_key, { rid }] = queryKey;
+
   const response = await fetch(`/api/getjobseekedetail?rid=${rid}`, {
     method: "GET",
     headers: { "Content-Type": "application/json " },
@@ -116,7 +153,6 @@ const OfferManager = ({ user }) => {
   const [selectedtab, setSelectedtab] = React.useState(1);
   const [selectedrow, setSelectedrow] = React.useState();
   const [selectrowindex, setSelectedrowindex] = React.useState(0);
-  const queryCache = useQueryCache();
 
   const [
     selectedvacancy,
@@ -125,8 +161,13 @@ const OfferManager = ({ user }) => {
   const [showdetail, setShowdetail] = React.useState(false);
   const [searchterm, setSearchterm] = React.useState();
   const [joruneystats, setJourneystats] = React.useState({});
+  const [showinterviewschedule, setShowinterviewschedule] = React.useState(
+    false,
+  );
 
-  const [showdummy, setDummy] = React.useState(true);
+  const [showoffer, setShowoffer] = React.useState(false);
+  const [showrejectionform, setShowRejetionForm] = React.useState(false);
+
   const {
     isLoading: activevacancyisLoading,
     isError: activevacancyisError,
@@ -145,7 +186,10 @@ const OfferManager = ({ user }) => {
     isFetching: matchingisFetching,
     refetch: matchinglistRefetch,
   } = useQuery(
-    ["getallmatchingforvacancy", selectedvacancy?.value, selectedtab],
+    [
+      "getallmatchingforvacancy",
+      { rid: selectedvacancy?.value, selectedtab: selectedtab },
+    ],
     getallmatchingforvacancy,
     {
       enabled: !!user && !!selectedvacancy,
@@ -159,7 +203,7 @@ const OfferManager = ({ user }) => {
     data: jobseekerdata,
     error: jobseekererror,
   } = useQuery(
-    ["getjobseekerdetails", selectedrow?.resumeid],
+    ["getjobseekerdetails", { rid: selectedrow?.resumeid }],
     getjobseekerdetails,
     {
       enabled: !!user && !!selectedrow && showdetail,
@@ -236,6 +280,20 @@ const OfferManager = ({ user }) => {
     });
   }, [selectedvacancy]);
 
+  const memoizedInterviewFormCallback = React.useCallback(() => {
+    setShowinterviewschedule(false);
+  }, []);
+
+  const memoizedOfferFormCallback = React.useCallback(() => {
+    setShowoffer(false);
+  }, []);
+
+  const memoizedRejectionFormCallback = React.useCallback((data) => {
+    setShowRejetionForm(false);
+    matchinglistRefetch();
+    setJourneystats(data);
+  }, []);
+
   return (
     <React.Fragment>
       <div className=" border-b border-gray-200 px-4 py-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8 sm:flex-wrap">
@@ -250,7 +308,7 @@ const OfferManager = ({ user }) => {
       </div>
       <div className="bg-gray-100 flex justify-between items-center">
         <div className="px-6 py-3  sm:flex sm:items-center sm:justify-between sm:space-x-4 sm:space-y-0">
-          <MainHeader
+          <PageTitle
             title="List of all applications submitted for vacancy"
             subtitle="select one of vacacy to view its application"
             isbordered={false}
@@ -413,7 +471,11 @@ const OfferManager = ({ user }) => {
                           ) : (
                             <img
                               className="w-10 h-10 bg-gray-300 rounded-full flex-shrink-0"
-                              src={`data:image/png;base64,${x?.photo}`}
+                              src={
+                                x?.email == "NA"
+                                  ? `${x?.photo}`
+                                  : `data:image/png;base64,${x?.photo}`
+                              }
                               alt=""
                             />
                           )}
@@ -559,7 +621,8 @@ const OfferManager = ({ user }) => {
                                     onClick={(e) => {
                                       setSelectedrowindex(0);
                                       setSelectedrow(x);
-                                      onStatusUpdate(x, 2);
+                                      //onStatusUpdate(x, 2);
+                                      setShowRejetionForm(true);
                                     }}
                                     className="cursor-pointer group flex items-center px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
                                     role="menuitem"
@@ -585,23 +648,54 @@ const OfferManager = ({ user }) => {
                                     onClick={(e) => {
                                       setSelectedrowindex(0);
                                       setSelectedrow(x);
+                                      setShowinterviewschedule(true);
                                     }}
                                     className="cursor-pointer group flex items-center px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
                                     role="menuitem"
                                   >
                                     <svg
                                       className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500"
-                                      fill="currentColor"
-                                      viewBox="0 0 20 20"
+                                      fill="none"
+                                      stroke="currentColor"
+                                      viewBox="0 0 24 24"
                                       xmlns="http://www.w3.org/2000/svg"
                                     >
                                       <path
-                                        fillRule="evenodd"
-                                        d="M13.477 14.89A6 6 0 015.11 6.524l8.367 8.368zm1.414-1.414L6.524 5.11a6 6 0 018.367 8.367zM18 10a8 8 0 11-16 0 8 8 0 0116 0z"
-                                        clipRule="evenodd"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                                       />
                                     </svg>
                                     Schedule Interview
+                                  </a>
+                                )}
+
+                                {selectedtab === 3 && (
+                                  <a
+                                    onClick={(e) => {
+                                      setSelectedrowindex(0);
+                                      setSelectedrow(x);
+                                      setShowoffer(true);
+                                    }}
+                                    className="cursor-pointer group flex items-center px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                                    role="menuitem"
+                                  >
+                                    <svg
+                                      className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500"
+                                      fill="none"
+                                      stroke="currentColor"
+                                      viewBox="0 0 24 24"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                      <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"
+                                      />
+                                    </svg>
+                                    Add offer
                                   </a>
                                 )}
                               </div>
@@ -882,6 +976,329 @@ const OfferManager = ({ user }) => {
                     >
                       Cancel
                     </button>
+                  </div>
+                </div>
+              </Transition>
+            </section>
+          </div>
+        </div>
+      )}
+
+      {showinterviewschedule && (
+        <div className="z-20  fixed inset-0 overflow-hidden">
+          <div className="absolute inset-0 overflow-hidden">
+            <Transition
+              show={showinterviewschedule}
+              enter="ease-in-out duration-500"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
+              leave="ease-in-out duration-500"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+              className="absolute inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+            ></Transition>
+            <section
+              className="absolute inset-y-0 right-0 pl-10 max-w-full flex"
+              aria-labelledby="slide-over-heading"
+            >
+              <Transition
+                show={showinterviewschedule}
+                className="w-screen max-w-2xl"
+                enter="transform transition ease-in-out duration-500 sm:duration-700"
+                enterFrom="translate-x-full"
+                enterTo="translate-x-0"
+                leave="transform transition ease-in-out duration-500 sm:duration-700"
+                leaveFrom="translate-x-0"
+                leaveTo="translate-x-full"
+              >
+                <div className="h-full divide-y divide-gray-200 flex flex-col bg-white shadow-xl">
+                  <div className=" flex-1 flex flex-col  overflow-y-scroll">
+                    <div className="px-4 sm:px-6">
+                      <div className="flex items-start justify-between py-4">
+                        <h2
+                          id="interviewheading"
+                          className="text-lg font-medium text-gray-900 "
+                        >
+                          List of Interviews
+                        </h2>
+                        <div className="ml-3 h-7 flex items-center">
+                          <button
+                            onClick={(e) => {
+                              setShowinterviewschedule(false);
+                              setSelectedrow(undefined);
+                            }}
+                            className="bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                          >
+                            <span className="sr-only">Close panel</span>
+
+                            <svg
+                              className="h-6 w-6"
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                              aria-hidden="true"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M6 18L18 6M6 6l12 12"
+                              />
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="py-1 relative flex-1 bg-gray-100">
+                      <div className="w-full sm:flex-1">
+                        <InterviewForm
+                          rid={process.env.NEXT_PUBLIC_RID_NEW}
+                          resumeid={selectedrow?.resumeid}
+                          reqid={selectedrow?.reqid}
+                          reqresumeid={selectedrow?.rid}
+                          onFormSubmit={memoizedInterviewFormCallback}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  {/* <div className="flex-shrink-0 p-2 flex justify-end">
+                     <span className="inline-flex rounded-md shadow-sm justify-between">
+                      <button
+                        type="submit"
+                        className={classnames(
+                          " inline-flex justify-center py-2 px-4 border border-transparent text-sm leading-5 font-medium rounded-md  bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out",
+                          {
+                            "opacity-25 text-gray-300": true,
+                          },
+                          {
+                            "opacity-100 text-white": false,
+                          },
+                        )}
+                      >
+                        Save
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          setShowinterviewschedule(false);
+                          setSelectedrow(undefined);
+                        }}
+                        type="button"
+                        className="mx-2 bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                      >
+                        Cancel
+                      </button>
+                    </span>
+                  
+                  </div>*/}
+                </div>
+              </Transition>
+            </section>
+          </div>
+        </div>
+      )}
+
+      {showoffer && (
+        <div className="z-20  fixed inset-0 overflow-hidden">
+          <div className="absolute inset-0 overflow-hidden">
+            <Transition
+              show={showoffer}
+              enter="ease-in-out duration-500"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
+              leave="ease-in-out duration-500"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+              className="absolute inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+            ></Transition>
+            <section
+              className="absolute inset-y-0 right-0 pl-10 max-w-full flex"
+              aria-labelledby="slide-over-heading"
+            >
+              <Transition
+                show={showoffer}
+                className="w-screen max-w-2xl"
+                enter="transform transition ease-in-out duration-500 sm:duration-700"
+                enterFrom="translate-x-full"
+                enterTo="translate-x-0"
+                leave="transform transition ease-in-out duration-500 sm:duration-700"
+                leaveFrom="translate-x-0"
+                leaveTo="translate-x-full"
+              >
+                <div className="h-full divide-y divide-gray-200 flex flex-col bg-white shadow-xl">
+                  <div className=" flex-1 flex flex-col  overflow-y-scroll">
+                    <div className="px-4 sm:px-6">
+                      <div className="flex items-start justify-between py-4">
+                        <h2
+                          id="interviewheading"
+                          className="text-lg font-medium text-gray-900 "
+                        >
+                          Add Offer details
+                        </h2>
+                        <div className="ml-3 h-7 flex items-center">
+                          <button
+                            onClick={(e) => {
+                              setShowoffer(false);
+                              setSelectedrow(undefined);
+                            }}
+                            className="bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                          >
+                            <span className="sr-only">Close panel</span>
+
+                            <svg
+                              className="h-6 w-6"
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                              aria-hidden="true"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M6 18L18 6M6 6l12 12"
+                              />
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="py-1 relative flex-1 bg-gray-200">
+                      <div className="w-full sm:flex-1">
+                        <OfferForm
+                          rid={process.env.NEXT_PUBLIC_RID_NEW}
+                          resumeid={selectedrow?.resumeid}
+                          reqid={selectedrow?.reqid}
+                          reqresumeid={selectedrow?.rid}
+                          onFormSubmit={memoizedOfferFormCallback}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    className="flex-shrink-0 p-2 flex justify-end"
+                    sx={{
+                      display: "none",
+                    }}
+                  >
+                    <span className="inline-flex rounded-md shadow-sm justify-between">
+                      <button
+                        onClick={(e) => {
+                          setShowoffer(false);
+                          setSelectedrow(undefined);
+                        }}
+                        type="button"
+                        className="mx-2 bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                      >
+                        Close
+                      </button>
+                    </span>
+                  </div>
+                </div>
+              </Transition>
+            </section>
+          </div>
+        </div>
+      )}
+
+      {showrejectionform && (
+        <div className="z-20  fixed inset-0 overflow-hidden">
+          <div className="absolute inset-0 overflow-hidden">
+            <Transition
+              show={showrejectionform}
+              enter="ease-in-out duration-500"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
+              leave="ease-in-out duration-500"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+              className="absolute inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+            ></Transition>
+            <section
+              className="absolute inset-y-0 right-0 pl-10 max-w-full flex"
+              aria-labelledby="slide-over-heading"
+            >
+              <Transition
+                show={showrejectionform}
+                className="w-screen max-w-md"
+                enter="transform transition ease-in-out duration-500 sm:duration-700"
+                enterFrom="translate-x-full"
+                enterTo="translate-x-0"
+                leave="transform transition ease-in-out duration-500 sm:duration-700"
+                leaveFrom="translate-x-0"
+                leaveTo="translate-x-full"
+              >
+                <div className="h-full divide-y divide-gray-200 flex flex-col bg-white shadow-xl">
+                  <div className=" flex-1 flex flex-col  overflow-y-scroll">
+                    <div className="px-4 sm:px-6">
+                      <div className="flex items-start justify-between py-4">
+                        <h2
+                          id="interviewheading"
+                          className="text-lg font-medium text-gray-900 "
+                        >
+                          Rejection Reason
+                        </h2>
+                        <div className="ml-3 h-7 flex items-center">
+                          <button
+                            onClick={(e) => {
+                              setShowRejetionForm(false);
+                              setSelectedrow(undefined);
+                            }}
+                            className="bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                          >
+                            <span className="sr-only">Close panel</span>
+
+                            <svg
+                              className="h-6 w-6"
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                              aria-hidden="true"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M6 18L18 6M6 6l12 12"
+                              />
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="py-1 relative flex-1 bg-gray-200">
+                      <div className="w-full sm:flex-1">
+                        <RejectionForm
+                          rid={process.env.NEXT_PUBLIC_RID_NEW}
+                          resumeid={selectedrow?.resumeid}
+                          reqid={selectedrow?.reqid}
+                          reqresumeid={selectedrow?.rid}
+                          statusid={selectedrow?.statusid}
+                          onFormSubmit={memoizedRejectionFormCallback}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    className="flex-shrink-0 p-2 flex justify-end"
+                    sx={{
+                      display: "none",
+                    }}
+                  >
+                    <span className="inline-flex rounded-md shadow-sm justify-between">
+                      <button
+                        onClick={(e) => {
+                          setShowRejetionForm(false);
+                          setSelectedrow(undefined);
+                        }}
+                        type="button"
+                        className="mx-2 bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                      >
+                        Close
+                      </button>
+                    </span>
                   </div>
                 </div>
               </Transition>

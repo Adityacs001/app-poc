@@ -36,7 +36,8 @@ import jobeducations from "../data/jobeducations";
 import { CommonFormProps } from "../lib/commontypes";
 import { useQuery } from "react-query";
 
-const getvacancytemplatebyid = async (key: string, rid: string) => {
+const getvacancytemplatebyid = async ({ queryKey }) => {
+  const [_key, { rid }] = queryKey;
   const response = await fetch(`/api/getvacancytemplatebyid?rid=${rid}`, {
     method: "GET",
     headers: { "Content-Type": "application/json " },
@@ -52,7 +53,7 @@ const PositionProfileForm: React.FC<CommonFormProps> = ({
   //const jobdescriptionlocalref = React.useRef<HTMLInputElement | null>(null);
 
   const { isLoading, isError, data, error } = useQuery(
-    ["getvacancytemplatebyid", rid],
+    ["getvacancytemplatebyid", { rid }],
     getvacancytemplatebyid,
     {
       enabled: rid !== "" && rid !== process.env.NEXT_PUBLIC_RID_NEW,

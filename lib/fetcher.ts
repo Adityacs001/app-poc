@@ -1,6 +1,8 @@
 const fetchdetail = async (endpoint) => {
   var url = `${process.env.NEXT_API_BASEURL}${endpoint}`;
 
+  //url = `http://localhost:64460/employer/${endpoint}`;
+
   const response = await fetch(url, {
     method: "GET",
     headers: { "Content-Type": "application/json " },
@@ -12,6 +14,8 @@ const fetchdetail = async (endpoint) => {
 
 const Pushdetail = async (endpoint, payload) => {
   var url = `${process.env.NEXT_API_BASEURL}${endpoint}`;
+
+  //url = `http://localhost:64460/employer/${endpoint}`;
 
   const response = await fetch(url, {
     method: "POST",

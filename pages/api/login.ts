@@ -13,7 +13,7 @@ export default withIronSession(
         if (status === 200) {
           req.session.set("user", data);
           await req.session.save();
-          return res.status(201).send({
+          return res.status(200).send({
             status: true,
             message: message,
           });

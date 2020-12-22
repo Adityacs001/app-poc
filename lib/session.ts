@@ -12,6 +12,12 @@ const withSession = withIronSession(
       res.statusCode = 301;
       res.setHeader("location", "SignIn");
       return { props: {} };
+    } else {
+      if (user?.ispasswordreset) {
+        res.statusCode = 301;
+        res.setHeader("location", "accountactivation");
+        return { props: {} };
+      }
     }
     return {
       props: { user },

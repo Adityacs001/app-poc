@@ -11,6 +11,7 @@ import MainHeader from "@components/MainHeader";
 import SubHeader from "@components/SubHeader";
 import { useRouter } from "next/router";
 import withSession from "lib/session";
+import PageTitle from "@components/PageTitle";
 
 const VacancyManager = () => {
   const router = useRouter();
@@ -78,7 +79,7 @@ const VacancyManager = () => {
       </div>
       <div className="bg-gray-100">
         <div className="px-6 py-3  sm:flex sm:items-center sm:justify-between sm:space-x-4 sm:space-y-0">
-          <MainHeader
+          <PageTitle
             title="Fill in all mandatory fileds"
             subtitle="10 matching candidates will be automatically added on creating or editing vacancy"
             isbordered={false}

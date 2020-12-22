@@ -37,6 +37,16 @@ export type ActiveVacancylistforjourney = {
   totalrejected: number;
 };
 
+export type ActiveVacancylistforExpats = {
+  id: number;
+  value: string;
+  label: string;
+  titleen: string;
+  titleae: string;
+  totalopenings: number;
+  additionallowed: number;
+};
+
 export type useridentity = {
   clientid: string;
   contactid: string;

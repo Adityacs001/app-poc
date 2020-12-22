@@ -11,7 +11,9 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import cogoToast from "cogo-toast";
 import Message from "@components/Message";
-
+import useLocales from "../hooks/useLocales";
+import useStore, { languageSelector } from "../store/index";
+import classnames from "classnames";
 const schema = yup.object().shape({
   username: yup.string().required("username is mandatory"),
   password: yup.string().required("password is mandatory"),
@@ -23,6 +25,9 @@ type LoginDTO = {
 };
 const SignIn = () => {
   const router = useRouter();
+
+  const { translations } = useLocales();
+  const memoizedlocalestate = useStore(React.useCallback(languageSelector, []));
 
   const { register, handleSubmit, formState, errors } = useForm<LoginDTO>({
     mode: "onChange",
@@ -54,14 +59,14 @@ const SignIn = () => {
         <div className="mx-auto w-full max-w-sm">
           <div>
             <img className="h-auto w-auto" src="/logo.png" alt="Workflow" />
-            <h2 className="mt-2 text-3xl leading-9 font-extrabold text-gray-900">
-              Sign in to your account
+            <h2 className="mt-2 text-2xl leading-9 font-extrabold text-gray-900">
+              {translations.t("signinmessage")}
             </h2>
             <p className="mt-2 text-sm leading-5 text-gray-600 max-w">
               <span className="px-2">Or</span>
               <Link href="/registration">
                 <a className="font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:underline hover:underline transition ease-in-out duration-150">
-                  Register with HRA
+                  {translations.t("registerwithhra")}
                 </a>
               </Link>
             </p>
@@ -74,7 +79,7 @@ const SignIn = () => {
                 </div>
                 <div className="relative flex justify-center text-sm leading-5">
                   <span className="px-2 bg-white text-gray-500">
-                    Or continue with
+                    {translations.t("orcontinuewith")}
                   </span>
                 </div>
               </div>
@@ -84,10 +89,10 @@ const SignIn = () => {
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 <div>
                   <label
-                    htmlFor="email"
+                    htmlFor="username"
                     className="block text-sm font-medium leading-5 text-gray-700"
                   >
-                    Username
+                    {translations.t("username")}
                   </label>
                   <div className="mt-1 rounded-md shadow-sm">
                     <input
@@ -106,7 +111,7 @@ const SignIn = () => {
                     htmlFor="password"
                     className="block text-sm font-medium leading-5 text-gray-700"
                   >
-                    Password
+                    {translations.t("password")}
                   </label>
                   <div className="mt-1 rounded-md shadow-sm">
                     <input
@@ -131,17 +136,14 @@ const SignIn = () => {
                       htmlFor="remember_me"
                       className="ml-2 block text-sm leading-5 text-gray-900"
                     >
-                      Remember me
+                      {translations.t("rememberme")}
                     </label>
                   </div>
 
                   <div className="text-sm leading-5">
                     <Link href="/forgotpassword">
-                      <a
-                        href="#"
-                        className="font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:underline transition ease-in-out duration-150"
-                      >
-                        Forgot your password?
+                      <a className="font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:underline transition ease-in-out duration-150">
+                        {translations.t("forgotpassword")}
                       </a>
                     </Link>
                   </div>
@@ -153,7 +155,7 @@ const SignIn = () => {
                       type="submit"
                       className="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out"
                     >
-                      Sign in
+                      {translations.t("signin")}
                     </button>
                   </span>
                 </div>
@@ -163,23 +165,46 @@ const SignIn = () => {
         </div>
       </div>
       <div className=" hidden lg:block relative w-0 flex-1 md:flex md:flex-col  md:self-center">
+        <ul className="flex items-end justify-end p-3">
+          <li>
+            <Link
+              href={{ pathname: router.pathname, query: { ...router.query } }}
+              locale={memoizedlocalestate === "en" ? "ae" : "en"}
+            >
+              <a
+                className={classnames(
+                  "uppercase rounded-full font-semibold   text-white bg-indigo-600 hover:bg-indigo-500",
+                  {
+                    "p-2.5  text-sm ": memoizedlocalestate === "en",
+                  },
+                  {
+                    "px-2 py-1 text-base ": memoizedlocalestate === "ae",
+                  },
+                )}
+              >
+                {memoizedlocalestate === "en" ? "ae" : "en"}
+              </a>
+            </Link>
+          </li>
+        </ul>
         <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-6xl leading-normal font-bold text-gray-900 sm:text-4xl">
-              Some good message for employers.
+            <h2 className="text-5xl leading-normal font-bold text-gray-700 space-x-3">
+              <span className="text-transparent bg-gradient-to-r bg-clip-text from-indigo-500 to-green-500">
+                {translations.t("bannermessage")}
+              </span>
+              <span>{translations.t("bannermessagesub")}</span>
             </h2>
             <p className="mt-1 text-lg leading-7 text-gray-500 ">
-              Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-              Repellendus repellat laudantium.
+              {translations.t("introcontent1")}
             </p>
             <p className="mt-1 text-sm leading-7 text-gray-500 ">
-              Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-              Repellendus repellat laudantium.
+              {translations.t("introcontent2")}
             </p>
             <div className="ml-3 mt-3 inline-flex">
               <Link href="/addemployer">
                 <a className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:shadow-outline transition duration-150 ease-in-out">
-                  Register
+                  {translations.t("register")}
                 </a>
               </Link>
             </div>

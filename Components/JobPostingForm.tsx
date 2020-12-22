@@ -23,7 +23,7 @@ import { OptionsDTO } from "../lib/commontypes";
 import { yesnooptions } from "../lib/commonlookups";
 import jobbenefits from "../data/jobbenefits";
 import postingtypes from "../data/postingtypes";
-import sectors from "../data/sectors";
+import orgnizationunits from "../data/orgnizationunits";
 import departments from "../data/departments";
 import divisons from "../data/divisons";
 import joblocations from "../data/joblocations";
@@ -36,8 +36,11 @@ import { CommonFormProps } from "../lib/commontypes";
 import { useQuery } from "react-query";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import FieldStarter from "./FieldStarter";
+import useLocales from "../hooks/useLocales";
+import useStore, { languageSelector } from "../store/index";
 
-const getpostinglookups = async (key: string) => {
+const getpostinglookups = async ({ queryKey }) => {
   const response = await fetch(`/api/getpostinglookups`, {
     method: "GET",
     headers: { "Content-Type": "application/json " },
@@ -47,7 +50,8 @@ const getpostinglookups = async (key: string) => {
   return result;
 };
 
-const getvacancypostingbyid = async (key: string, rid: string) => {
+const getvacancypostingbyid = async ({ queryKey }) => {
+  const [_key, { rid }] = queryKey;
   const response = await fetch(`/api/getvacancypostingbyid?rid=${rid}`, {
     method: "GET",
     headers: { "Content-Type": "application/json " },
@@ -73,6 +77,9 @@ const JobPostingForm: React.FC<CommonFormProps> = ({
 }: CommonFormProps) => {
   const router = useRouter();
 
+  const { translations } = useLocales();
+  const memoizedlocalestate = useStore(React.useCallback(languageSelector, []));
+
   const {
     isLoading: islookupsLoading,
     isError: islookupsError,
@@ -84,7 +91,7 @@ const JobPostingForm: React.FC<CommonFormProps> = ({
   });
 
   const { isLoading, isError, data, error } = useQuery(
-    ["getvacancypostingbyid", rid],
+    ["getvacancypostingbyid", { rid }],
     getvacancypostingbyid,
     {
       enabled:
@@ -133,86 +140,82 @@ const JobPostingForm: React.FC<CommonFormProps> = ({
         value: yup.string().required(),
       })
 
-      .required("Vacancy template  is mandatory"),
+      .required(translations.t("fieldismandatory")),
 
     sector: yup
       .number()
-      .min(1, "select not applicable incase not relevant to your orgnization")
-      .required("sector is mandatory"),
+      .min(1, translations.t("selectnotapplicable"))
+      .required(translations.t("fieldismandatory")),
     department: yup
       .number()
-      .min(1, "select not applicable incase not relevant to your orgnization")
-      .required("department is mandatory"),
+      .min(1, translations.t("selectnotapplicable"))
+      .required(translations.t("fieldismandatory")),
 
     divison: yup
       .number()
-      .min(1, "select not applicable incase not relevant to your orgnization")
-      .required("department is mandatory"),
+      .min(1, translations.t("selectnotapplicable"))
+      .required(translations.t("fieldismandatory")),
 
     city: yup
       .number()
-      .min(1, "city is mandatory")
-      .required("city is mandatory"),
+      .min(1, translations.t("fieldismandatory"))
+      .required(translations.t("fieldismandatory")),
 
     openings: yup
       .number()
-      .min(1, "openings is mandatory")
-      .required("openings is mandatory"),
+      .min(1, translations.t("fieldismandatory"))
+      .required(translations.t("fieldismandatory")),
 
-    targetdate: yup.string().required("Target date is mandatory"),
+    targetdate: yup.string().required(translations.t("fieldismandatory")),
 
     postingtype: yup
       .number()
-      .min(1, "Posting type is mandatory")
-      .required("Posting type is mandatory"),
+      .min(1, translations.t("fieldismandatory"))
+      .required(translations.t("fieldismandatory")),
 
     worktype: yup
       .number()
-      .min(1, "work type is mandatory")
-      .required("work type is mandatory"),
+      .min(1, translations.t("fieldismandatory"))
+      .required(translations.t("fieldismandatory")),
 
     workinghours: yup
       .number()
-      .min(1, "Working hours is mandatory")
-      .required("Working hours is mandatory"),
+      .min(1, translations.t("fieldismandatory"))
+      .required(translations.t("fieldismandatory")),
 
     workingdays: yup
       .number()
-      .min(1, "Working days is mandatory")
-      .required("Working days is mandatory"),
+      .min(1, translations.t("fieldismandatory"))
+      .required(translations.t("fieldismandatory")),
 
     ispublished: yup
       .number()
-      .min(1, "IsPublished is mandatory")
-      .required("IsPublished is mandatory"),
+      .min(1, translations.t("fieldismandatory"))
+      .required(translations.t("fieldismandatory")),
 
-    unpublishingreason: yup
-      .number()
-      .min(1, "Unpublishing reason is mandatory")
-      .required("unpublishingreason reason is mandatory"),
+    unpublishingreason: yup.number().when("ispublished", {
+      is: (ispublished) => ispublished == 2,
+      then: yup.number().min(1, translations.t("fieldismandatory")),
+    }),
 
     specialneeds: yup
       .mixed()
-      .test(
-        "required",
-        "Special needs is mandatory for special need posting type",
-        (value) => {
-          if (
-            getValues("postingtype") == 1 &&
-            (value == null || value == undefined)
-          )
-            return false;
-          return true;
-        },
-      ),
+      .test("required", translations.t("specialneedsismandatory"), (value) => {
+        if (
+          getValues("postingtype") == 1 &&
+          (value == null || value == undefined)
+        )
+          return false;
+        return true;
+      }),
 
     jobdescription: yup
       .mixed()
-      .test("fileSize", "This file is too large", (value) => {
+      .test("fileSize", translations.t("filesizeistoolarge"), (value) => {
         if (!value.length) return true;
         else return value && value[0].size <= 3000000;
       })
-      .test("type", "only PDF , PNG, JPEG , JPG supported", (value) => {
+      .test("type", translations.t("alloweddoctypes"), (value) => {
         if (isUndefined(value[0])) return true;
         return (
           value &&
@@ -248,6 +251,7 @@ const JobPostingForm: React.FC<CommonFormProps> = ({
       unpublishingreason: 0,
       jobdescription: undefined,
     },
+    shouldUnregister: false,
   });
 
   const {
@@ -266,6 +270,7 @@ const JobPostingForm: React.FC<CommonFormProps> = ({
   } = postingmethods;
 
   const watchjobdescriptionfile = watch("jobdescription");
+  const watchispublished = watch("ispublished");
 
   const onPostingSubmit = async ({
     rid,
@@ -336,7 +341,11 @@ const JobPostingForm: React.FC<CommonFormProps> = ({
 
     if (response.ok) {
       cogoToast.success(
-        <Message title="Success" text="saved successfully" type="success" />,
+        <Message
+          title="Success"
+          text={translations.t("savedsuccessfully")}
+          type="success"
+        />,
         {
           position: "bottom-center",
         },
@@ -344,11 +353,7 @@ const JobPostingForm: React.FC<CommonFormProps> = ({
       return router.push("/vacancies");
     } else {
       return cogoToast.error(
-        <Message
-          title="Error"
-          text="something went wrong while saving, we are looking into issue. Please try some time later"
-          type="error"
-        />,
+        <Message title="Error" text={translations.t("error")} type="error" />,
         {
           position: "bottom-center",
         },
@@ -404,14 +409,19 @@ const JobPostingForm: React.FC<CommonFormProps> = ({
       setValue("worktype", vacanciesdefaultvalues.worktype);
       setValue("workinghours", vacanciesdefaultvalues.workinghours);
       setValue("workingdays", vacanciesdefaultvalues.workingdays);
-      setValue("ispublished", vacanciesdefaultvalues.ispublished);
-      setValue("unpublishingreason", vacanciesdefaultvalues.unpublishingreason);
 
       //local react state for upload only
       setUploadedfilenameonly(vacanciesdefaultvalues.jobdescriptionfilename);
       try {
         setValue("positionprofile", vacanciesdefaultvalues.positionprofile);
         trigger("positionprofile");
+
+        setValue("ispublished", vacanciesdefaultvalues.ispublished);
+
+        setValue(
+          "unpublishingreason",
+          vacanciesdefaultvalues.unpublishingreason,
+        );
       } catch (e) {
         console.log("check positionprofile assignment");
       }
@@ -433,7 +443,11 @@ const JobPostingForm: React.FC<CommonFormProps> = ({
           downloadfile(data.filedata, data.filename);
         } else {
           return cogoToast.error(
-            <Message title="Error" text="file not found" type="error" />,
+            <Message
+              title="Error"
+              text={translations.t("filenotfound")}
+              type="error"
+            />,
             {
               position: "bottom-center",
             },
@@ -442,17 +456,17 @@ const JobPostingForm: React.FC<CommonFormProps> = ({
       })
       .catch(({ data }) => {
         return cogoToast.error(
-          <Message
-            title="Error"
-            text="something went wrong while saving, we are looking into issue. Please try some time later"
-            type="error"
-          />,
+          <Message title="Error" text={translations.t("error")} type="error" />,
           {
             position: "bottom-center",
           },
         );
       });
   };
+
+  React.useEffect(() => {
+    trigger("unpublishingreason");
+  }, [watchispublished]);
 
   return (
     <React.Fragment>
@@ -475,11 +489,11 @@ const JobPostingForm: React.FC<CommonFormProps> = ({
                         htmlFor="positionprofile"
                         className="block text-sm font-medium leading-5 text-gray-700"
                       >
-                        Vacancy Template
+                        {translations.t("vacancytemplate")}
                       </label>
 
                       <div className="mt-1 flex rounded-md shadow-sm">
-                        <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm"></span>
+                        <FieldStarter locale={memoizedlocalestate} />
 
                         <Controller
                           defaultValue={undefined}
@@ -509,16 +523,25 @@ const JobPostingForm: React.FC<CommonFormProps> = ({
                         htmlFor="jobcode"
                         className="block text-sm font-medium leading-5 text-gray-700"
                       >
-                        Jobcode
+                        {translations.t("jobcode")}
                       </label>
                       <div className="mt-1 flex rounded-md shadow-sm">
-                        <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm"></span>
+                        <FieldStarter locale={memoizedlocalestate} />
                         <input
                           disabled
                           name="jobcode"
                           id="jobcode"
                           ref={register}
-                          className="inline-flex w-full border border-gray-300 rounded-r-md py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-100"
+                          className={classnames(
+                            {
+                              "rounded-r-md ": memoizedlocalestate === "en",
+                            },
+                            {
+                              "rounded-l-md": memoizedlocalestate === "ae",
+                            },
+
+                            "inline-flex w-full border border-gray-300  py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-100",
+                          )}
                           placeholder="To be generated"
                         />
                       </div>
@@ -530,11 +553,10 @@ const JobPostingForm: React.FC<CommonFormProps> = ({
                         htmlFor="postingtype"
                         className="block text-sm font-medium leading-5 text-gray-700"
                       >
-                        Posting Type
+                        {translations.t("postingtype")}
                       </label>
                       <div className="mt-1 flex rounded-md shadow-sm">
-                        <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm"></span>
-
+                        <FieldStarter locale={memoizedlocalestate} />
                         <select
                           name="postingtype"
                           id="postingtype"
@@ -542,7 +564,7 @@ const JobPostingForm: React.FC<CommonFormProps> = ({
                           className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm  "
                         >
                           <option value="0" className="text-gray-500 ">
-                            --Select--
+                            {translations.t("select")}
                           </option>
                           {postingtypes &&
                             postingtypes.map((val, index) => (
@@ -551,7 +573,9 @@ const JobPostingForm: React.FC<CommonFormProps> = ({
                                 value={val.value}
                                 className="text-gray-500 "
                               >
-                                {val.label}
+                                {memoizedlocalestate === "en"
+                                  ? val?.titleen
+                                  : val?.titleae}
                               </option>
                             ))}
                         </select>
@@ -566,11 +590,10 @@ const JobPostingForm: React.FC<CommonFormProps> = ({
                         htmlFor="sector"
                         className="block text-sm font-medium leading-5 text-gray-700"
                       >
-                        Sector
+                        {translations.t("orgnizationsection")}
                       </label>
                       <div className="mt-1 flex rounded-md shadow-sm">
-                        <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm"></span>
-
+                        <FieldStarter locale={memoizedlocalestate} />
                         <select
                           name="sector"
                           id="sector"
@@ -578,16 +601,18 @@ const JobPostingForm: React.FC<CommonFormProps> = ({
                           className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm  "
                         >
                           <option value="0" className="text-gray-500 ">
-                            --Select--
+                            {translations.t("select")}
                           </option>
-                          {sectors &&
-                            sectors.map((val, index) => (
+                          {orgnizationunits &&
+                            orgnizationunits.map((val, index) => (
                               <option
                                 key={index}
                                 value={val.value}
                                 className="text-gray-500 "
                               >
-                                {val.label}
+                                {memoizedlocalestate === "en"
+                                  ? val?.titleen
+                                  : val?.titleae}
                               </option>
                             ))}
                         </select>
@@ -599,11 +624,10 @@ const JobPostingForm: React.FC<CommonFormProps> = ({
                         htmlFor="department"
                         className="block text-sm font-medium leading-5 text-gray-700"
                       >
-                        Department
+                        {translations.t("department")}
                       </label>
                       <div className="mt-1 flex rounded-md shadow-sm">
-                        <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm"></span>
-
+                        <FieldStarter locale={memoizedlocalestate} />
                         <select
                           name="department"
                           id="department"
@@ -611,7 +635,7 @@ const JobPostingForm: React.FC<CommonFormProps> = ({
                           className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm  "
                         >
                           <option value="0" className="text-gray-500 ">
-                            --Select--
+                            {translations.t("select")}
                           </option>
                           {departments &&
                             departments.map((val, index) => (
@@ -620,7 +644,9 @@ const JobPostingForm: React.FC<CommonFormProps> = ({
                                 value={val.value}
                                 className="text-gray-500 "
                               >
-                                {val.label}
+                                {memoizedlocalestate === "en"
+                                  ? val?.titleen
+                                  : val?.titleae}
                               </option>
                             ))}
                         </select>
@@ -634,11 +660,10 @@ const JobPostingForm: React.FC<CommonFormProps> = ({
                         htmlFor="divison"
                         className="block text-sm font-medium leading-5 text-gray-700"
                       >
-                        Divison
+                        {translations.t("divison")}
                       </label>
                       <div className="mt-1 flex rounded-md shadow-sm">
-                        <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm"></span>
-
+                        <FieldStarter locale={memoizedlocalestate} />
                         <select
                           name="divison"
                           id="divison"
@@ -646,7 +671,7 @@ const JobPostingForm: React.FC<CommonFormProps> = ({
                           className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm  "
                         >
                           <option value="0" className="text-gray-500 ">
-                            --Select--
+                            {translations.t("select")}
                           </option>
                           {divisons &&
                             divisons.map((val, index) => (
@@ -655,7 +680,9 @@ const JobPostingForm: React.FC<CommonFormProps> = ({
                                 value={val.value}
                                 className="text-gray-500 "
                               >
-                                {val.label}
+                                {memoizedlocalestate === "en"
+                                  ? val?.titleen
+                                  : val?.titleae}
                               </option>
                             ))}
                         </select>
@@ -667,16 +694,24 @@ const JobPostingForm: React.FC<CommonFormProps> = ({
                         htmlFor="openings"
                         className="block text-sm font-medium leading-5 text-gray-700"
                       >
-                        Openings
+                        {translations.t("openings")}
                       </label>
                       <div className="mt-1 flex rounded-md shadow-sm">
-                        <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm"></span>
+                        <FieldStarter locale={memoizedlocalestate} />
                         <input
                           name="openings"
                           id="openings"
                           ref={register}
-                          className="inline-flex w-full border border-gray-300 rounded-r-md py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                          placeholder="Enter total openings"
+                          className={classnames(
+                            {
+                              "rounded-r-md ": memoizedlocalestate === "en",
+                            },
+                            {
+                              "rounded-l-md ": memoizedlocalestate === "ae",
+                            },
+                            "inline-flex w-full border border-gray-300  py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm",
+                          )}
+                          placeholder={translations.t("enterdetails")}
                         />
                       </div>
                       <p className="text-red-500">{errors.openings?.message}</p>
@@ -686,10 +721,10 @@ const JobPostingForm: React.FC<CommonFormProps> = ({
                         htmlFor="city"
                         className="block text-sm font-medium leading-5 text-gray-700"
                       >
-                        City
+                        {translations.t("city")}
                       </label>
                       <div className="mt-1 flex rounded-md shadow-sm">
-                        <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm"></span>
+                        <FieldStarter locale={memoizedlocalestate} />
 
                         <select
                           name="city"
@@ -698,7 +733,7 @@ const JobPostingForm: React.FC<CommonFormProps> = ({
                           className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm  "
                         >
                           <option value="0" className="text-gray-500 ">
-                            --Select--
+                            {translations.t("select")}
                           </option>
                           {joblocations &&
                             joblocations.map((val, index) => (
@@ -707,7 +742,9 @@ const JobPostingForm: React.FC<CommonFormProps> = ({
                                 value={val.value}
                                 className="text-gray-500 "
                               >
-                                {val.label}
+                                {memoizedlocalestate === "en"
+                                  ? val?.titleen
+                                  : val?.titleae}
                               </option>
                             ))}
                         </select>
@@ -719,10 +756,11 @@ const JobPostingForm: React.FC<CommonFormProps> = ({
                         htmlFor="targetdate"
                         className="block text-sm font-medium leading-5 text-gray-700"
                       >
-                        Target Date
+                        {translations.t("targetdate")}
                       </label>
                       <div className="mt-1 flex rounded-md shadow-sm">
-                        <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm"></span>
+                        <FieldStarter locale={memoizedlocalestate} />
+
                         <Controller
                           className="inline-flex w-full border border-gray-300 rounded-r-md py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                           name="targetdate"
@@ -733,7 +771,15 @@ const JobPostingForm: React.FC<CommonFormProps> = ({
                               dateFormat="yyyy-MM-dd"
                               selected={value}
                               onChange={onChange}
-                              className="inline-flex w-full border border-gray-300 rounded-r-md py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                              className={classnames(
+                                {
+                                  "rounded-r-md ": memoizedlocalestate === "en",
+                                },
+                                {
+                                  "rounded-l-md ": memoizedlocalestate === "ae",
+                                },
+                                "inline-flex w-full border border-gray-300  py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm",
+                              )}
                             />
                           )}
                         />
@@ -748,10 +794,10 @@ const JobPostingForm: React.FC<CommonFormProps> = ({
                         htmlFor="worktype"
                         className="block text-sm font-medium leading-5 text-gray-700"
                       >
-                        Work Type
+                        {translations.t("worktype")}
                       </label>
                       <div className="mt-1 flex rounded-md shadow-sm">
-                        <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm"></span>
+                        <FieldStarter locale={memoizedlocalestate} />
 
                         <select
                           name="worktype"
@@ -760,7 +806,7 @@ const JobPostingForm: React.FC<CommonFormProps> = ({
                           className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm  "
                         >
                           <option value="0" className="text-gray-500 ">
-                            --Select--
+                            {translations.t("select")}
                           </option>
                           {postingworktypes &&
                             postingworktypes.map((val, index) => (
@@ -769,7 +815,9 @@ const JobPostingForm: React.FC<CommonFormProps> = ({
                                 value={val.value}
                                 className="text-gray-500 "
                               >
-                                {val.label}
+                                {memoizedlocalestate === "en"
+                                  ? val?.titleen
+                                  : val?.titleae}
                               </option>
                             ))}
                         </select>
@@ -781,10 +829,10 @@ const JobPostingForm: React.FC<CommonFormProps> = ({
                         htmlFor="workinghours"
                         className="block text-sm font-medium leading-5 text-gray-700"
                       >
-                        Working Hours
+                        {translations.t("workinghours")}
                       </label>
                       <div className="mt-1 flex rounded-md shadow-sm">
-                        <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm"></span>
+                        <FieldStarter locale={memoizedlocalestate} />
 
                         <select
                           name="workinghours"
@@ -793,7 +841,7 @@ const JobPostingForm: React.FC<CommonFormProps> = ({
                           className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm  "
                         >
                           <option value="0" className="text-gray-500 ">
-                            --Select--
+                            {translations.t("select")}
                           </option>
                           {postingworkhours &&
                             postingworkhours.map((val, index) => (
@@ -802,7 +850,9 @@ const JobPostingForm: React.FC<CommonFormProps> = ({
                                 value={val.value}
                                 className="text-gray-500 "
                               >
-                                {val.label}
+                                {memoizedlocalestate === "en"
+                                  ? val?.titleen
+                                  : val?.titleae}
                               </option>
                             ))}
                         </select>
@@ -816,11 +866,10 @@ const JobPostingForm: React.FC<CommonFormProps> = ({
                         htmlFor="workingdays"
                         className="block text-sm font-medium leading-5 text-gray-700"
                       >
-                        Working Days
+                        {translations.t("workingdays")}
                       </label>
                       <div className="mt-1 flex rounded-md shadow-sm">
-                        <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm"></span>
-
+                        <FieldStarter locale={memoizedlocalestate} />
                         <select
                           name="workingdays"
                           id="workingdays"
@@ -828,7 +877,7 @@ const JobPostingForm: React.FC<CommonFormProps> = ({
                           className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm  "
                         >
                           <option value="0" className="text-gray-500 ">
-                            --Select--
+                            {translations.t("select")}
                           </option>
                           {postingworkdays &&
                             postingworkdays.map((val, index) => (
@@ -837,7 +886,9 @@ const JobPostingForm: React.FC<CommonFormProps> = ({
                                 value={val.value}
                                 className="text-gray-500 "
                               >
-                                {val.label}
+                                {memoizedlocalestate === "en"
+                                  ? val?.titleen
+                                  : val?.titleae}
                               </option>
                             ))}
                         </select>
@@ -851,11 +902,10 @@ const JobPostingForm: React.FC<CommonFormProps> = ({
                         htmlFor="ispublished"
                         className="block text-sm font-medium leading-5 text-gray-700"
                       >
-                        Is Published
+                        {translations.t("ispublished")}
                       </label>
                       <div className="mt-1 flex rounded-md shadow-sm">
-                        <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm"></span>
-
+                        <FieldStarter locale={memoizedlocalestate} />
                         <select
                           name="ispublished"
                           id="ispublished"
@@ -863,7 +913,7 @@ const JobPostingForm: React.FC<CommonFormProps> = ({
                           className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm  "
                         >
                           <option value="0" className="text-gray-500 ">
-                            --Select--
+                            {translations.t("select")}
                           </option>
                           {yesnooptions &&
                             yesnooptions.map((val, index) => (
@@ -872,7 +922,9 @@ const JobPostingForm: React.FC<CommonFormProps> = ({
                                 value={val.value}
                                 className="text-gray-500 "
                               >
-                                {val.label}
+                                {memoizedlocalestate === "en"
+                                  ? val?.titleen
+                                  : val?.titleae}
                               </option>
                             ))}
                         </select>
@@ -881,53 +933,55 @@ const JobPostingForm: React.FC<CommonFormProps> = ({
                         {errors.ispublished?.message}
                       </p>
                     </div>
-                    <div className="col-span-6 sm:col-span-3">
-                      <label
-                        htmlFor="unpublishingreason"
-                        className="block text-sm font-medium leading-5 text-gray-700"
-                      >
-                        Unpublishing reason
-                      </label>
-                      <div className="mt-1 flex rounded-md shadow-sm">
-                        <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm"></span>
-
-                        <select
-                          name="unpublishingreason"
-                          id="unpublishingreason"
-                          ref={register}
-                          className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm  "
+                    {watchispublished == 2 && (
+                      <div className="col-span-6 sm:col-span-3">
+                        <label
+                          htmlFor="unpublishingreason"
+                          className="block text-sm font-medium leading-5 text-gray-700"
                         >
-                          <option value="0" className="text-gray-500 ">
-                            --Select--
-                          </option>
-                          {postingunpublishingreason &&
-                            postingunpublishingreason.map((val, index) => (
-                              <option
-                                key={index}
-                                value={val.value}
-                                className="text-gray-500 "
-                              >
-                                {val.label}
-                              </option>
-                            ))}
-                        </select>
+                          {translations.t("unpublishingreason")}
+                        </label>
+                        <div className="mt-1 flex rounded-md shadow-sm">
+                          <FieldStarter locale={memoizedlocalestate} />
+                          <select
+                            name="unpublishingreason"
+                            id="unpublishingreason"
+                            ref={register}
+                            className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm  "
+                          >
+                            <option value="0" className="text-gray-500 ">
+                              {translations.t("select")}
+                            </option>
+                            {postingunpublishingreason &&
+                              postingunpublishingreason.map((val, index) => (
+                                <option
+                                  key={index}
+                                  value={val.value}
+                                  className="text-gray-500 "
+                                >
+                                  {memoizedlocalestate === "en"
+                                    ? val?.titleen
+                                    : val?.titleae}
+                                </option>
+                              ))}
+                          </select>
+                        </div>
+                        <p className="text-red-500">
+                          {errors.unpublishingreason?.message}
+                        </p>
                       </div>
-                      <p className="text-red-500">
-                        {errors.unpublishingreason?.message}
-                      </p>
-                    </div>
+                    )}
                   </div>
                   <div className="mt-6">
                     <label
                       htmlFor="specialneeds"
                       className="block text-sm leading-5 font-medium text-gray-700"
                     >
-                      Special Needs
+                      {translations.t("specialneeds")}
                     </label>
                     <div className="rounded-md shadow-sm">
                       <div className="mt-1 flex rounded-md shadow-sm">
-                        <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm"></span>
-
+                        <FieldStarter locale={memoizedlocalestate} />
                         <Controller
                           defaultValue={getValues("specialneeds")}
                           isMulti
@@ -955,12 +1009,11 @@ const JobPostingForm: React.FC<CommonFormProps> = ({
                       htmlFor="additionalbenfits"
                       className="block text-sm leading-5 font-medium text-gray-700"
                     >
-                      Additional Benefits
+                      {translations.t("additionalbenfits")}
                     </label>
                     <div className="rounded-md shadow-sm">
                       <div className="mt-1 flex rounded-md shadow-sm">
-                        <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm"></span>
-
+                        <FieldStarter locale={memoizedlocalestate} />
                         <Controller
                           defaultValue={getValues("additionalbenfits")}
                           isMulti
@@ -987,7 +1040,7 @@ const JobPostingForm: React.FC<CommonFormProps> = ({
                       htmlFor="jobdescription"
                       className="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
                     >
-                      Job Attachment
+                      {translations.t("jobattachement")}
                     </label>
                     {uploadedfilenameonly && (
                       <span className="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium leading-5 bg-indigo-100 text-indigo-800">
@@ -1100,7 +1153,7 @@ const JobPostingForm: React.FC<CommonFormProps> = ({
                             />
                           </p>
                           <p className="mt-1 text-xs text-gray-500">
-                            Accepted file formats are PDF,doc,docx to 3MB
+                            {translations.t("alloweddoctypes")}
                           </p>
                         </div>
                       </div>
@@ -1125,7 +1178,7 @@ const JobPostingForm: React.FC<CommonFormProps> = ({
                         },
                       )}
                     >
-                      Save
+                      {translations.t("save")}
                     </button>
                     <button
                       className=" inline-flex justify-center py-2 px-4 mx-2 border border-transparent text-sm opacity-100 text-white leading-5 font-medium rounded-md  bg-red-600 hover:bg-red-500 focus:outline-none focus:border-red-700 focus:shadow-outline-indigo active:bg-red-700 transition duration-150 ease-in-out"
@@ -1138,7 +1191,7 @@ const JobPostingForm: React.FC<CommonFormProps> = ({
                         })
                       }
                     >
-                      Clear
+                      {translations.t("clear")}
                     </button>
                   </span>
                 </div>

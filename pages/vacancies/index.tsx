@@ -23,8 +23,11 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import jobclosingreason from "../../data/jobclosingreason";
+import PageTitle from "@components/PageTitle";
+import useLocales from "../../hooks/useLocales";
+import useStore, { languageSelector } from "../../store/index";
 
-const getvacancylist = async (key: string) => {
+const getvacancylist = async ({ queryKey }) => {
   const response = await fetch(`/api/getvacancylist`, {
     method: "GET",
     headers: { "Content-Type": "application/json " },
@@ -34,7 +37,9 @@ const getvacancylist = async (key: string) => {
   return result;
 };
 
-const getvacancydetails = async (key: string, rid: string) => {
+const getvacancydetails = async ({ queryKey }) => {
+  const [_key, { rid }] = queryKey;
+
   const response = await fetch(`/api/getvacancydetails?rid=${rid}`, {
     method: "GET",
     headers: { "Content-Type": "application/json " },
@@ -61,6 +66,8 @@ const Index = ({ user }) => {
   const [detailrid, setDetailrid] = React.useState();
   const [showclose, setShowclose] = React.useState(false);
   const [closingvacancydetail, setClosingvacancydetail] = React.useState<any>();
+  const { translations } = useLocales();
+  const memoizedlocalestate = useStore(React.useCallback(languageSelector, []));
 
   const schema = yup.object().shape({
     reasonid: yup
@@ -95,7 +102,7 @@ const Index = ({ user }) => {
     isError: isDetailsError,
     data: vacancydata,
     error: vacancyerror,
-  } = useQuery(["getvacancydetails", detailrid], getvacancydetails, {
+  } = useQuery(["getvacancydetails", { rid: detailrid }], getvacancydetails, {
     enabled: !!user && detailrid != undefined && detailrid != "",
     refetchOnWindowFocus: false,
   });
@@ -173,7 +180,11 @@ const Index = ({ user }) => {
     <React.Fragment>
       <div className=" border-b border-gray-200 px-4 py-4 sm:flex sm:items-center sm:justify-between sm:px-6 lg:px-8 sm:flex-wrap">
         <div className="flex-1 min-w-0">
-          <MainHeader title="Vacancies" subtitle="" isbordered={false} />
+          <MainHeader
+            title={translations.t("vacancies")}
+            subtitle=""
+            isbordered={false}
+          />
         </div>
         <div className="flex justify-between">
           <div className="mt-4 flex sm:mt-0 sm:ml-4">
@@ -183,9 +194,9 @@ const Index = ({ user }) => {
       </div>
       <div className="bg-gray-100 flex justify-between items-center">
         <div className="px-6 py-3  sm:flex sm:items-center sm:justify-between sm:space-x-4 sm:space-y-0">
-          <MainHeader
-            title="List of all Vacancies"
-            subtitle="Filter, edit or close vacancies"
+          <PageTitle
+            title={translations.t("listofvacancies")}
+            subtitle={translations.t("listofvacanciesub")}
             isbordered={false}
           />
         </div>
@@ -200,7 +211,7 @@ const Index = ({ user }) => {
               type="button"
               className="inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-700 active:bg-indigo-700 transition duration-150 ease-in-out"
             >
-              Add New vacancy
+              {translations.t("addnewvacancy")}
             </button>
           </span>
         </div>
@@ -209,7 +220,7 @@ const Index = ({ user }) => {
         <div className="">
           <div className="w-full">
             <label htmlFor="search" className="sr-only">
-              Search
+              {translations.t("search")}
             </label>
             <div className="flex justify-between">
               <div className="relative rounded-md shadow-sm w-full">
@@ -237,33 +248,9 @@ const Index = ({ user }) => {
                   name="search"
                   id="search"
                   className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-9 sm:text-sm border-gray-300"
-                  placeholder="Search"
+                  placeholder={translations.t("search")}
                 />
               </div>
-              {/* <button className=" relative inline-flex items-center px-4  border border-gray-300 text-sm leading-5 font-medium  text-gray-700 bg-gray-50 hover:text-gray-500 hover:bg-white focus:outline-none focus:shadow-outline-blue focus:border-indigo-500 active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150">
-                <svg
-                  className="h-5 w-5 text-gray-400"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path d="M3 3a1 1 0 000 2h11a1 1 0 100-2H3zM3 7a1 1 0 000 2h5a1 1 0 000-2H3zM3 11a1 1 0 100 2h4a1 1 0 100-2H3zM13 16a1 1 0 102 0v-5.586l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 101.414 1.414L13 10.414V16z" />
-                </svg>
-                <span className="ml-2">Option</span>
-
-                <svg
-                  className="ml-2.5 -mr-1.5 h-5 w-5 text-gray-400"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </button> */}
             </div>
           </div>
         </div>
@@ -271,30 +258,110 @@ const Index = ({ user }) => {
           <table className="min-w-full">
             <thead>
               <tr className="border-t border-gray-200">
-                <th className="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
-                  <span className="lg:pl-2">Job Title</span>
+                <th
+                  className={classnames(
+                    "px-6 py-3 border-b border-gray-200 bg-gray-50  leading-4 font-medium text-gray-500 uppercase tracking-wider",
+                    {
+                      "text-xs text-left ": memoizedlocalestate === "en",
+                    },
+                    {
+                      "text-sm text-right ": memoizedlocalestate === "ae",
+                    },
+                  )}
+                >
+                  <span className="">{translations.t("jobtitle")}</span>
                 </th>
 
-                <th className="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
-                  Location
+                <th
+                  className={classnames(
+                    "px-6 py-3 border-b border-gray-200 bg-gray-50  leading-4 font-medium text-gray-500 uppercase tracking-wider",
+                    {
+                      "text-xs text-left ": memoizedlocalestate === "en",
+                    },
+                    {
+                      "text-sm text-right ": memoizedlocalestate === "ae",
+                    },
+                  )}
+                >
+                  {translations.t("location")}
                 </th>
-                <th className="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
-                  Grade
+                <th
+                  className={classnames(
+                    "px-6 py-3 border-b border-gray-200 bg-gray-50  leading-4 font-medium text-gray-500 uppercase tracking-wider",
+                    {
+                      "text-xs text-left ": memoizedlocalestate === "en",
+                    },
+                    {
+                      "text-sm text-right ": memoizedlocalestate === "ae",
+                    },
+                  )}
+                >
+                  {translations.t("grade")}
                 </th>
 
-                <th className="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
-                  Experience
+                <th
+                  className={classnames(
+                    "px-6 py-3 border-b border-gray-200 bg-gray-50  leading-4 font-medium text-gray-500 uppercase tracking-wider",
+                    {
+                      "text-xs text-left ": memoizedlocalestate === "en",
+                    },
+                    {
+                      "text-sm text-right ": memoizedlocalestate === "ae",
+                    },
+                  )}
+                >
+                  {translations.t("experience")}
                 </th>
-                <th className="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
-                  Openings
+                <th
+                  className={classnames(
+                    "px-6 py-3 border-b border-gray-200 bg-gray-50  leading-4 font-medium text-gray-500 uppercase tracking-wider",
+                    {
+                      "text-xs text-left ": memoizedlocalestate === "en",
+                    },
+                    {
+                      "text-sm text-right ": memoizedlocalestate === "ae",
+                    },
+                  )}
+                >
+                  {translations.t("openings")}
                 </th>
-                <th className="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
-                  TargetDate
+                <th
+                  className={classnames(
+                    "px-6 py-3 border-b border-gray-200 bg-gray-50  leading-4 font-medium text-gray-500 uppercase tracking-wider",
+                    {
+                      "text-xs text-left ": memoizedlocalestate === "en",
+                    },
+                    {
+                      "text-sm text-right ": memoizedlocalestate === "ae",
+                    },
+                  )}
+                >
+                  {translations.t("targetdate")}
                 </th>
-                <th className="hidden md:table-cell px-6 py-3 border-b border-gray-200 bg-gray-50 text-right text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
-                  Status
+                <th
+                  className={classnames(
+                    "px-6 py-3 border-b border-gray-200 bg-gray-50  leading-4 font-medium text-gray-500 uppercase tracking-wider",
+                    {
+                      "text-xs text-left ": memoizedlocalestate === "en",
+                    },
+                    {
+                      "text-sm text-right ": memoizedlocalestate === "ae",
+                    },
+                  )}
+                >
+                  {translations.t("status")}
                 </th>
-                <th className="pr-6 py-3 border-b border-gray-200 bg-gray-50 text-right text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider"></th>
+                <th
+                  className={classnames(
+                    "px-6 py-3 border-b border-gray-200 bg-gray-50  leading-4 font-medium text-gray-500 uppercase tracking-wider",
+                    {
+                      "text-xs text-left ": memoizedlocalestate === "en",
+                    },
+                    {
+                      "text-sm text-right ": memoizedlocalestate === "ae",
+                    },
+                  )}
+                ></th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-100">
@@ -302,66 +369,98 @@ const Index = ({ user }) => {
                 data != null &&
                 data != undefined &&
                 data?.data.map((x, i) => (
-                  <tr key={i}>
-                    <td className="px-6 py-3 whitespace-no-wrap text-sm leading-5 font-medium text-gray-900">
-                      <div className="flex flex-col items-start space-x-3 lg:pl-2">
-                        <a
-                          href="#"
-                          className="truncate hover:text-gray-600 flex justify-between items-baseline"
-                        >
+                  <tr
+                    key={i}
+                    className={classnames(
+                      {
+                        "text-sm ": memoizedlocalestate === "en",
+                      },
+                      {
+                        "text-base ": memoizedlocalestate === "ae",
+                      },
+                    )}
+                  >
+                    <td className="px-6 py-3 whitespace-no-wrap leading-5 font-medium text-gray-900">
+                      <div className="flex flex-col items-start space-x-3">
+                        <span className="truncate hover:text-gray-600 flex justify-between items-baseline">
                           <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-pink-600 hidden"></div>
-                          <span className="inline-flex flex-col items-start">
-                            {x?.jobtitleen}
+                          <span
+                            className={classnames(
+                              "inline-flex flex-col items-start ",
+                              {
+                                "text-sm ": memoizedlocalestate === "en",
+                              },
+                              {
+                                "text-base ": memoizedlocalestate === "ae",
+                              },
+                            )}
+                          >
+                            {memoizedlocalestate === "en"
+                              ? x?.jobtitleen
+                              : x?.jobtitleae}
                             <span className="text-gray-500 font-normal">
                               {x?.jobcode}
                             </span>
                           </span>
-                        </a>
-                      </div>
-                    </td>
-
-                    <td className="px-6 py-3 text-sm leading-5 text-gray-500 font-medium">
-                      <div className="flex items-center space-x-2">
-                        <span className="flex-shrink-0 text-xs leading-5 font-medium">
-                          {x?.locationen}
                         </span>
                       </div>
                     </td>
-                    <td className="px-6 py-3 text-sm leading-5 text-gray-500 font-medium">
+
+                    <td className="px-6 py-3  leading-5 text-gray-500 font-medium text-lg">
+                      <div
+                        className={classnames(
+                          "flex items-center space-x-2",
+                          {
+                            "text-sm ": memoizedlocalestate === "en",
+                          },
+                          {
+                            "text-sm ": memoizedlocalestate === "ae",
+                          },
+                        )}
+                      >
+                        <span className="flex-shrink-0   leading-5 font-medium">
+                          {memoizedlocalestate === "en"
+                            ? x?.locationen
+                            : x?.locationae}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-3   leading-5 text-gray-500 font-medium">
                       <div className="flex items-center space-x-2">
-                        <span className="flex-shrink-0 text-xs leading-5 font-medium">
+                        <span className="flex-shrink-0  leading-5 font-medium">
                           {x?.gradeen}
                         </span>
                       </div>
                     </td>
-                    <td className="px-6 py-3 text-sm leading-5 text-gray-500 font-medium">
+                    <td className="px-6 py-3   leading-5 text-gray-500 font-medium">
                       <div className="flex items-center space-x-2">
-                        <span className="flex-shrink-0 text-xs leading-5 font-medium">
+                        <span className="flex-shrink-0  leading-5 font-medium">
                           {x?.experience}
                         </span>
+                        <span className="px-1">{translations.t("yrs")}</span>
                       </div>
                     </td>
-                    <td className="px-6 py-3 text-sm leading-5 text-gray-500 font-medium">
+                    <td className="px-6 py-3  leading-5 text-gray-500 font-medium">
                       <div className="flex items-center space-x-2">
-                        <span className="flex-shrink-0 text-xs leading-5 font-medium">
+                        <span className="flex-shrink-0  leading-5 font-medium">
                           {x?.openings}
                         </span>
                       </div>
                     </td>
-                    <td className="px-6 py-3 text-sm leading-5 text-gray-500 font-medium">
+                    <td className="px-6 py-3  leading-5 text-gray-500 font-medium">
                       <div className="flex items-center space-x-2">
-                        <span className="flex-shrink-0 text-xs leading-5 font-medium">
+                        <span className="flex-shrink-0  leading-5 font-medium">
                           {x?.targetdate}
                         </span>
                       </div>
                     </td>
 
-                    <td className="px-6 py-3 text-sm leading-5 text-gray-500 font-medium">
+                    <td className="px-6 py-3   leading-5 text-gray-500 font-medium">
                       <div className="flex items-center space-x-2">
-                        <span className="flex-shrink-0 text-xs leading-5 font-medium">
+                        <span className="flex-shrink-0  leading-5 font-medium">
                           <span
                             className={classnames(
-                              "inline-flex items-center px-2 py-0.5 rounded text-xs font-medium leading-4 ",
+                              "inline-flex items-center px-2 py-0.5 rounded text-sm font-medium leading-4 ",
                               {
                                 "bg-indigo-100 text-indigo-800":
                                   x?.vacancystatusid === 0,
@@ -374,13 +473,22 @@ const Index = ({ user }) => {
                             )}
                           >
                             <svg
-                              className={classnames("mr-1.5 h-2 w-2 ", {
-                                "text-indigo-400": x?.vacancystatusid === 0,
-                                "text-green-400": x?.vacancystatusid === 1,
-                                "text-red-400":
-                                  x?.vacancystatusid === 2 ||
-                                  x?.vacancystatusid === 3,
-                              })}
+                              className={classnames(
+                                " h-2 w-2 ",
+                                {
+                                  "text-indigo-400": x?.vacancystatusid === 0,
+                                  "text-green-400": x?.vacancystatusid === 1,
+                                  "text-red-400":
+                                    x?.vacancystatusid === 2 ||
+                                    x?.vacancystatusid === 3,
+                                },
+                                {
+                                  "mr-1.5 ": memoizedlocalestate === "en",
+                                },
+                                {
+                                  "ml-1.5 ": memoizedlocalestate === "ae",
+                                },
+                              )}
                               fill="currentColor"
                               viewBox="0 0 8 8"
                             >
@@ -392,7 +500,7 @@ const Index = ({ user }) => {
                       </div>
                     </td>
 
-                    <td className="pr-6">
+                    <td className="px-2">
                       <div className="relative flex justify-end items-center">
                         <button
                           onClick={(e) =>
@@ -421,7 +529,17 @@ const Index = ({ user }) => {
                           leave="transition ease-in duration-75"
                           leaveFrom="transform opacity-100 scale-100"
                           leaveTo="transform opacity-0 scale-95"
-                          className="mx-3 origin-top-right absolute right-7 top-0 w-48 mt-1 rounded-md shadow-lg"
+                          className={classnames(
+                            "mx-3  absolute top-0 w-48 mt-1 rounded-md shadow-lg",
+                            {
+                              "origin-top-right  right-7 ":
+                                memoizedlocalestate === "en",
+                            },
+                            {
+                              "origin-top-left  left-7 ":
+                                memoizedlocalestate === "ae",
+                            },
+                          )}
                         >
                           <div
                             className="z-10 rounded-md bg-white shadow-xs"
@@ -441,7 +559,15 @@ const Index = ({ user }) => {
                                 role="menuitem"
                               >
                                 <svg
-                                  className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500"
+                                  className={classnames(
+                                    {
+                                      "mr-3": memoizedlocalestate === "en",
+                                    },
+                                    {
+                                      "ml-3": memoizedlocalestate === "ae",
+                                    },
+                                    " h-5 w-5 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500",
+                                  )}
                                   fill="currentColor"
                                   viewBox="0 0 20 20"
                                   xmlns="http://www.w3.org/2000/svg"
@@ -453,7 +579,7 @@ const Index = ({ user }) => {
                                     clipRule="evenodd"
                                   />
                                 </svg>
-                                View
+                                {translations.t("view")}
                               </a>
                               <a
                                 onClick={(e) =>
@@ -463,7 +589,15 @@ const Index = ({ user }) => {
                                 role="menuitem"
                               >
                                 <svg
-                                  className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500"
+                                  className={classnames(
+                                    {
+                                      "mr-3 ": memoizedlocalestate === "en",
+                                    },
+                                    {
+                                      "ml-3 ": memoizedlocalestate === "ae",
+                                    },
+                                    " h-5 w-5 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500",
+                                  )}
                                   viewBox="0 0 20 20"
                                   fill="currentColor"
                                 >
@@ -474,36 +608,7 @@ const Index = ({ user }) => {
                                     clipRule="evenodd"
                                   />
                                 </svg>
-                                Edit
-                              </a>
-                              <a
-                                href="#"
-                                className="group flex items-center px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
-                                role="menuitem"
-                              >
-                                <svg
-                                  className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500"
-                                  viewBox="0 0 20 20"
-                                  fill="currentColor"
-                                >
-                                  <path d="M7 9a2 2 0 012-2h6a2 2 0 012 2v6a2 2 0 01-2 2H9a2 2 0 01-2-2V9z" />
-                                  <path d="M5 3a2 2 0 00-2 2v6a2 2 0 002 2V5h8a2 2 0 00-2-2H5z" />
-                                </svg>
-                                Applicants
-                              </a>
-                              <a
-                                href="#"
-                                className="group flex items-center px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
-                                role="menuitem"
-                              >
-                                <svg
-                                  className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500"
-                                  viewBox="0 0 20 20"
-                                  fill="currentColor"
-                                >
-                                  <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z" />
-                                </svg>
-                                Expats
+                                {translations.t("edit")}
                               </a>
                             </div>
                             {x?.vacancystatusid != 3 && (
@@ -518,7 +623,10 @@ const Index = ({ user }) => {
                                       setDetailrid(x?.rid);
                                       setClosingvacancydetail({
                                         rid: x?.rid,
-                                        jobtitle: x?.jobtitleen,
+                                        jobtitle:
+                                          memoizedlocalestate === "en"
+                                            ? x?.jobtitleen
+                                            : x?.jobtitleae,
                                         jobcode: x?.jobcode,
                                       });
                                     }}
@@ -526,7 +634,15 @@ const Index = ({ user }) => {
                                     role="menuitem"
                                   >
                                     <svg
-                                      className="mr-3 h-5 w-5 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500"
+                                      className={classnames(
+                                        {
+                                          "mr-3": memoizedlocalestate === "en",
+                                        },
+                                        {
+                                          "ml-3": memoizedlocalestate === "ae",
+                                        },
+                                        " h-5 w-5 text-gray-400 group-hover:text-gray-500 group-focus:text-gray-500",
+                                      )}
                                       fill="currentColor"
                                       viewBox="0 0 20 20"
                                       xmlns="http://www.w3.org/2000/svg"
@@ -537,7 +653,7 @@ const Index = ({ user }) => {
                                         clipRule="evenodd"
                                       />
                                     </svg>
-                                    Close
+                                    {translations.t("close")}
                                   </a>
                                 </div>
                               </React.Fragment>
@@ -563,24 +679,64 @@ const Index = ({ user }) => {
               leave="ease-in-out duration-500"
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
-              className="absolute inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+              className=" absolute inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
             >
-              <section className="absolute inset-y-0 right-0 pl-10 max-w-full flex">
+              <section
+                className={classnames(
+                  {
+                    "inset-y-0 right-0 pl-10 ": memoizedlocalestate === "en",
+                  },
+                  {
+                    "inset-y-0 left-0 pr-10": memoizedlocalestate === "ae",
+                  },
+                  "absolute  max-w-full flex",
+                )}
+              >
                 <Transition
                   show={showdetail}
-                  enter="transform transition ease-in-out duration-500 sm:duration-700"
-                  enterFrom="translate-x-full"
-                  enterTo="translate-x-0"
+                  enter=" transform transition ease-in-out duration-500 sm:duration-700"
+                  enterFrom={classnames(
+                    {
+                      "translate-x-full ": memoizedlocalestate === "en",
+                    },
+                    {
+                      "-translate-x-full": memoizedlocalestate === "ae",
+                    },
+                  )}
+                  enterTo={classnames(
+                    {
+                      "translate-x-0 ": memoizedlocalestate === "en",
+                    },
+                    {
+                      "-translate-x-0": memoizedlocalestate === "ae",
+                    },
+                  )}
                   leave="transform transition ease-in-out duration-500 sm:duration-700"
-                  leaveFrom="translate-x-0"
-                  leaveTo="translate-x-full"
+                  leaveFrom={classnames(
+                    {
+                      "translate-x-0 ": memoizedlocalestate === "en",
+                    },
+                    {
+                      "-translate-x-0": memoizedlocalestate === "ae",
+                    },
+                  )}
+                  leaveTo={classnames(
+                    {
+                      "translate-x-full ": memoizedlocalestate === "en",
+                    },
+                    {
+                      "-translate-x-full": memoizedlocalestate === "ae",
+                    },
+                  )}
                   className="w-screen max-w-md"
                 >
                   <div className="h-full flex flex-col bg-gray-100 shadow-xl overflow-y-scroll">
                     <header className="space-y-1 py-6 px-4 bg-indigo-700 sm:px-6">
                       <div className="flex items-center justify-between space-x-3">
                         <h2 className="text-lg leading-7 font-medium text-white">
-                          {vacancydata?.data?.jobtitleen}
+                          {memoizedlocalestate === "en"
+                            ? vacancydata?.data?.jobtitleen
+                            : vacancydata?.data?.jobtitleae}
                         </h2>
 
                         <div className="h-7 flex items-center">
@@ -621,38 +777,74 @@ const Index = ({ user }) => {
                           </svg>
                           {vacancydata?.data?.jobcode}
                         </p>
-                        <p>
+                        <p className="flex flex-col">
                           <span className="inline-flex items-center mt-1 py-0.5 rounded-md text-sm font-medium text-white">
                             <svg
-                              className="-ml-0.5 mr-1.5 h-2 w-2 text-indigo-400"
-                              fill="currentColor"
-                              viewBox="0 0 8 8"
-                            >
-                              <circle cx={4} cy={4} r={3} />
-                            </svg>
-                            {vacancydata?.data?.sectoren}
-                          </span>
-                          <span className="inline-flex items-center mt-1 py-0.5 rounded-md text-sm font-medium text-white">
-                            <svg
-                              className="-ml-0.5 mr-1.5 h-2 w-2 text-orange-400"
+                              className={classnames(
+                                {
+                                  "-ml-0.5 mr-1.5":
+                                    memoizedlocalestate === "en",
+                                },
+                                {
+                                  "-mr-0.5 ml-1.5":
+                                    memoizedlocalestate === "ae",
+                                },
+                                " h-2 w-2 text-indigo-400",
+                              )}
                               fill="currentColor"
                               viewBox="0 0 8 8"
                             >
                               <circle cx={4} cy={4} r={3} />
                             </svg>
 
-                            {vacancydata?.data?.departmenten}
+                            {memoizedlocalestate === "en"
+                              ? vacancydata?.data?.sectoren
+                              : vacancydata?.data?.sectorae}
+                          </span>
+                          <span className="inline-flex items-center mt-1 py-0.5 rounded-md text-sm font-medium text-white">
+                            <svg
+                              className={classnames(
+                                {
+                                  "-ml-0.5 mr-1.5":
+                                    memoizedlocalestate === "en",
+                                },
+                                {
+                                  "-mr-0.5 ml-1.5":
+                                    memoizedlocalestate === "ae",
+                                },
+                                "h-2 w-2 text-orange-400",
+                              )}
+                              fill="currentColor"
+                              viewBox="0 0 8 8"
+                            >
+                              <circle cx={4} cy={4} r={3} />
+                            </svg>
+
+                            {memoizedlocalestate === "en"
+                              ? vacancydata?.data?.departmenten
+                              : vacancydata?.data?.departmentae}
                           </span>
                           <span className="inline-flex items-center mt-1  py-0.5 rounded-md text-sm font-medium text-white">
                             <svg
-                              className="-ml-0.5 mr-1.5 h-2 w-2 text-green-400"
+                              className={classnames(
+                                {
+                                  "-ml-0.5 mr-1.5":
+                                    memoizedlocalestate === "en",
+                                },
+                                {
+                                  "-mr-0.5 ml-1.5":
+                                    memoizedlocalestate === "ae",
+                                },
+                                " h-2 w-2 text-green-400",
+                              )}
                               fill="currentColor"
                               viewBox="0 0 8 8"
                             >
                               <circle cx={4} cy={4} r={3} />
                             </svg>
-
-                            {vacancydata?.data?.divisonen}
+                            {memoizedlocalestate === "en"
+                              ? vacancydata?.data?.divisonen
+                              : vacancydata?.data?.divisonae}
                           </span>
                         </p>
                       </div>
@@ -665,21 +857,21 @@ const Index = ({ user }) => {
                             <p className="hidden mt-1 max-w-2xl text-sm leading-5 text-gray-500"></p>
                             <div className="mt-1 max-w-2xl text-sm leading-5 text-gray-500">
                               <p className="inline-block">
-                                Created by{" "}
+                                {translations.t("createdby")}
                                 <span className="px-1 text-gray-900">
                                   {vacancydata?.data?.createdby}
                                 </span>
-                                on{" "}
+                                {translations.t("on")}
                                 <span className="px-1 text-gray-900">
                                   {vacancydata?.data?.createddate}
                                 </span>
                               </p>
                               <p className="inline-block mt-2">
-                                Modified by
+                                {translations.t("modifiedby")}
                                 <span className="px-1 text-gray-900">
                                   {vacancydata?.data?.modifiedby}
                                 </span>
-                                on{" "}
+                                {translations.t("on")}
                                 <span className="px-1 text-gray-900">
                                   {vacancydata?.data?.modifieddate}
                                 </span>
@@ -690,48 +882,58 @@ const Index = ({ user }) => {
                             <dl>
                               <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                 <dt className="text-sm leading-5 font-medium text-gray-500">
-                                  Job Category
+                                  {translations.t("jobcategory")}
                                 </dt>
                                 <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-                                  {vacancydata?.data?.jobcategoryen}
+                                  {memoizedlocalestate === "en"
+                                    ? vacancydata?.data?.jobcategoryen
+                                    : vacancydata?.data?.jobcategoryae}
                                 </dd>
                               </div>
                               <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                 <dt className="text-sm leading-5 font-medium text-gray-500">
-                                  Job Role
+                                  {translations.t("jobrole")}
                                 </dt>
                                 <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-                                  {vacancydata?.data?.jobroleen}
+                                  {memoizedlocalestate === "en"
+                                    ? vacancydata?.data?.jobroleen
+                                    : vacancydata?.data?.jobroleen}
                                 </dd>
                               </div>
                               <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                 <dt className="text-sm leading-5 font-medium text-gray-500">
-                                  Career Level
+                                  {translations.t("careerlevel")}
                                 </dt>
                                 <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-                                  {vacancydata?.data?.careerlevelen}
+                                  {memoizedlocalestate === "en"
+                                    ? vacancydata?.data?.careerlevelen
+                                    : vacancydata?.data?.careerlevelen}
                                 </dd>
                               </div>
                               <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                 <dt className="text-sm leading-5 font-medium text-gray-500">
-                                  Employment
+                                  {translations.t("employmenttype")}
                                 </dt>
                                 <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-                                  {vacancydata?.data?.employmenten}
+                                  {memoizedlocalestate === "en"
+                                    ? vacancydata?.data?.employmenten
+                                    : vacancydata?.data?.employmenten}
                                 </dd>
                               </div>
 
                               <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                 <dt className="text-sm leading-5 font-medium text-gray-500">
-                                  Grade
+                                  {translations.t("grade")}
                                 </dt>
                                 <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-                                  {vacancydata?.data?.gradeen}
+                                  {memoizedlocalestate === "en"
+                                    ? vacancydata?.data?.gradeen
+                                    : vacancydata?.data?.gradeen}
                                 </dd>
                               </div>
                               <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                 <dt className="text-sm leading-5 font-medium text-gray-500">
-                                  Target Date
+                                  {translations.t("targetdate")}
                                 </dt>
                                 <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
                                   {vacancydata?.data?.targetdate}
@@ -739,7 +941,7 @@ const Index = ({ user }) => {
                               </div>
                               <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                 <dt className="text-sm leading-5 font-medium text-gray-500">
-                                  Total Openings
+                                  {translations.t("openings")}
                                 </dt>
                                 <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
                                   {vacancydata?.data?.openings}
@@ -747,102 +949,207 @@ const Index = ({ user }) => {
                               </div>
                               <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                 <dt className="text-sm leading-5 font-medium text-gray-500">
-                                  Salary Range
+                                  {translations.t("salaryrange")}
                                 </dt>
                                 <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-                                  {vacancydata?.data?.salaryrange} AED
+                                  {vacancydata?.data?.salaryrange}{" "}
+                                  {translations.t("aed")}
                                 </dd>
                               </div>
                               <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                 <dt className="text-sm leading-5 font-medium text-gray-500">
-                                  Experience
+                                  {translations.t("experience")}
                                 </dt>
                                 <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-                                  {vacancydata?.data?.experience} Yrs
+                                  {vacancydata?.data?.experience}{" "}
+                                  {translations.t("yrs")}
                                 </dd>
                               </div>
                               <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                 <dt className="text-sm leading-5 font-medium text-gray-500">
-                                  Location
+                                  {translations.t("location")}
                                 </dt>
                                 <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-                                  {vacancydata?.data?.locationen}
+                                  {memoizedlocalestate === "en"
+                                    ? vacancydata?.data?.locationen
+                                    : vacancydata?.data?.locationen}
                                 </dd>
                               </div>
                               <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                 <dt className="text-sm leading-5 font-medium text-gray-500">
-                                  Educations
+                                  {translations.t("educations")}
                                 </dt>
                                 <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
                                   <ul className="border border-gray-200 rounded-md">
-                                    {vacancydata?.data?.educationsen?.map(
-                                      (val, index) => (
-                                        <li
-                                          key={index}
-                                          className="p-2 border-gray-200  border-b-2 flex items-center justify-between text-sm leading-5"
-                                        >
-                                          <span className="w-full">{val}</span>
-                                        </li>
-                                      ),
-                                    )}
+                                    {memoizedlocalestate === "en"
+                                      ? vacancydata?.data?.educationsen?.map(
+                                          (val, index) => (
+                                            <li
+                                              key={index}
+                                              className="p-2 border-gray-200  border-b-2 flex items-center justify-between text-sm leading-5"
+                                            >
+                                              <span className="w-full">
+                                                {val}
+                                              </span>
+                                            </li>
+                                          ),
+                                        )
+                                      : vacancydata?.data?.educationsae?.map(
+                                          (val, index) => (
+                                            <li
+                                              key={index}
+                                              className="p-2 border-gray-200  border-b-2 flex items-center justify-between text-sm leading-5"
+                                            >
+                                              <span className="w-full">
+                                                {val}
+                                              </span>
+                                            </li>
+                                          ),
+                                        )}
                                   </ul>
                                 </dd>
                               </div>
                               <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                 <dt className="text-sm leading-5 font-medium text-gray-500">
-                                  Skills
+                                  {translations.t("skills")}
                                 </dt>
                                 <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
                                   <div className="flex flex-col justify-between">
-                                    {vacancydata?.data?.skillsen?.map(
-                                      (val, index) => (
-                                        <span
-                                          key={index}
-                                          className="inline-flex items-center mt-1 px-2.5 py-0.5 rounded-md text-sm font-medium bg-indigo-100 text-indigo-800"
-                                        >
-                                          <svg
-                                            className="-ml-0.5 mr-1.5 h-2 w-2 text-indigo-400"
-                                            fill="currentColor"
-                                            viewBox="0 0 8 8"
-                                          >
-                                            <circle cx={4} cy={4} r={3} />
-                                          </svg>
-                                          {val}
-                                        </span>
-                                      ),
-                                    )}
+                                    {memoizedlocalestate === "en"
+                                      ? vacancydata?.data?.skillsen?.map(
+                                          (val, index) => (
+                                            <span
+                                              key={index}
+                                              className="inline-flex items-center mt-1 px-2.5 py-0.5 rounded-md text-sm font-medium bg-indigo-100 text-indigo-800"
+                                            >
+                                              <svg
+                                                className={classnames(
+                                                  "h-2 w-2 text-indigo-400",
+                                                  {
+                                                    "-ml-0.5 mr-1.5 ":
+                                                      memoizedlocalestate ===
+                                                      "en",
+                                                  },
+                                                  {
+                                                    "-mr-0.5 ml-1.5 ":
+                                                      memoizedlocalestate ===
+                                                      "ae",
+                                                  },
+                                                )}
+                                                fill="currentColor"
+                                                viewBox="0 0 8 8"
+                                              >
+                                                <circle cx={4} cy={4} r={3} />
+                                              </svg>
+                                              {val}
+                                            </span>
+                                          ),
+                                        )
+                                      : vacancydata?.data?.skillsae?.map(
+                                          (val, index) => (
+                                            <span
+                                              key={index}
+                                              className="inline-flex items-center mt-1 px-2.5 py-0.5 rounded-md text-sm font-medium bg-indigo-100 text-indigo-800"
+                                            >
+                                              <svg
+                                                className={classnames(
+                                                  "h-2 w-2 text-indigo-400",
+                                                  {
+                                                    "-ml-0.5 mr-1.5 ":
+                                                      memoizedlocalestate ===
+                                                      "en",
+                                                  },
+                                                  {
+                                                    "-mr-0.5 ml-1.5 ":
+                                                      memoizedlocalestate ===
+                                                      "ae",
+                                                  },
+                                                )}
+                                                fill="currentColor"
+                                                viewBox="0 0 8 8"
+                                              >
+                                                <circle cx={4} cy={4} r={3} />
+                                              </svg>
+                                              {val}
+                                            </span>
+                                          ),
+                                        )}
                                   </div>
                                 </dd>
                               </div>
                               <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                 <dt className="text-sm leading-5 font-medium text-gray-500">
-                                  Competences
+                                  {translations.t("competences")}
                                 </dt>
                                 <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
                                   <div className="flex flex-col justify-between">
-                                    {vacancydata?.data?.abilitiesen?.map(
-                                      (val, index) => (
-                                        <span
-                                          key={index}
-                                          className="inline-flex items-center mt-1 px-2.5 py-0.5 rounded-md text-sm font-medium bg-green-100 text-green-800"
-                                        >
-                                          <svg
-                                            className="-ml-0.5 mr-1.5 h-2 w-2 text-green-400"
-                                            fill="currentColor"
-                                            viewBox="0 0 8 8"
-                                          >
-                                            <circle cx={4} cy={4} r={3} />
-                                          </svg>
-                                          {val}
-                                        </span>
-                                      ),
-                                    )}
+                                    {memoizedlocalestate === "en"
+                                      ? vacancydata?.data?.abilitiesen?.map(
+                                          (val, index) => (
+                                            <span
+                                              key={index}
+                                              className="inline-flex items-center mt-1 px-2.5 py-0.5 rounded-md text-sm font-medium bg-green-100 text-green-800"
+                                            >
+                                              <svg
+                                                className={classnames(
+                                                  "h-2 w-2 text-green-400",
+                                                  {
+                                                    "-ml-0.5 mr-1.5 ":
+                                                      memoizedlocalestate ===
+                                                      "en",
+                                                  },
+                                                  {
+                                                    "-mr-0.5 ml-1.5 ":
+                                                      memoizedlocalestate ===
+                                                      "ae",
+                                                  },
+                                                )}
+                                                fill="currentColor"
+                                                viewBox="0 0 8 8"
+                                              >
+                                                <circle cx={4} cy={4} r={3} />
+                                              </svg>
+
+                                              {val}
+                                            </span>
+                                          ),
+                                        )
+                                      : vacancydata?.data?.abilitiesae?.map(
+                                          (val, index) => (
+                                            <span
+                                              key={index}
+                                              className="inline-flex items-center mt-1 px-2.5 py-0.5 rounded-md text-sm font-medium bg-green-100 text-green-800"
+                                            >
+                                              <svg
+                                                className={classnames(
+                                                  "h-2 w-2 text-green-400",
+                                                  {
+                                                    "-ml-0.5 mr-1.5 ":
+                                                      memoizedlocalestate ===
+                                                      "en",
+                                                  },
+                                                  {
+                                                    "-mr-0.5 ml-1.5 ":
+                                                      memoizedlocalestate ===
+                                                      "ae",
+                                                  },
+                                                )}
+                                                fill="currentColor"
+                                                viewBox="0 0 8 8"
+                                              >
+                                                <circle cx={4} cy={4} r={3} />
+                                              </svg>
+
+                                              {val}
+                                            </span>
+                                          ),
+                                        )}
                                   </div>
                                 </dd>
                               </div>
                               <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                 <dt className="text-sm leading-5 font-medium text-gray-500">
-                                  Responsbilities
+                                  {translations.t("responsbilities")}
                                 </dt>
                                 <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
                                   <span className="">
@@ -856,7 +1163,7 @@ const Index = ({ user }) => {
                               </div>
                               <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                 <dt className="text-sm leading-5 font-medium text-gray-500">
-                                  Job Description
+                                  {translations.t("jobdescription")}
                                 </dt>
                                 <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
                                   <span className="">
@@ -868,7 +1175,7 @@ const Index = ({ user }) => {
                               </div>
                               <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                 <dt className="text-sm leading-5 font-medium text-gray-500">
-                                  Attachments
+                                  {translations.t("attachments")}
                                 </dt>
                                 <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
                                   <ul className="border border-gray-200 rounded-md">
@@ -945,22 +1252,60 @@ const Index = ({ user }) => {
               leaveTo="opacity-0"
               className="absolute inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
             >
-              <section className="absolute inset-y-0 right-0 pl-10 max-w-full flex">
+              <section
+                className={classnames(
+                  {
+                    "inset-y-0 right-0 pl-10 ": memoizedlocalestate === "en",
+                  },
+                  {
+                    "inset-y-0 left-0 pr-10": memoizedlocalestate === "ae",
+                  },
+                  "absolute  max-w-full flex",
+                )}
+              >
                 <Transition
                   show={showclose}
                   enter="transform transition ease-in-out duration-500 sm:duration-700"
-                  enterFrom="translate-x-full"
-                  enterTo="translate-x-0"
+                  enterFrom={classnames(
+                    {
+                      "translate-x-full ": memoizedlocalestate === "en",
+                    },
+                    {
+                      "-translate-x-full": memoizedlocalestate === "ae",
+                    },
+                  )}
+                  enterTo={classnames(
+                    {
+                      "translate-x-0 ": memoizedlocalestate === "en",
+                    },
+                    {
+                      "-translate-x-0": memoizedlocalestate === "ae",
+                    },
+                  )}
                   leave="transform transition ease-in-out duration-500 sm:duration-700"
-                  leaveFrom="translate-x-0"
-                  leaveTo="translate-x-full"
+                  leaveFrom={classnames(
+                    {
+                      "translate-x-0 ": memoizedlocalestate === "en",
+                    },
+                    {
+                      "-translate-x-0": memoizedlocalestate === "ae",
+                    },
+                  )}
+                  leaveTo={classnames(
+                    {
+                      "translate-x-full ": memoizedlocalestate === "en",
+                    },
+                    {
+                      "-translate-x-full": memoizedlocalestate === "ae",
+                    },
+                  )}
                   className="w-screen max-w-md"
                 >
                   <div className="h-full flex flex-col bg-gray-100 shadow-xl overflow-y-scroll">
                     <header className="space-y-1 py-6 px-4 bg-indigo-700 sm:px-6">
                       <div className="flex items-center justify-between space-x-3">
                         <h2 className="text-lg leading-7 font-medium text-white">
-                          Close Vacancy
+                          {translations.t("closevacancy")}
                         </h2>
                         <div className="h-7 flex items-center">
                           <button
@@ -989,11 +1334,6 @@ const Index = ({ user }) => {
                           </button>
                         </div>
                       </div>
-                      <div className="hidden">
-                        <p className="text-sm leading-5 text-indigo-300">
-                          Some additional details
-                        </p>
-                      </div>
                     </header>
                     <div className="relative flex-1 py-6 px-4 sm:px-6">
                       <div className="absolute inset-0">
@@ -1018,10 +1358,22 @@ const Index = ({ user }) => {
                                       htmlFor="reasonid"
                                       className="block text-sm font-medium leading-5 text-gray-700"
                                     >
-                                      Closing Reason
+                                      {translations.t("closevacancyreason")}
                                     </label>
                                     <div className="mt-1 flex rounded-md shadow-sm">
-                                      <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm"></span>
+                                      <span
+                                        className={classnames(
+                                          "inline-flex items-center px-3 border  border-gray-300 bg-gray-50 text-gray-500 sm:text-sm",
+                                          {
+                                            "rounded-l-md  border-r-0 ":
+                                              memoizedlocalestate === "en",
+                                          },
+                                          {
+                                            "rounded-r-md  border-l-0 ":
+                                              memoizedlocalestate === "ae",
+                                          },
+                                        )}
+                                      ></span>
 
                                       <select
                                         name="reasonid"
@@ -1033,7 +1385,7 @@ const Index = ({ user }) => {
                                           value="0"
                                           className="text-gray-500 "
                                         >
-                                          --Select--
+                                          {translations.t("select")}
                                         </option>
                                         {jobclosingreason &&
                                           jobclosingreason.map((val, index) => (
@@ -1042,7 +1394,9 @@ const Index = ({ user }) => {
                                               value={val.value}
                                               className="text-gray-500 "
                                             >
-                                              {val.label}
+                                              {memoizedlocalestate === "en"
+                                                ? val.titleen
+                                                : val.titleae}
                                             </option>
                                           ))}
                                       </select>
@@ -1056,7 +1410,7 @@ const Index = ({ user }) => {
                                       htmlFor="comment"
                                       className="block text-sm font-medium leading-5 text-gray-700"
                                     >
-                                      Comment
+                                      {translations.t("comment")}
                                     </label>
                                     <div className="mt-1 flex rounded-md shadow-sm">
                                       <textarea
@@ -1089,7 +1443,7 @@ const Index = ({ user }) => {
                                       },
                                     )}
                                   >
-                                    Save
+                                    {translations.t("save")}
                                   </button>
                                   <button
                                     className=" inline-flex justify-center py-2 px-4 mx-2 border border-transparent text-sm opacity-100 text-white leading-5 font-medium rounded-md  bg-red-600 hover:bg-red-500 focus:outline-none focus:border-red-700 focus:shadow-outline-indigo active:bg-red-700 transition duration-150 ease-in-out"
@@ -1101,7 +1455,7 @@ const Index = ({ user }) => {
                                       })
                                     }
                                   >
-                                    Clear
+                                    {translations.t("clear")}
                                   </button>
                                 </span>
                               </div>

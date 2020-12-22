@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import PositionProfileForm from "@components/PositionProfileForm";
 import NotificationNav from "@components/NotificationNav";
 import withSession from "lib/session";
+import PageTitle from "@components/PageTitle";
 
 const PositionProfileedit = ({ user }) => {
   const router = useRouter();
@@ -34,7 +35,7 @@ const PositionProfileedit = ({ user }) => {
       </div>
       <div className="bg-gray-100 flex justify-between items-center">
         <div className="px-6 py-3  sm:flex sm:items-center sm:justify-between sm:space-x-4 sm:space-y-0">
-          <MainHeader
+          <PageTitle
             title="Fill in all mandatory fileds"
             subtitle="10 matching candidates will be automatically added on creating or editing vacancy"
             isbordered={false}
@@ -43,7 +44,11 @@ const PositionProfileedit = ({ user }) => {
         <div className="px-6">
           <span className="shadow-sm rounded-md">
             <button
-              onClick={(e) => router.push("/postvacancy")}
+              onClick={(e) =>
+                router.push({
+                  pathname: `/vacancies/${process.env.NEXT_PUBLIC_RID_NEW}`,
+                })
+              }
               type="button"
               className="inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-700 active:bg-indigo-700 transition duration-150 ease-in-out"
             >

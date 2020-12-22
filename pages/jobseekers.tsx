@@ -12,7 +12,7 @@ import SubHeader from "@components/SubHeader";
 import { useRouter } from "next/router";
 import withSession from "lib/session";
 import NotificationNav from "@components/NotificationNav";
-import { useQuery, useQueryCache } from "react-query";
+import { useQuery } from "react-query";
 import Fuse from "fuse.js";
 import words from "lodash/words";
 import cogoToast from "cogo-toast";
@@ -25,14 +25,10 @@ import { useSelectStyles } from "../hooks/useHelper";
 import Select from "react-select";
 import map from "lodash/map";
 import parse from "html-react-parser";
+import PageTitle from "@components/PageTitle";
 
-const getjobseekerlist = async (
-  key: string,
-  searchterm: string,
-  page: number,
-  pagesize: number,
-  indexname: string,
-) => {
+const getjobseekerlist = async ({ queryKey }) => {
+  const [_key, { searchterm, page, pagesize, indexname }] = queryKey;
   const response = await fetch(
     `/api/getjobseekerlist?query=${searchterm}&page=${page}&pageSize=${pagesize}&index=${indexname}`,
     {
@@ -45,12 +41,9 @@ const getjobseekerlist = async (
   return result;
 };
 
-const getavailablejobseekerlist = async (
-  key: string,
-  keyword: string,
-  currentpage: number,
-  pagesize: number,
-) => {
+const getavailablejobseekerlist = async ({ queryKey }) => {
+  const [_key, { keyword, currentpage, pagesize }] = queryKey;
+
   const response = await fetch(
     `/api/getavailablejobseekers?keyword=${keyword}&currentpage=${currentpage}&pagesize=${pagesize}`,
     {
@@ -63,12 +56,9 @@ const getavailablejobseekerlist = async (
   return result;
 };
 
-const getviewedjobseekers = async (
-  key: string,
-  keyword: string,
-  currentpage: number,
-  pagesize: number,
-) => {
+const getviewedjobseekers = async ({ queryKey }) => {
+  const [_key, { keyword, currentpage, pagesize }] = queryKey;
+
   const response = await fetch(
     `/api/getviewedjobseekers?keyword=${keyword}&currentpage=${currentpage}&pagesize=${pagesize}`,
     {
@@ -81,12 +71,9 @@ const getviewedjobseekers = async (
   return result;
 };
 
-const getfavouritejobseekers = async (
-  key: string,
-  keyword: string,
-  currentpage: number,
-  pagesize: number,
-) => {
+const getfavouritejobseekers = async ({ queryKey }) => {
+  const [_key, { keyword, currentpage, pagesize }] = queryKey;
+
   const response = await fetch(
     `/api/getfavouritejobseekers?keyword=${keyword}&currentpage=${currentpage}&pagesize=${pagesize}`,
     {
@@ -99,12 +86,10 @@ const getfavouritejobseekers = async (
   return result;
 };
 
-const getmatchedjobseekers = async (
-  key: string,
-  keyword: string,
-  currentpage: number,
-  pagesize: number,
-) => {
+const getmatchedjobseekers = async ({ queryKey }) => {
+  cp;
+  const [_key, { keyword, currentpage, pagesize }] = queryKey;
+
   const response = await fetch(
     `/api/getmatchedjobseekers?keyword=${keyword}&currentpage=${currentpage}&pagesize=${pagesize}`,
     {
@@ -117,12 +102,9 @@ const getmatchedjobseekers = async (
   return result;
 };
 
-const getunlistedjobseekers = async (
-  key: string,
-  keyword: string,
-  currentpage: number,
-  pagesize: number,
-) => {
+const getunlistedjobseekers = async ({ queryKey }) => {
+  const [_key, { keyword, currentpage, pagesize }] = queryKey;
+
   const response = await fetch(
     `/api/getunlistedjobseekers?keyword=${keyword}&currentpage=${currentpage}&pagesize=${pagesize}`,
     {
@@ -135,7 +117,9 @@ const getunlistedjobseekers = async (
   return result;
 };
 
-const getjobseekerdetails = async (key: string, rid: string) => {
+const getjobseekerdetails = async ({ queryKey }) => {
+  const [_key, { rid }] = queryKey;
+
   const response = await fetch(`/api/getjobseekedetail?rid=${rid}`, {
     method: "GET",
     headers: { "Content-Type": "application/json " },
@@ -145,7 +129,7 @@ const getjobseekerdetails = async (key: string, rid: string) => {
   return result;
 };
 
-const getactivevacancyformatching = async (key: string) => {
+const getactivevacancyformatching = async ({ queryKey }) => {
   const response = await fetch(`/api/getactivevacancyformatching`, {
     method: "GET",
     headers: { "Content-Type": "application/json " },
@@ -160,13 +144,12 @@ const CVManager = ({ user }) => {
   const DefaultPage = 1;
   const indexname = "availablejobseekers";
 
-  const queryCache = useQueryCache();
   const router = useRouter();
   const [selectedrow, setSelectedrow] = React.useState();
   const [showdetail, setShowdetail] = React.useState(false);
   const [selectrowindex, setSelectedrowindex] = React.useState(0);
   const [selectedtab, setSelectedtab] = React.useState(1);
-  const [selectedview, setSelectedview] = React.useState(1);
+  const [selectedview, setSelectedview] = React.useState(2);
   const [searchterm, setSearchterm] = React.useState("");
   const [page, setPage] = React.useState(DefaultPage);
   const [pagesize, setPagesize] = React.useState(DefaultPageSize);
@@ -174,7 +157,7 @@ const CVManager = ({ user }) => {
   const [showmatchingform, setMatchingform] = React.useState(false);
 
   const { isLoading, isError, data, error, refetch, isFetching } = useQuery(
-    ["getjobseekerlist", searchterm, page, pagesize, indexname],
+    ["getjobseekerlist", { searchterm, page, pagesize, indexname }],
     getjobseekerlist,
     {
       enabled: !!user && selectedtab === 1 && !showdetail,
@@ -199,7 +182,10 @@ const CVManager = ({ user }) => {
     data: viewedjsata,
     isFetching: isviewedjsfetching,
   } = useQuery(
-    ["getviewedjobseekers", searchterm, page, pagesize],
+    [
+      "getviewedjobseekers",
+      { keyword: searchterm, currentpage: page, pagesize: pagesize },
+    ],
     getviewedjobseekers,
     {
       enabled: !!user && selectedtab === 2 && !showdetail,
@@ -212,7 +198,10 @@ const CVManager = ({ user }) => {
     data: favouritejsata,
     isFetching: isfavoruitejsfetching,
   } = useQuery(
-    ["getfavouritejobseekers", searchterm, page, pagesize],
+    [
+      "getfavouritejobseekers",
+      { keyword: searchterm, currentpage: page, pagesize: pagesize },
+    ],
     getfavouritejobseekers,
     {
       enabled: !!user && selectedtab === 3 && !showdetail,
@@ -225,7 +214,10 @@ const CVManager = ({ user }) => {
     data: matchedjsata,
     isFetching: ismatchedjsfetching,
   } = useQuery(
-    ["getmatchedjobseekers", searchterm, page, pagesize],
+    [
+      "getmatchedjobseekers",
+      { keyword: searchterm, currentpage: page, pagesize: pagesize },
+    ],
     getmatchedjobseekers,
     {
       enabled: !!user && selectedtab === 4 && !showdetail,
@@ -238,7 +230,10 @@ const CVManager = ({ user }) => {
     data: unlistjsdata,
     isFetching: isunlistjsfetching,
   } = useQuery(
-    ["getunlistedjobseekers", searchterm, page, pagesize],
+    [
+      "getunlistedjobseekers",
+      { keyword: searchterm, currentpage: page, pagesize: pagesize },
+    ],
     getunlistedjobseekers,
     {
       enabled: !!user && selectedtab === 5 && !showdetail,
@@ -251,10 +246,14 @@ const CVManager = ({ user }) => {
     isError: isDetailsError,
     data: jobseekerdata,
     error: jobseekererror,
-  } = useQuery(["getjobseekerdetails", selectedrow], getjobseekerdetails, {
-    enabled: !!user && selectedrow != undefined && selectedrow != "",
-    refetchOnWindowFocus: false,
-  });
+  } = useQuery(
+    ["getjobseekerdetails", { rid: selectedrow }],
+    getjobseekerdetails,
+    {
+      enabled: !!user && selectedrow != undefined && selectedrow != "",
+      refetchOnWindowFocus: false,
+    },
+  );
 
   const {
     isLoading: activevacancyisLoading,
@@ -487,7 +486,7 @@ const CVManager = ({ user }) => {
       </div>
       <div className="bg-gray-100 flex justify-between items-center">
         <div className="px-6 py-3  sm:flex sm:items-center sm:justify-between sm:space-x-4 sm:space-y-0">
-          <MainHeader
+          <PageTitle
             title="List of all jobseekers"
             subtitle="Filtered unseen, viewed, added , favourite ,unlisted "
             isbordered={false}
@@ -782,6 +781,7 @@ const CVManager = ({ user }) => {
             <table className="min-w-full">
               <thead>
                 <tr className="border-t border-gray-200">
+                  <th className="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider"></th>
                   <th className="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                     <span className="lg:pl-2">Name</span>
                   </th>
@@ -802,6 +802,34 @@ const CVManager = ({ user }) => {
                   !!jsitems &&
                   jsitems.map((x, i) => (
                     <tr key={i}>
+                      <td className="px-6 py-3 text-sm leading-5 text-gray-500 font-medium">
+                        <div className="flex items-center">
+                          <div className="flex-shrink-0">
+                            {x?.photo == "" ? (
+                              <svg
+                                className="w-8 h-8"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
+                                  d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                                />
+                              </svg>
+                            ) : (
+                              <img
+                                className="w-10 h-10 bg-gray-300 rounded-full flex-shrink-0"
+                                src={`data:image/png;base64,${x?.photo}`}
+                                alt=""
+                              />
+                            )}
+                          </div>
+                        </div>
+                      </td>
+
                       <td className="px-6 py-3 text-sm leading-5 text-gray-500 font-medium">
                         <div className="flex items-center space-x-2">
                           <span className="flex-shrink-0 text-xs leading-5 font-medium">
@@ -1023,7 +1051,7 @@ const CVManager = ({ user }) => {
                             ) : (
                               <img
                                 className="w-10 h-10 bg-gray-300 rounded-full flex-shrink-0"
-                                src="/images/aditya.png"
+                                src={`data:image/png;base64,${x?.photo}`}
                                 alt=""
                               />
                             )}
@@ -1170,8 +1198,9 @@ const CVManager = ({ user }) => {
           )}
         </div>
       </div>
+
       {showdetail && (
-        <div className="fixed inset-0 overflow-hidden">
+        <div className="z-20  fixed inset-0 overflow-hidden">
           <div className="absolute inset-0 overflow-hidden">
             <Transition
               show={showdetail}
@@ -1182,380 +1211,422 @@ const CVManager = ({ user }) => {
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
               className="absolute inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+            ></Transition>
+            <section
+              className="absolute inset-y-0 right-0 pl-10 max-w-full flex"
+              aria-labelledby="slide-over-heading"
             >
-              <section className="absolute inset-y-0 right-0 pl-10 max-w-full flex sm:pl-16">
-                <Transition
-                  show={showdetail}
-                  enter="transform transition ease-in-out duration-500 sm:duration-700"
-                  enterFrom="translate-x-full"
-                  enterTo="translate-x-0"
-                  leave="transform transition ease-in-out duration-500 sm:duration-700"
-                  leaveFrom="translate-x-0"
-                  leaveTo="translate-x-full"
-                  className="w-screen max-w-2xl"
-                >
-                  <div className="w-screen max-w-2xl">
-                    <div className="h-screen flex flex-col bg-white shadow-xl overflow-y-scroll">
-                      <header className="px-4 py-6 sm:px-6">
-                        <div className="flex items-start justify-between space-x-3">
-                          <h2 className="text-lg leading-7 font-medium text-gray-900">
-                            Profile
-                          </h2>
-                          <div className="h-7 flex items-center">
-                            <button
-                              onClick={(e) => {
-                                setShowdetail(false);
-                                setSelectedrow(undefined);
-                                setMatchingform(false);
-                              }}
-                              aria-label="Close panel"
-                              className="text-gray-400 hover:text-gray-500 transition ease-in-out duration-150"
+              <Transition
+                show={showdetail}
+                className="w-screen max-w-2xl"
+                enter="transform transition ease-in-out duration-500 sm:duration-700"
+                enterFrom="translate-x-full"
+                enterTo="translate-x-0"
+                leave="transform transition ease-in-out duration-500 sm:duration-700"
+                leaveFrom="translate-x-0"
+                leaveTo="translate-x-full"
+              >
+                <div className="h-full divide-y divide-gray-200 flex flex-col bg-white shadow-xl">
+                  <div className=" flex-1 flex flex-col  overflow-y-scroll">
+                    <header className="px-4 py-6 sm:px-6">
+                      <div className="flex items-start justify-between space-x-3">
+                        <h2 className="text-lg leading-7 font-medium text-gray-900">
+                          Profile
+                        </h2>
+                        <div className="h-7 flex items-center">
+                          <button
+                            onClick={(e) => {
+                              setShowdetail(false);
+                              setSelectedrow(undefined);
+                              setMatchingform(false);
+                            }}
+                            aria-label="Close panel"
+                            className="text-gray-400 hover:text-gray-500 transition ease-in-out duration-150"
+                          >
+                            <svg
+                              className="h-6 w-6"
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
                             >
-                              <svg
-                                className="h-6 w-6"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth="2"
-                                  d="M6 18L18 6M6 6l12 12"
-                                />
-                              </svg>
-                            </button>
-                          </div>
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M6 18L18 6M6 6l12 12"
+                              />
+                            </svg>
+                          </button>
                         </div>
-                      </header>
-
-                      <div className="divide-y divide-gray-200">
-                        <div className="pb-6">
-                          <div className="bg-indigo-700 h-24 sm:h-20 lg:h-28"></div>
-                          <div className="-mt-12 flow-root px-4 space-y-6 sm:-mt-8 sm:flex sm:items-end sm:px-6 sm:space-x-6 lg:-mt-15">
-                            <div>
-                              <div className="-m-1 flex">
-                                <div className="inline-flex rounded-lg overflow-hidden border-4 border-white">
-                                  <img
-                                    className="flex-shrink-0 h-24 w-24 sm:h-40 sm:w-40 lg:w-48 lg:h-48"
-                                    src="/images/aditya.png"
-                                    alt="Jobseeker Photo"
-                                  />
-                                </div>
-                              </div>
-                            </div>
-                            <div className="space-y-5 sm:flex-1">
+                      </div>
+                    </header>
+                    <div className="py-1 relative flex-1">
+                      <div className="w-full sm:flex-1">
+                        <div className="divide-y divide-gray-200">
+                          <div className="pb-4">
+                            <div className="bg-indigo-700 h-24 sm:h-20 lg:h-28"></div>
+                            <div className="-mt-12 flow-root px-4 space-y-6 sm:-mt-8 sm:flex sm:items-end sm:px-6 sm:space-x-6 lg:-mt-15">
                               <div>
-                                <div className="flex items-center space-x-2.5 mt-2">
-                                  <h3 className="font-bold text-xl leading-7 text-gray-900 sm:text-2xl sm:leading-8">
-                                    {jobseekerdata?.data?.englishname}
-                                  </h3>
-                                </div>
-                                <p className="text-sm leading-5 text-gray-500 flex items-end">
-                                  <svg
-                                    className="w-4 h-4"
-                                    fill="currentColor"
-                                    viewBox="0 0 20 20"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                  >
-                                    <path
-                                      fillRule="evenodd"
-                                      d="M14.243 5.757a6 6 0 10-.986 9.284 1 1 0 111.087 1.678A8 8 0 1118 10a3 3 0 01-4.8 2.401A4 4 0 1114 10a1 1 0 102 0c0-1.537-.586-3.07-1.757-4.243zM12 10a2 2 0 10-4 0 2 2 0 004 0z"
-                                      clipRule="evenodd"
-                                    />
-                                  </svg>
-                                  <span className="inline-block">
-                                    {jobseekerdata?.data?.email}
-                                  </span>
-                                </p>
-                                <p className="text-sm leading-5 text-gray-500 flex items-end ">
-                                  <svg
-                                    className="w-6 h-6"
-                                    fill="currentColor"
-                                    viewBox="0 0 20 20"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                  >
-                                    <path
-                                      fillRule="evenodd"
-                                      d="M7 2a2 2 0 00-2 2v12a2 2 0 002 2h6a2 2 0 002-2V4a2 2 0 00-2-2H7zm3 14a1 1 0 100-2 1 1 0 000 2z"
-                                      clipRule="evenodd"
-                                    />
-                                  </svg>
-                                  <span className="inline-block">
-                                    {jobseekerdata?.data?.mobile}
-                                  </span>
-                                </p>
-                              </div>
-                              <div className="flex flex-wrap">
-                                {!showmatchingform && (
-                                  <span className="flex-shrink-0 w-full inline-flex rounded-md shadow-sm sm:flex-1">
-                                    <button
-                                      onClick={(e) => {
-                                        setMatchingform(true);
-                                      }}
-                                      type="button"
-                                      className="w-full inline-flex items-center justify-center px-4 py-2 border border-transparent text-xs leading-5 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
-                                    >
-                                      Add to Vacancy
-                                    </button>
-                                  </span>
-                                )}
-                                <span className="mt-3 flex-1 w-full inline-flex rounded-md shadow-sm sm:mt-0 sm:ml-3">
-                                  <button
-                                    onClick={(e) => {
-                                      setSelectedrowindex(0);
-                                      setSelectedrow(jobseekerdata?.data?.rid);
-                                      onAddTofavorite(jobseekerdata?.data?.rid);
-                                      setShowdetail(false);
-                                      setMatchingform(false);
-                                    }}
-                                    type="button"
-                                    className="w-full inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-xs leading-5 font-medium rounded-md text-gray-700 bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150"
-                                  >
-                                    Mark favouriate
-                                  </button>
-                                </span>
-
-                                <span className="mt-3 flex-1 w-full inline-flex rounded-md shadow-sm sm:mt-0 sm:ml-3">
-                                  <button
-                                    onClick={(e) => {
-                                      setSelectedrowindex(0);
-                                      setSelectedrow(jobseekerdata?.data?.rid);
-                                      onAddToUnList(jobseekerdata?.data?.rid);
-                                      setShowdetail(false);
-                                      setMatchingform(false);
-                                    }}
-                                    type="button"
-                                    className="w-full inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-xs leading-5 font-medium rounded-md text-gray-700 bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150"
-                                  >
-                                    Unlist
-                                  </button>
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="px-4 py-5 sm:px-0 sm:py-0">
-                          {showmatchingform && (
-                            <div className="relative flex-1">
-                              <div className="p-1">
-                                <form
-                                  onSubmit={handleSubmit(onMatchingSubmit)}
-                                  className="px-2"
-                                >
-                                  <div className="p-">
-                                    <div className="grid grid-cols-1">
-                                      <div className="col-span-1">
-                                        <label
-                                          htmlFor="selectedvacancies"
-                                          className="block text-md font-medium leading-5 text-gray-700"
-                                        >
-                                          Select vacancies
-                                        </label>
-                                        <div className="mt-1 flex rounded-md shadow-sm">
-                                          <Controller
-                                            defaultValue={[]}
-                                            isMulti
-                                            id="selectedvacancies"
-                                            inputId="selectedvacancies"
-                                            instanceId="selectedvacancies"
-                                            name="selectedvacancies"
-                                            as={Select}
-                                            options={activevacancydata?.data}
-                                            control={control}
-                                            rules={{ required: true }}
-                                            isClearable="true"
-                                            className="w-full rounded-none z-50"
-                                            styles={useSelectStyles}
-                                          />
-                                        </div>
-                                      </div>
-                                      <p className="text-red-500">
-                                        {errors.selectedvacancies?.message}
-                                      </p>
-                                    </div>
+                                <div className="-m-1 flex items-start">
+                                  <div className="inline-flex rounded-lg overflow-hidden border-4 border-white">
+                                    {jobseekerdata?.data?.photo == "" ? (
+                                      <svg
+                                        className="w-24 h-24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                      >
+                                        <path
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
+                                          strokeWidth="2"
+                                          d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                                        />
+                                      </svg>
+                                    ) : (
+                                      <img
+                                        className="flex-shrink-0 h-24 w-24 sm:h-40 sm:w-40 lg:w-48 lg:h-48"
+                                        src={`data:image/png;base64,${jobseekerdata?.data?.photo}`}
+                                        alt=""
+                                      />
+                                    )}
                                   </div>
-
-                                  <div className="p-2 text-right sm:px-6">
-                                    <span className="inline-flex  justify-between">
+                                </div>
+                              </div>
+                              <div className="space-y-5 sm:flex-1">
+                                <div>
+                                  <div className="flex items-center space-x-2.5 mt-2">
+                                    <h3 className="font-bold text-xl leading-7 text-gray-900 sm:text-2xl sm:leading-8">
+                                      {jobseekerdata?.data?.englishname}
+                                    </h3>
+                                  </div>
+                                  <p className="text-sm leading-5 text-gray-500 flex items-end">
+                                    <svg
+                                      className="w-4 h-4"
+                                      fill="currentColor"
+                                      viewBox="0 0 20 20"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                      <path
+                                        fillRule="evenodd"
+                                        d="M14.243 5.757a6 6 0 10-.986 9.284 1 1 0 111.087 1.678A8 8 0 1118 10a3 3 0 01-4.8 2.401A4 4 0 1114 10a1 1 0 102 0c0-1.537-.586-3.07-1.757-4.243zM12 10a2 2 0 10-4 0 2 2 0 004 0z"
+                                        clipRule="evenodd"
+                                      />
+                                    </svg>
+                                    <span className="inline-block">
+                                      {jobseekerdata?.data?.email}
+                                    </span>
+                                  </p>
+                                  <p className="text-sm leading-5 text-gray-500 flex items-end ">
+                                    <svg
+                                      className="w-6 h-6"
+                                      fill="currentColor"
+                                      viewBox="0 0 20 20"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                      <path
+                                        fillRule="evenodd"
+                                        d="M7 2a2 2 0 00-2 2v12a2 2 0 002 2h6a2 2 0 002-2V4a2 2 0 00-2-2H7zm3 14a1 1 0 100-2 1 1 0 000 2z"
+                                        clipRule="evenodd"
+                                      />
+                                    </svg>
+                                    <span className="inline-block">
+                                      {jobseekerdata?.data?.mobile}
+                                    </span>
+                                  </p>
+                                </div>
+                                <div className="flex flex-wrap">
+                                  {!showmatchingform && (
+                                    <span className="flex-shrink-0 w-full inline-flex rounded-md shadow-sm sm:flex-1">
                                       <button
-                                        disabled={!formState.isValid}
-                                        type="submit"
-                                        className={classnames(
-                                          " inline-flex justify-center py-2 px-4 border border-transparent text-sm leading-5 font-medium rounded-md  bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out",
-                                          {
-                                            "opacity-25 text-gray-300": !formState.isValid,
-                                          },
-                                          {
-                                            "opacity-100 text-white":
-                                              formState.isValid,
-                                          },
-                                        )}
-                                      >
-                                        Save
-                                      </button>
-                                      <button
-                                        className=" inline-flex justify-center py-2 px-4 mx-2 border border-transparent text-sm opacity-100 text-white leading-5 font-medium rounded-md  bg-red-600 hover:bg-red-500 focus:outline-none focus:border-red-700 focus:shadow-outline-indigo active:bg-red-700 transition duration-150 ease-in-out"
+                                        onClick={(e) => {
+                                          setMatchingform(true);
+                                        }}
                                         type="button"
-                                        onClick={() =>
-                                          reset({
-                                            reasonid: 0,
-                                            comment: "",
-                                          })
-                                        }
+                                        className="w-full inline-flex items-center justify-center px-4 py-2 border border-transparent text-xs leading-5 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
                                       >
-                                        Clear
+                                        Add to Vacancy
                                       </button>
                                     </span>
-                                  </div>
-                                </form>
+                                  )}
+                                  <span className="mt-3 flex-1 w-full inline-flex rounded-md shadow-sm sm:mt-0 sm:ml-3">
+                                    <button
+                                      onClick={(e) => {
+                                        setSelectedrowindex(0);
+                                        setSelectedrow(
+                                          jobseekerdata?.data?.rid,
+                                        );
+                                        onAddTofavorite(
+                                          jobseekerdata?.data?.rid,
+                                        );
+                                        setShowdetail(false);
+                                        setMatchingform(false);
+                                      }}
+                                      type="button"
+                                      className="w-full inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-xs leading-5 font-medium rounded-md text-gray-700 bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150"
+                                    >
+                                      Mark favouriate
+                                    </button>
+                                  </span>
+
+                                  <span className="mt-3 flex-1 w-full inline-flex rounded-md shadow-sm sm:mt-0 sm:ml-3">
+                                    <button
+                                      onClick={(e) => {
+                                        setSelectedrowindex(0);
+                                        setSelectedrow(
+                                          jobseekerdata?.data?.rid,
+                                        );
+                                        onAddToUnList(jobseekerdata?.data?.rid);
+                                        setShowdetail(false);
+                                        setMatchingform(false);
+                                      }}
+                                      type="button"
+                                      className="w-full inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-xs leading-5 font-medium rounded-md text-gray-700 bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150"
+                                    >
+                                      Unlist
+                                    </button>
+                                  </span>
+                                </div>
                               </div>
                             </div>
-                          )}
-
-                          <dl className="space-y-8 sm:space-y-0">
-                            <div className="bg-gray-50  sm:flex sm:space-x-6 sm:px-6 sm:py-5">
-                              <dt className="text-sm leading-5 font-medium text-gray-500 sm:w-40 sm:flex-shrink-0 lg:w-48">
-                                Cover Letter
-                              </dt>
-                              <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-                                <p>{jobseekerdata?.data?.coverletter}</p>
-                              </dd>
-                            </div>
-                            <div className="sm:flex sm:space-x-6 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
-                              <dt className="text-sm leading-5 font-medium text-gray-500 sm:w-40 sm:flex-shrink-0 lg:w-48">
-                                Location
-                              </dt>
-                              <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-                                {jobseekerdata?.data?.cityen}
-                              </dd>
-                            </div>
-                            <div className="bg-gray-50  sm:flex sm:space-x-6 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
-                              <dt className="text-sm leading-5 font-medium text-gray-500 sm:w-40 sm:flex-shrink-0 lg:w-48">
-                                Education
-                              </dt>
-                              <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-                                {words(
-                                  [jobseekerdata?.data?.qualificationen],
-                                  /[^,;]+/g,
-                                ).map((kng, index) => (
-                                  <span
-                                    key={index}
-                                    className="my-1 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium leading-4 bg-indigo-100 text-indigo-800"
+                          </div>
+                          <div className="px-4 py-5 sm:px-0 sm:py-0">
+                            {showmatchingform && (
+                              <div className="relative flex-1">
+                                <div className="p-1">
+                                  <form
+                                    onSubmit={handleSubmit(onMatchingSubmit)}
+                                    className="px-2"
                                   >
-                                    <svg
-                                      className="mr-1.5 h-2 w-2 text-indigo-400"
-                                      fill="currentColor"
-                                      viewBox="0 0 8 8"
-                                    >
-                                      <circle cx="4" cy="4" r="3" />
-                                    </svg>
-                                    {kng}
-                                  </span>
-                                ))}
-                              </dd>
-                            </div>
-                            <div className="sm:flex sm:space-x-6 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
-                              <dt className="text-sm leading-5 font-medium text-gray-500 sm:w-40 sm:flex-shrink-0 lg:w-48">
-                                Total Experience
-                              </dt>
-                              <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-                                {jobseekerdata?.data?.totalexperience} Yrs
-                              </dd>
-                            </div>
-                            <div className="bg-gray-50 sm:flex sm:space-x-6 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
-                              <dt className="text-sm leading-5 font-medium text-gray-500 sm:w-40 sm:flex-shrink-0 lg:w-48">
-                                Experience
-                              </dt>
-                              <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-                                <div className="flex justify-between flex-wrap ">
+                                    <div className="p-">
+                                      <div className="grid grid-cols-1">
+                                        <div className="col-span-1">
+                                          <label
+                                            htmlFor="selectedvacancies"
+                                            className="block text-md font-medium leading-5 text-gray-700"
+                                          >
+                                            Select vacancies
+                                          </label>
+                                          <div className="mt-1 flex rounded-md shadow-sm">
+                                            <Controller
+                                              defaultValue={[]}
+                                              isMulti
+                                              id="selectedvacancies"
+                                              inputId="selectedvacancies"
+                                              instanceId="selectedvacancies"
+                                              name="selectedvacancies"
+                                              as={Select}
+                                              options={activevacancydata?.data}
+                                              control={control}
+                                              rules={{ required: true }}
+                                              isClearable="true"
+                                              className="w-full rounded-none z-50"
+                                              styles={useSelectStyles}
+                                            />
+                                          </div>
+                                        </div>
+                                        <p className="text-red-500">
+                                          {errors.selectedvacancies?.message}
+                                        </p>
+                                      </div>
+                                    </div>
+
+                                    <div className="p-2 text-right sm:px-6">
+                                      <span className="inline-flex  justify-between">
+                                        <button
+                                          disabled={!formState.isValid}
+                                          type="submit"
+                                          className={classnames(
+                                            " inline-flex justify-center py-2 px-4 border border-transparent text-sm leading-5 font-medium rounded-md  bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out",
+                                            {
+                                              "opacity-25 text-gray-300": !formState.isValid,
+                                            },
+                                            {
+                                              "opacity-100 text-white":
+                                                formState.isValid,
+                                            },
+                                          )}
+                                        >
+                                          Save
+                                        </button>
+                                        <button
+                                          className=" inline-flex justify-center py-2 px-4 mx-2 border border-transparent text-sm opacity-100 text-white leading-5 font-medium rounded-md  bg-red-600 hover:bg-red-500 focus:outline-none focus:border-red-700 focus:shadow-outline-indigo active:bg-red-700 transition duration-150 ease-in-out"
+                                          type="button"
+                                          onClick={() =>
+                                            reset({
+                                              reasonid: 0,
+                                              comment: "",
+                                            })
+                                          }
+                                        >
+                                          Clear
+                                        </button>
+                                      </span>
+                                    </div>
+                                  </form>
+                                </div>
+                              </div>
+                            )}
+
+                            <dl className="space-y-8 sm:space-y-0">
+                              <div className="bg-gray-50  sm:flex sm:space-x-6 sm:px-6 sm:py-5">
+                                <dt className="text-sm leading-5 font-medium text-gray-500 sm:w-40 sm:flex-shrink-0 lg:w-48">
+                                  Cover Letter
+                                </dt>
+                                <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+                                  <p>{jobseekerdata?.data?.coverletter}</p>
+                                </dd>
+                              </div>
+                              <div className="sm:flex sm:space-x-6 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+                                <dt className="text-sm leading-5 font-medium text-gray-500 sm:w-40 sm:flex-shrink-0 lg:w-48">
+                                  Location
+                                </dt>
+                                <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+                                  {jobseekerdata?.data?.cityen}
+                                </dd>
+                              </div>
+                              <div className="bg-gray-50  sm:flex sm:space-x-6 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+                                <dt className="text-sm leading-5 font-medium text-gray-500 sm:w-40 sm:flex-shrink-0 lg:w-48">
+                                  Education
+                                </dt>
+                                <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
                                   {words(
-                                    [jobseekerdata?.data?.experiencae],
+                                    [jobseekerdata?.data?.qualificationen],
                                     /[^,;]+/g,
                                   ).map((kng, index) => (
                                     <span
                                       key={index}
-                                      className="m-1 inline-flex items-center px-2 py-0.5 rounded text-sm font-medium leading-4 text-gray-700"
+                                      className="my-1 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium leading-4 bg-indigo-100 text-indigo-800"
                                     >
+                                      <svg
+                                        className="mr-1.5 h-2 w-2 text-indigo-400"
+                                        fill="currentColor"
+                                        viewBox="0 0 8 8"
+                                      >
+                                        <circle cx="4" cy="4" r="3" />
+                                      </svg>
                                       {kng}
                                     </span>
                                   ))}
-                                </div>
-                              </dd>
-                            </div>
-                            <div className="sm:flex sm:space-x-6 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
-                              <dt className="text-sm leading-5 font-medium text-gray-500 sm:w-40 sm:flex-shrink-0 lg:w-48">
-                                Skills
-                              </dt>
-                              <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-                                {words(
-                                  [jobseekerdata?.data?.skillen],
-                                  /[^,;]+/g,
-                                ).map((kng, index) => (
-                                  <span
-                                    key={index}
-                                    className="m-1 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium leading-4 bg-green-100 text-green-800"
-                                  >
-                                    <svg
-                                      className="mr-1.5 h-2 w-2 text-green-400"
-                                      fill="currentColor"
-                                      viewBox="0 0 8 8"
+                                </dd>
+                              </div>
+                              <div className="sm:flex sm:space-x-6 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+                                <dt className="text-sm leading-5 font-medium text-gray-500 sm:w-40 sm:flex-shrink-0 lg:w-48">
+                                  Total Experience
+                                </dt>
+                                <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+                                  {jobseekerdata?.data?.totalexperience} Yrs
+                                </dd>
+                              </div>
+                              <div className="bg-gray-50 sm:flex sm:space-x-6 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+                                <dt className="text-sm leading-5 font-medium text-gray-500 sm:w-40 sm:flex-shrink-0 lg:w-48">
+                                  Experience
+                                </dt>
+                                <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+                                  <div className="flex justify-between flex-wrap ">
+                                    {words(
+                                      [jobseekerdata?.data?.experiencae],
+                                      /[^,;]+/g,
+                                    ).map((kng, index) => (
+                                      <span
+                                        key={index}
+                                        className="m-1 inline-flex items-center px-2 py-0.5 rounded text-sm font-medium leading-4 text-gray-700"
+                                      >
+                                        {kng}
+                                      </span>
+                                    ))}
+                                  </div>
+                                </dd>
+                              </div>
+                              <div className="sm:flex sm:space-x-6 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+                                <dt className="text-sm leading-5 font-medium text-gray-500 sm:w-40 sm:flex-shrink-0 lg:w-48">
+                                  Skills
+                                </dt>
+                                <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+                                  {words(
+                                    [jobseekerdata?.data?.skillen],
+                                    /[^,;]+/g,
+                                  ).map((kng, index) => (
+                                    <span
+                                      key={index}
+                                      className="m-1 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium leading-4 bg-green-100 text-green-800"
                                     >
-                                      <circle cx="4" cy="4" r="3" />
-                                    </svg>
-                                    {kng}ssdsdsd
-                                  </span>
-                                ))}
-                              </dd>
-                            </div>
+                                      <svg
+                                        className="mr-1.5 h-2 w-2 text-green-400"
+                                        fill="currentColor"
+                                        viewBox="0 0 8 8"
+                                      >
+                                        <circle cx="4" cy="4" r="3" />
+                                      </svg>
+                                      {kng}ssdsdsd
+                                    </span>
+                                  ))}
+                                </dd>
+                              </div>
 
-                            <div className="bg-gray-50 sm:flex sm:space-x-6 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
-                              <dt className="text-sm leading-5 font-medium text-gray-500 sm:w-40 sm:flex-shrink-0 lg:w-48">
-                                Tools Knowledge
-                              </dt>
-                              <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-                                {words(
-                                  [jobseekerdata?.data?.knowledgeen],
-                                  /[^,;]+/g,
-                                ).map((kng, index) => (
-                                  <span
-                                    key={index}
-                                    className="m-1 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium leading-4 bg-yellow-100 text-yellow-800"
-                                  >
-                                    <svg
-                                      className="mr-1.5 h-2 w-2 text-yellow-400"
-                                      fill="currentColor"
-                                      viewBox="0 0 8 8"
+                              <div className="bg-gray-50 sm:flex sm:space-x-6 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+                                <dt className="text-sm leading-5 font-medium text-gray-500 sm:w-40 sm:flex-shrink-0 lg:w-48">
+                                  Tools Knowledge
+                                </dt>
+                                <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+                                  {words(
+                                    [jobseekerdata?.data?.knowledgeen],
+                                    /[^,;]+/g,
+                                  ).map((kng, index) => (
+                                    <span
+                                      key={index}
+                                      className="m-1 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium leading-4 bg-yellow-100 text-yellow-800"
                                     >
-                                      <circle cx="4" cy="4" r="3" />
-                                    </svg>
-                                    {kng}
-                                  </span>
-                                ))}
-                              </dd>
-                            </div>
+                                      <svg
+                                        className="mr-1.5 h-2 w-2 text-yellow-400"
+                                        fill="currentColor"
+                                        viewBox="0 0 8 8"
+                                      >
+                                        <circle cx="4" cy="4" r="3" />
+                                      </svg>
+                                      {kng}
+                                    </span>
+                                  ))}
+                                </dd>
+                              </div>
 
-                            <div className="sm:flex sm:space-x-6 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
-                              <dt className="text-sm leading-5 font-medium text-gray-500 sm:w-40 sm:flex-shrink-0 lg:w-48">
-                                CV
-                              </dt>
-                              <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-                                <span className="">
-                                  {parse(
-                                    unescape(jobseekerdata?.data?.cvcontent),
-                                  )}
-                                </span>
-                              </dd>
-                            </div>
-                          </dl>
+                              <div className="sm:flex sm:space-x-6 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+                                <dt className="text-sm leading-5 font-medium text-gray-500 sm:w-40 sm:flex-shrink-0 lg:w-48">
+                                  CV
+                                </dt>
+                                <dd className="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+                                  <span className="">
+                                    {parse(
+                                      unescape(jobseekerdata?.data?.cvcontent),
+                                    )}
+                                  </span>
+                                </dd>
+                              </div>
+                            </dl>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </Transition>
-              </section>
-            </Transition>
+                  <div className="flex-shrink-0 p-2 flex justify-end">
+                    <span className="inline-flex rounded-md shadow-sm justify-between">
+                      <button
+                        onClick={(e) => {
+                          setShowdetail(false);
+                          setSelectedrow(undefined);
+                          setMatchingform(false);
+                        }}
+                        type="button"
+                        className="mx-2 bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                      >
+                        Close
+                      </button>
+                    </span>
+                  </div>
+                </div>
+              </Transition>
+            </section>
           </div>
         </div>
       )}

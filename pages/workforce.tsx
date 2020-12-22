@@ -12,6 +12,8 @@ import SunEditor, { buttonList } from "suneditor-react";
 import "suneditor/dist/css/suneditor.min.css";
 import Select from "react-select";
 import withSession from "lib/session";
+import PageTitle from "@components/PageTitle";
+import NotificationNav from "@components/NotificationNav";
 
 const Workforce = () => {
   const samplelookup = [
@@ -162,113 +164,17 @@ const Workforce = () => {
             isbordered={false}
           />
         </div>
-        <div className="flex justify-between">
-          <div className="mt-4 flex sm:mt-0 sm:ml-4">
-            <span className="inline-block relative order-1 ml-3 rounded-full sm:order-0 sm:ml-0 bg-gray-50">
-              <motion.button
-                whileHover={{
-                  scale: 1.4,
-                  transition: {
-                    yoyo: Infinity,
-                  },
-                }}
-                className="p-1 border-2 border-transparent text-gray-400 rounded-full hover:text-gray-500 focus:outline-none focus:text-gray-500 focus:bg-gray-100 transition duration-150 ease-in-out"
-                aria-label="Notifications"
-              >
-                <svg
-                  className="h-6 w-6"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-                  />
-                </svg>
-              </motion.button>
-              <span
-                className="absolute right-0 h-2 w-2  text-white "
-                sx={{ top: "-10px", maxwidth: "0.5rem" }}
-              >
-                <span
-                  sx={{ padding: "2px" }}
-                  className="text-xs  bg-green-500 rounded-full truncate"
-                >
-                  100
-                </span>
-              </span>
-            </span>
-          </div>
+        <div className="">
+          <NotificationNav />
         </div>
       </div>
       <div className="bg-gray-100">
         <div className="px-6 py-3  sm:flex sm:items-center sm:justify-between sm:space-x-4 sm:space-y-0 border-b border-gray-200">
-          <MainHeader
+          <PageTitle
             title="Workforce Planning"
             subtitle="All employees  "
             isbordered={false}
           />
-          <div className="hidden">
-            <label htmlFor="search_candidate" className="sr-only">
-              Search
-            </label>
-            <div className="flex rounded-md shadow-sm">
-              <div className="relative flex-grow focus-within:z-10">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <svg
-                    className="h-5 w-5 text-gray-400"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </div>
-                <input
-                  id="search_candidate"
-                  className="form-input block w-full rounded-none rounded-l-md pl-10 transition ease-in-out duration-150 sm:hidden"
-                  placeholder="Search"
-                />
-                <input
-                  id="search_candidate"
-                  className="hidden form-input w-full rounded-none rounded-l-md pl-10 transition ease-in-out duration-150 sm:block sm:text-sm sm:leading-5"
-                  placeholder="Select for year"
-                />
-              </div>
-              <button className="-ml-px relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm leading-5 font-medium rounded-r-md text-gray-700 bg-gray-50 hover:text-gray-500 hover:bg-white focus:outline-none focus:shadow-outline-blue focus:border-blue-300 active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150">
-                <svg
-                  className="h-5 w-5 text-gray-400"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path d="M3 3a1 1 0 000 2h11a1 1 0 100-2H3zM3 7a1 1 0 000 2h5a1 1 0 000-2H3zM3 11a1 1 0 100 2h4a1 1 0 100-2H3zM13 16a1 1 0 102 0v-5.586l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 101.414 1.414L13 10.414V16z" />
-                </svg>
-                <span className="ml-2">Choose</span>
-
-                <svg
-                  className="ml-2.5 -mr-1.5 h-5 w-5 text-gray-400"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </button>
-            </div>
-          </div>
         </div>
 
         <div className="bg-white">
@@ -309,7 +215,7 @@ const Workforce = () => {
                         <input
                           name="emiratization"
                           id="emiratization"
-                          className="form-input flex-1 block w-full rounded-none rounded-r-md transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                          className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-r-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
                           placeholder="Enter emiratization %"
                         />
                       </div>
@@ -327,7 +233,7 @@ const Workforce = () => {
                         <input
                           name="jobtitlen"
                           id="jobtitlen"
-                          className="form-input flex-1 block w-full rounded-none rounded-r-md transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                          className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-r-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
                           placeholder="Enter jobtite english"
                         />
                       </div>
@@ -345,7 +251,7 @@ const Workforce = () => {
                         <input
                           name="jobtitlae"
                           id="jobtitlae"
-                          className="form-input flex-1 block w-full rounded-none rounded-r-md transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                          className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-r-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
                           placeholder="Enter jobtite arabic"
                         />
                       </div>
@@ -363,7 +269,7 @@ const Workforce = () => {
                         <input
                           name="totalopenings"
                           id="totalopenings"
-                          className="form-input flex-1 block w-full rounded-none rounded-r-md transition duration-150 ease-in-out sm:text-sm sm:leading-5"
+                          className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-r-md placeholder-gray-400 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
                           placeholder="Enter total number of jobs"
                         />
                       </div>
