@@ -164,7 +164,7 @@ const SignIn = () => {
           </div>
         </div>
       </div>
-      <div className=" hidden lg:block relative w-0 flex-1 md:flex md:flex-col  md:self-center">
+      <div className=" hidden lg:block relative w-0 flex-1 md:flex md:flex-col  md:self-start">
         <ul className="flex items-end justify-end p-3">
           <li>
             <Link

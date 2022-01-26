@@ -7,7 +7,7 @@
     "customdevport": "next dev -p 3001",
     "build": "next build",
     "start": "next start",
-    "customstartport": "next start -p 3001",
+    "customstartport": "next start -p 8001",
     "css": "tailwindcss build ./styles/global.css -o ./styles/base.css"
   },
   "dependencies": {

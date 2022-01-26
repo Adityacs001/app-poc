@@ -1,0 +1,14 @@
+{
+  "email": "Email",
+  "entervalidemail": "Enter Valid email",
+  "emailsentfortoken": "Email sent with token",
+  "unabletosave": "Unable to save",
+  "verifyHeader": "Account Verification",
+  "verify": "Verify",
+  "token": "Token",
+  "verifymessage": "Enter received token to verify to proceed further",
+  "enteremail": "Enter email address",
+  "entertoken": "Enter token received",
+  "empty": "",
+  "test": "test"
+}
